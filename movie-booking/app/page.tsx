@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import { fetchPopularMovies, Movie } from "../lib/tmdb"; // ✅ ตรวจสอบ path ให้อยู่ใน "@/lib/tmdb"
+import { fetchPopularMovies, Movie } from "../lib/tmdb";
 
 export default function Home() {
-  const [movies, setMovies] = useState<Movie[]>([]); // ✅ บอกให้ TypeScript รู้ว่าเป็น Movie[]
+  const [movies, setMovies] = useState<Movie[]>([]); 
 
   useEffect(() => {
     const getMovies = async () => {
