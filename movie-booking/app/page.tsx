@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { fetchPopularMovies, Movie } from "../lib/tmdb";
+import { Movie } from "../lib/tmdb";
 
 export default function Home() {
   const [movies, setMovies] = useState<Movie[]>([]); 
