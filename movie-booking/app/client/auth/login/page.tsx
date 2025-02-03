@@ -3,18 +3,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Loading from "@/app/components/loading";
-import { AlertCircle } from "lucide-react"
- 
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/app/components/ui/alert"
+import { useAlert } from "@/app/context/AlertContext";
+
 
 export default function LoginPage() {
   const router = useRouter();
   const [form, setForm] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
+//   const [error, setError] = useState("");
+  const { setError, setSuccess } = useAlert();   
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,11 +31,11 @@ export default function LoginPage() {
       if (!res.ok) throw new Error(data.error);
 
       localStorage.setItem("token", data.token);
-      alert("Login successful!");
+      setSuccess("Login successful!");
       router.push("/");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message); 
     } finally {
       setIsLoading(false);
     }
@@ -63,13 +59,6 @@ export default function LoginPage() {
                 <h1 className="text-2xl font-bold text-gray-800 mb-2">Lets Start Booking 🎬</h1>
                 <p className="text-gray-600 mb-6">Please login or sign up to continue</p>
 
-                <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Error</AlertTitle>
-                    <AlertDescription>
-                        Your session has expired. Please log in again.
-                    </AlertDescription>
-                </Alert>
 
                 <form className="space-y-4" onSubmit={handleSubmit}>
                 {/* Email Input */}
