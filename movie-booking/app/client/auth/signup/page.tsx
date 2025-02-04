@@ -3,12 +3,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Loading from "@/app/components/loading";
 import Link from "next/link";
+import { useAlert } from "@/app/context/AlertContext";
 
 
 export default function SignupPage() {
   const router = useRouter();
   const [form, setForm] = useState({ name: "", email: "", password: "", confirmPassword: "" });
-  const [error, setError] = useState("");
+  const { setError, setSuccess } = useAlert();   
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,7 +19,12 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
+
+    if (!form.name || !form.email || !form.password || !form.confirmPassword) {
+      setError("Please fill out all fields.");
+      setIsLoading(false);
+      return;
+    }
 
     if (form.password !== form.confirmPassword) {
       setError("Passwords do not match");
@@ -40,8 +46,11 @@ export default function SignupPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      alert("Signup successful! Redirecting to login...");
-      router.push("/client/auth/login");
+      setSuccess("Signup successful! Redirecting to login...");
+      setTimeout(() => {
+        router.push("/client/auth/login");
+      }, 2000);
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message);
@@ -67,14 +76,12 @@ export default function SignupPage() {
           <h1 className="text-2xl font-bold text-gray-800 mb-2">Sign Up</h1>
           <p className="text-gray-600 mb-6">Create your account</p>
 
-          {error && <p className="text-red-500 mb-4">{error}</p>}
-
           <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Username Input */}
             <div className="relative">
               <input
                 type="text"
-                name="username"
+                name="name"
                 value={form.name}
                 onChange={handleChange}
                 placeholder="Username"
@@ -181,8 +188,8 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full py-3 rounded-3xl font-medium transition flex items-center justify-center ${
-                  isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-gray-900 text-white hover:bg-gray-700"
+              className={`w-full rounded-3xl font-medium transition flex items-center justify-center ${
+                  isLoading ? "bg-gray-400 py-1 cursor-not-allowed" : "bg-gray-900  py-3 text-white hover:bg-gray-700"
               }`}
             >
               {isLoading ? (  <Loading /> ) : ( "Sign Up" )}

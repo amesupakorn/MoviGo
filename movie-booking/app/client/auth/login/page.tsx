@@ -19,23 +19,26 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+
     try {
-      setIsLoading(true);
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-
+  
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-
+  
       localStorage.setItem("token", data.token);
       setSuccess("Login successful!");
+
       router.push("/");
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message); 
+      setError(err.message);
     } finally {
       setIsLoading(false);
     }
@@ -120,8 +123,8 @@ export default function LoginPage() {
                 <button
                     type="submit"
                     disabled={isLoading}
-                    className={`w-full p-3 rounded rounded-3xl flex justify-center items-center font-medium transition ${
-                    isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-gray-900 text-white hover:bg-gray-700"
+                    className={`w-full rounded rounded-3xl flex justify-center items-center font-medium transition ${
+                    isLoading ? "bg-gray-400 py-1 cursor-not-allowed" : "bg-gray-900 py-3 text-white hover:bg-gray-700"
                     }`}>
                     {isLoading ? <Loading /> : "Log In"}
 
