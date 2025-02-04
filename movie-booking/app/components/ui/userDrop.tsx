@@ -105,7 +105,7 @@ const UserDropdown = () => {
         )}
         </div>
         ) : (
-            <Link href="client/auth/login">
+            <Link href="/client/auth/login">
             <button className="bg-gray-900 text-white font-medium rounded-lg px-5 py-1.5 hover:bg-gray-600">
             Login
             </button>

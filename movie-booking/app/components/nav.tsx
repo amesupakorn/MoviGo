@@ -13,15 +13,15 @@ const Navbar = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
   useEffect(() => {
-    const currentPath = pathname.slice(1).toLowerCase();
-    setActiveMenu(currentPath.charAt(0).toUpperCase() + currentPath.slice(1));
+    const currentPath = pathname.split("/").pop()?.toUpperCase(); 
+    setActiveMenu(currentPath || null);
   }, [pathname]);
   
   const menus = ["HOME", "MOVIES", "CINEMAS"];
 
   return (
-    <nav className="bg-white shadow-md fixed w-full top-0 z-10 py-2">
-      <div className="container mx-auto px-4 py-2">
+    <nav className="bg-white shadow-md fixed w-full top-0 z-10">
+      <div className="container mx-auto px-4 mt-4">
         <div className="flex items-center justify-between">
           <button
             className="md:hidden text-gray-500 hover:text-red-500"
@@ -89,38 +89,38 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-
-
+        
         <div
           className={`${
             isMenuOpen ? "block" : "hidden"
-          } md:flex flex-col md:flex-row md:justify-center mt-4 border-gray-200`}
+          } md:flex flex-col md:flex-row md:justify-center mt-2 border-gray-200`}
         >
-        <ul className="flex flex-col md:flex-row md:space-x-12 text-gray-700 font-medium items-center space-y-3 md:space-y-0 ">
+       <ul className="flex flex-col md:flex-row md:space-x-6 text-gray-700 font-medium items-center space-y-3 md:space-y-0">
             {menus.map((menu) => {
                 const isActive = activeMenu === menu;
 
                 return (
-                <li key={menu} className="relative group">
+                <li key={menu} className="relative group ">
                     <Link
                     href={`/client/${menu.toLowerCase()}`}
-                    className={`cursor-pointer relative text-base transition-all duration-300 ${
+                    className={`cursor-pointer relative text-sm flex items-center justify-center px-6 py-2 rounded-md transition-all duration-300 ${
                         isActive ? "text-blue-500 font-semibold" : "text-gray-700"
                     } hover:text-blue-500`}
                     onClick={() => setActiveMenu(menu)}
                     >
                     {menu}
+                    </Link>
 
                     <span
-                        className={`absolute left-0 bottom-[-2px] w-full h-[2px] bg-blue-500 transition-all duration-300 ${
-                        isActive ? "scale-100" : "scale-0"
-                        } group-hover:scale-100`}
+                    className={`absolute left-0 bottom-0 w-full h-[3px] bg-blue-500 transition-all duration-300 rounded-md ${
+                        isActive ? "scale-x-100" : "scale-x-0"
+                    } group-hover:scale-x-100`}
                     />
-                    </Link>
                 </li>
                 );
             })}
             </ul>
+
         </div>
       </div>
     </nav>
