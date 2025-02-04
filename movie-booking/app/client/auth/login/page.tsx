@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -9,7 +10,6 @@ import { useAlert } from "@/app/context/AlertContext";
 export default function LoginPage() {
   const router = useRouter();
   const [form, setForm] = useState({ email: "", password: "" });
-//   const [error, setError] = useState("");
   const { setError, setSuccess } = useAlert();   
   const [isLoading, setIsLoading] = useState(false);
 

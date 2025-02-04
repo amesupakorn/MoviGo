@@ -1,10 +1,12 @@
+"use client";
+
 import "../styles/loading.css";
 
 const Loading = () => {
   return (
     <div className="flex justify-center items-center">
       <svg
-        className="container w-4 h-4"
+        className="load w-4 h-4"
         viewBox="0 0 40 40"
         width="24"
         height="24" 

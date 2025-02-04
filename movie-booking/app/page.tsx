@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Movie } from "../lib/tmdb";
 import { useAlert } from "@/app/context/AlertContext";
 
 export default function Home() {
@@ -25,11 +24,11 @@ export default function Home() {
     // getMovies();
   }, );
 
-  
+
 
   return (
     <div className="container mx-auto p-4">
-     
+    
     </div>
   );
 }
