@@ -19,19 +19,17 @@ const UserDropdown = () => {
         const fetchUserData = async () => {
           try {
               const token = localStorage.getItem("token"); 
-              if (!token) return;
-      
-              const response = await api.get(`/api/auth/profile`, {
-                  headers: {
-                      Authorization: `Bearer ${token}`,
-                  },
-              });
-      
-              if (response.data.user) {
-                  setIsLoggedIn(true);
-                  setUsername(response.data.user.name);
-                  setProfileImage(response.data.user.profileImage);
+              if (token) {
+                const response = await api.get(`/profile`)
+        
+                if (response.data.user) {
+                    setIsLoggedIn(true);
+                    setUsername(response.data.user.name);
+                    setProfileImage(response.data.user.profileImage);
+                }
               }
+      
+            
           } catch (error) {
               console.error("Failed to fetch user data:", error);
               setIsLoggedIn(false);

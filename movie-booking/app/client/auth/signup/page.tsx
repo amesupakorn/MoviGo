@@ -38,14 +38,17 @@ export default function SignupPage() {
       setSuccess("Signup successful! Redirecting to login...");
       setTimeout(() => {
         router.push("/client/auth/login");
+        setIsLoading(false);
+
       }, 2000);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.response?.data?.error || "Signup failed");
+      setIsLoading(false);
+
     }
 
-    setIsLoading(false);
   };
 
   return (

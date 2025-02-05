@@ -28,13 +28,15 @@ export default function LoginPage() {
       localStorage.setItem("token", res.data.token);
       setSuccess("Login successful!");
 
-      router.push("/client/home");
+      setTimeout(() => {
+        router.push("/client/home");
+        setIsLoading(false);
 
+      }, 2000);
+      
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message);
-    } finally {
-      setIsLoading(false);
     }
   };
 
