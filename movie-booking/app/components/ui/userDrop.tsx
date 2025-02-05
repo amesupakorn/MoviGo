@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import Link from "next/link";
+import api from "@/lib/axios";
 
 const UserDropdown = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -21,7 +21,7 @@ const UserDropdown = () => {
               const token = localStorage.getItem("token"); 
               if (!token) return;
       
-              const response = await axios.get(`/api/auth/profile`, {
+              const response = await api.get(`/api/auth/profile`, {
                   headers: {
                       Authorization: `Bearer ${token}`,
                   },

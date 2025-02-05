@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Loading from "@/app/components/loading";
 import Link from "next/link";
 import { useAlert } from "@/app/context/AlertContext";
-
+import api from "@/lib/axios";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -33,19 +33,8 @@ export default function SignupPage() {
     }
 
     try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          password: form.password,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-
+      
+      await api.post("/auth/signup", form);
       setSuccess("Signup successful! Redirecting to login...");
       setTimeout(() => {
         router.push("/client/auth/login");
@@ -53,7 +42,7 @@ export default function SignupPage() {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message);
+      setError(err.response?.data?.error || "Signup failed");
     }
 
     setIsLoading(false);

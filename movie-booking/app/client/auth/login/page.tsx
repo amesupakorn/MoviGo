@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Loading from "@/app/components/loading";
 import { useAlert } from "@/app/context/AlertContext";
+import api from "@/lib/axios";
 
 
 export default function LoginPage() {
@@ -22,16 +23,9 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const res = await api.post("/auth/login", form);
   
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-  
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("token", res.data.token);
       setSuccess("Login successful!");
 
       router.push("/client/home");
