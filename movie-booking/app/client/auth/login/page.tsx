@@ -34,7 +34,7 @@ export default function LoginPage() {
       localStorage.setItem("token", data.token);
       setSuccess("Login successful!");
 
-      router.push("/");
+      router.push("/client/home");
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
