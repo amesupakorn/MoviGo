@@ -11,7 +11,7 @@ import api from "@/lib/axios";
 export default function LoginPage() {
   const router = useRouter();
   const [form, setForm] = useState({ email: "", password: "" });
-  const { setError, setSuccess } = useAlert();   
+  const { setError } = useAlert();   
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +42,6 @@ export default function LoginPage() {
     try {
         const res = await api.post("/auth/login", form);
         localStorage.setItem("token", res.data.token);
-        setSuccess("Login successful!");
 
         setTimeout(() => {
             router.push("/client/home");

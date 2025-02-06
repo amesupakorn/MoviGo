@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import api from "@/lib/axios";
-import { useAlert } from "@/app/context/AlertContext";
 
 const UserDropdown = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -9,11 +8,9 @@ const UserDropdown = () => {
     const [profileImage, setProfileImage] = useState("");
     const [username, setUsername] = useState("");
     const token = localStorage.getItem("token") || "";
-    const {setSuccess} = useAlert();
 
     const logout = () => {
         localStorage.removeItem("token");
-        setSuccess("Logout Success.")
         setIsLoggedIn(false);
     };
 
