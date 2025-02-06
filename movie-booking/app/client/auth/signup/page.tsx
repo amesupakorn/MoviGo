@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Loading from "@/app/components/loading";
+import Loading from "@/app/components/ui/loading/loadOne";
 import Link from "next/link";
 import { useAlert } from "@/app/context/AlertContext";
 import api from "@/lib/axios";
@@ -18,7 +18,6 @@ export default function SignupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
 
     if (!form.name || !form.email || !form.password || !form.confirmPassword) {
       setError("Please fill out all fields.");
@@ -26,11 +25,29 @@ export default function SignupPage() {
       return;
     }
 
-    if (form.password !== form.confirmPassword) {
-      setError("Passwords do not match");
-      setIsLoading(false);
+    const emailRegex = /\S+@\S+\.\S+/;
+    if (!emailRegex.test(form.email)) {
+        setError("Invalid email format.");
+        return;
+    }
+    if (form.name.length < 3){
+      setError("Username must be at least 3 characters long.");
       return;
     }
+
+    if (form.password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      return;
+    }
+
+    if (form.password !== form.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+
+    setIsLoading(true);
+
 
     try {
       
@@ -46,7 +63,8 @@ export default function SignupPage() {
     } catch (err: any) {
       setError(err.response?.data?.error || "Signup failed");
       setIsLoading(false);
-
+    } finally{
+      setIsLoading(false);
     }
 
   };

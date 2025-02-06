@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Loading from "@/app/components/loading";
+import Loading from "@/app/components/ui/loading/loadOne";
 import { useAlert } from "@/app/context/AlertContext";
 import api from "@/lib/axios";
 
@@ -20,25 +20,40 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!form.email || !form.password) {
+        setError("Please enter both email and password.");
+        return;
+    }
+
+    const emailRegex = /\S+@\S+\.\S+/;
+    if (!emailRegex.test(form.email)) {
+        setError("Invalid email format.");
+        return;
+    }
+
+    // if (form.password.length < 6) {
+    //     setError("Password must be at least 6 characters long.");
+    //     return;
+    // }
+
     setIsLoading(true);
 
     try {
-      const res = await api.post("/auth/login", form);
-  
-      localStorage.setItem("token", res.data.token);
-      setSuccess("Login successful!");
+        const res = await api.post("/auth/login", form);
+        localStorage.setItem("token", res.data.token);
+        setSuccess("Login successful!");
 
-      setTimeout(() => {
-        router.push("/client/home");
-        setIsLoading(false);
-
-      }, 2000);
-      
+        setTimeout(() => {
+            router.push("/client/home");
+            setIsLoading(false);
+        }, 500);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.message);
+        setError(err.response?.data?.message || "An error occurred during login.");
+        setIsLoading(false);
     }
-  };
+};
 
   return (
 

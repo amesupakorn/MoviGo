@@ -2,7 +2,7 @@
 
 import "../styles/loading.css";
 
-const Loading = () => {
+const LoadOne = () => {
   return (
     <div className="flex justify-center items-center">
       <svg
@@ -34,4 +34,4 @@ const Loading = () => {
   );
 };
 
-export default Loading;
+export default LoadOne;

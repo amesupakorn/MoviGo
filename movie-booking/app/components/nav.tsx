@@ -95,7 +95,7 @@ const Navbar = () => {
             isMenuOpen ? "block" : "hidden"
           } md:flex flex-col md:flex-row md:justify-center mt-2 border-gray-200`}
         >
-       <ul className="flex flex-col md:flex-row md:space-x-6 text-gray-700 font-medium items-center space-y-3 md:space-y-0">
+       <ul className="flex flex-col md:flex-row md:space-x-6 text-gray-700 font-medium items-center space-y-2 md:space-y-0">
             {menus.map((menu) => {
                 const isActive = activeMenu === menu;
 

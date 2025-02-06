@@ -1,43 +1,43 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import api from "@/lib/axios";
+import { useAlert } from "@/app/context/AlertContext";
 
 const UserDropdown = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false); 
     const [profileImage, setProfileImage] = useState("");
     const [username, setUsername] = useState("");
+    const token = localStorage.getItem("token") || "";
+    const {setSuccess} = useAlert();
 
-    // ✅ ฟังก์ชัน Logout
     const logout = () => {
         localStorage.removeItem("token");
+        setSuccess("Logout Success.")
         setIsLoggedIn(false);
-        window.location.href = "/";
     };
+
 
     useEffect(() => {
         const fetchUserData = async () => {
-          try {
-              const token = localStorage.getItem("token"); 
-              if (token) {
-                const response = await api.get(`/profile`)
-        
-                if (response.data.user) {
-                    setIsLoggedIn(true);
-                    setUsername(response.data.user.name);
-                    setProfileImage(response.data.user.profileImage);
+            try {
+                if (token) {
+                    const response = await api.get(`/profile`);
+                    if (response.data.user) {
+                        setIsLoggedIn(true);
+                        setUsername(response.data.user.name);
+                        setProfileImage(response.data.user.profileImage);
+                    }
                 }
-              }
-      
-            
-          } catch (error) {
-              console.error("Failed to fetch user data:", error);
-              setIsLoggedIn(false);
-          }
-      };
-
+            } catch (error) {
+                console.error("Failed to fetch user data:", error);
+                setIsLoggedIn(false);
+            }
+        };
+    
         fetchUserData();
-    }, []);
+    }, [token]); 
+
 
     return (
         <div>
