@@ -1,0 +1,11 @@
+import { apiClient } from "@/lib/tmdb";
+import { MovieResponse } from "@/lib/types/movie";
+
+
+
+export const fetchPopularMovies = async (page: number = 1): Promise<MovieResponse> => {
+    const response = await apiClient.get<MovieResponse>("/movie/popular", {
+        params: { language: "en-US", page },
+    });
+    return response.data;
+};

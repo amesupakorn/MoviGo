@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "/api", // เปลี่ยนเป็น URL จริงของเซิร์ฟเวอร์ถ้าจำเป็น
+  baseURL: "/api",
   headers: {
     "Content-Type": "application/json",
   },
