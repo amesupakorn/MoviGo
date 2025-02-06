@@ -1,6 +1,6 @@
 "use client";
 
-import "../styles/loading.css";
+import "@/app/styles/loading/one.css";
 
 const LoadOne = () => {
   return (
