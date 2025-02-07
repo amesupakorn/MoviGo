@@ -23,6 +23,7 @@ export interface MovieDetail {
     runtime: number;
     vote_average: number;
     tagline: string;
+    posters: string;
 }
 
 

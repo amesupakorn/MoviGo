@@ -64,6 +64,9 @@ export default function MovieDetailPage() {
                     )
                 ))}
             </div>
+
+            {/* Poster */}
+          
         </div>
     );
 }
