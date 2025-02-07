@@ -1,9 +1,14 @@
 export interface Movie {
+    backdrop_path: any;
     id: number;
     title: string;
     poster_path: string;
     overview: string;
     release_date: string;
+}
+
+export interface MovieBannerProps {
+    movies: Movie[];
 }
 
 export interface MovieResponse {
