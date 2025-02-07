@@ -1,32 +1,21 @@
 "use client";
 import { useEffect, useState } from "react";
-import { MovieDetail, Review, MovieImage, MovieVideo } from "@/lib/types/movie";
 import { useParams } from "next/navigation";
+import { MovieDetail } from "@/lib/types/movie";
 
 export default function MovieDetailPage() {
-    const { id } = useParams(); 
+    const { id } = useParams();
     const [movie, setMovie] = useState<MovieDetail | null>(null);
-    const [reviews, setReviews] = useState<Review[]>([]);
-    const [images, setImages] = useState<MovieImage[]>([]);
-    const [videos, setVideos] = useState<MovieVideo[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (!id) return;
 
-        const loadMovieData = async () => {
+        const loadMovieDetail = async () => {
             try {
-                const [movieRes, reviewRes, imageRes, videoRes] = await Promise.all([
-                    fetch(`/api/movies/${id}`).then(res => res.json()),
-                    fetch(`/api/movies/${id}/review`).then(res => res.json()),
-                    fetch(`/api/movies/${id}/images`).then(res => res.json()),
-                    fetch(`/api/movies/${id}/video`).then(res => res.json()),
-                ]);
-
-                setMovie(movieRes);
-                setReviews(reviewRes);
-                setImages(imageRes);
-                setVideos(videoRes);
+                const res = await fetch(`/api/movies/${id}`);
+                const data = await res.json();
+                setMovie(data);
             } catch (error) {
                 console.error("Error fetching movie details:", error);
             } finally {
@@ -34,7 +23,7 @@ export default function MovieDetailPage() {
             }
         };
 
-        loadMovieData();
+        loadMovieDetail();
     }, [id]);
 
     if (loading) return <p>Loading...</p>;
@@ -42,27 +31,29 @@ export default function MovieDetailPage() {
 
     return (
         <div className="p-6">
-            <h1 className="text-3xl font-bold">{movie.title}</h1>
-            <p className="text-gray-400 italic">{movie.tagline}</p>
-
-            {/* Images */}
-            <div className="mt-4">
-                <h2 className="text-xl font-bold">Images</h2>
-                <div className="flex space-x-2 overflow-x-auto">
-                    {images.map((img, index) => (
-                        <img key={index} src={`https://image.tmdb.org/t/p/w500${img.file_path}`} alt="Movie" className="w-48 rounded-lg" />
-                    ))}
+            {/* ✅ ใช้ `backdrop_path` เป็นภาพใหญ่เต็มจอ */}
+            <div className="relative w-full h-96">
+                <img
+                    src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+                    alt={movie.title}
+                    className="w-full h-full object-cover rounded-lg shadow-lg"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <h1 className="text-4xl font-bold text-white">{movie.title}</h1>
                 </div>
             </div>
 
-            {/* Videos */}
-            <div className="mt-4">
-                <h2 className="text-xl font-bold">Trailers</h2>
-                {videos.map(video => (
-                    video.site === "YouTube" && (
-                        <iframe key={video.id} src={`https://www.youtube.com/embed/${video.key}`} width="560" height="315" allowFullScreen />
-                    )
-                ))}
+            {/* Movie Details */}
+            <div className="mt-6">
+                <h2 className="text-2xl font-bold">{movie.title}</h2>
+                <p className="text-gray-400 italic">{movie.tagline}</p>
+                <p className="text-gray-300">{movie.overview}</p>
+                <p className="text-gray-400">Release Date: {movie.release_date}</p>
+                <p className="text-gray-400">Runtime: {movie.runtime} mins</p>
+                <p className="text-gray-400">Rating: {movie.vote_average.toFixed(1)}</p>
+                <p className="text-gray-400 mt-2">
+                    Genres: {movie.genres.map(g => g.name).join(", ")}
+                </p>
             </div>
         </div>
     );

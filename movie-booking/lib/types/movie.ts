@@ -22,7 +22,7 @@ export interface MovieDetail {
     genres: { id: number; name: string }[];
     runtime: number;
     vote_average: number;
-    tagline: string;
+    tagline: string;  
 }
 
 

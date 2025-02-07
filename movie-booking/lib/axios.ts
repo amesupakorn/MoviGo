@@ -7,7 +7,6 @@ const api = axios.create({
   },
 });
 
-// Interceptor สำหรับเพิ่ม Token อัตโนมัติ
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token"); 
@@ -21,7 +20,6 @@ api.interceptors.request.use(
   }
 );
 
-// 🛠️ Interceptor สำหรับ Handle 401 Unauthorized 
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
