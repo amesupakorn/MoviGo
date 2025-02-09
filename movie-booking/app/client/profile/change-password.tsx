@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import api from "@/lib/axios";
+import { TbLockPassword } from "react-icons/tb";
+
 
 export default function ChangePassword() {
     const [isEditing, setIsEditing] = useState(false);
@@ -40,7 +42,7 @@ export default function ChangePassword() {
     };
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-md border border-gray-300">
+        <div >
             <h2 className="font-bold text-xl mb-4">Password</h2>
 
             {!isEditing ? (
@@ -49,13 +51,14 @@ export default function ChangePassword() {
                     <p className="font-semibold mb-2">**********</p>
                     <button
                         onClick={() => setIsEditing(true)}
-                        className="bg-white px-6 py-1 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-100"
-                    >
+                        className="flex text-blue-500 items-center px-4 py-2 rounded-lg border border-blue-500 hover:bg-blue-50">
+                        <TbLockPassword />
+                        &nbsp;
                         Change Password
                     </button>
                 </div>
             ) : (
-                <div className="space-y-6">
+                <div className="space-y-3">
                     {error && <p className="text-red-500">{error}</p>}
                     {success && <p className="text-green-500">{success}</p>}
 
@@ -66,7 +69,7 @@ export default function ChangePassword() {
                             name="oldPassword"
                             value={passwords.oldPassword}
                             onChange={handleChange}
-                            className="block w-full p-3 border rounded-lg shadow-sm focus:ring-1 focus:ring-red-500 focus:border-red-500"
+                            className="border p-2 rounded rounded-xl w-full bg-gray-100"
                         />
                     </div>
 
@@ -77,7 +80,7 @@ export default function ChangePassword() {
                             name="newPassword"
                             value={passwords.newPassword}
                             onChange={handleChange}
-                            className="block w-full p-3 border rounded-lg shadow-sm focus:ring-1 focus:ring-red-500 focus:border-red-500"
+                            className="border p-2 rounded rounded-xl w-full bg-gray-100"
                         />
                     </div>
 
@@ -88,22 +91,16 @@ export default function ChangePassword() {
                             name="confirmPassword"
                             value={passwords.confirmPassword}
                             onChange={handleChange}
-                            className="block w-full p-3 border rounded-lg shadow-sm focus:ring-1 focus:ring-red-500 focus:border-red-500"
+                            className="border p-2 rounded rounded-xl w-full bg-gray-100"
                         />
                     </div>
 
                     <div className="mt-6 flex space-x-2">
-                        <button
-                            onClick={handleSave}
-                            className="bg-orange-500 text-white px-10 py-1 rounded-full hover:bg-orange-600"
-                        >
-                            Save
+                        <button onClick={handleSave} className="bg-blue-500 text-white px-10 py-2 rounded-lg">
+                                Save
                         </button>
-                        <button
-                            onClick={() => setIsEditing(false)}
-                            className="bg-white text-black px-5 py-1 rounded-full border border-gray-300 hover:bg-gray-100"
-                        >
-                            Cancel
+                        <button onClick={() => setIsEditing(false)} className="text-blue-500 border border-blue-500 px-10 py-2 rounded-lg">
+                           Cancel
                         </button>
                     </div>
                 </div>
