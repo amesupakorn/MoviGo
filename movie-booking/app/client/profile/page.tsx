@@ -6,8 +6,12 @@ import ChangePassword from "@/app/client/profile/change-password";
 import api from "@/lib/axios";
 import { User } from "@/lib/types/user";
 import { useAlert } from "@/app/context/AlertContext";
+import { useAuth } from "@/app/context/setLogged";
+
 export default function ProfilePage() {
     const [user, setUser] = useState<User | null>(null);
+    const { updateNavName, updateNavProfileImage } = useAuth();
+
     const [token, setToken] = useState<string | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [, setSelectedFile] = useState<File | null>(null);
@@ -70,9 +74,14 @@ export default function ProfilePage() {
                 headers: { "Content-Type": "multipart/form-data" },
             });
             URL.createObjectURL(file)
+            // window.location.reload();
+
             setSuccess("Upload Success");
-            setUser((prev) => prev ? { ...prev, profileImage: response.data.user.profileImage } : response.data.user);
-        } catch (err) {
+            updateNavProfileImage(response.data.user.profileImage);
+            setUser((prev) =>
+                prev ? { ...prev, profileImage: `${response.data.user.profileImage}?t=${Date.now()}` } : response.data.user
+            );
+                } catch (err) {
             setError("Failed to upload image");
             console.error("Failed to upload image:", err);
         }
@@ -83,6 +92,7 @@ export default function ProfilePage() {
             if (token) {
                 const response = await api.put(`/profile`, editedUser);
                 setUser(response.data.user);
+                updateNavName(response.data.user.name);
                 setSuccess("Edit your profile success");
                 setIsEditing(false);
             }

@@ -7,6 +7,8 @@ interface AuthContextType {
     user: { name: string; profileImage: string | null } | null;
     logout: () => void;
     setUser: React.Dispatch<React.SetStateAction<{ name: string; profileImage: string | null } | null>>;
+    updateNavName: (info: string) => void; 
+    updateNavProfileImage: (info: string) => void; 
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -44,8 +46,39 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         window.location.href = "/client/auth/login";
     };
 
+    const updateNavName = (name: string) => {
+        setUser((prev) =>
+            prev
+                ? {
+                      ...prev,
+                      name,
+                  }
+                : null
+        );
+    };
+    
+    const updateNavProfileImage = (profileImage: string) => {
+        setUser((prev) =>
+            prev
+                ? {
+                      ...prev,
+                      profileImage: `${profileImage}?t=${Date.now()}`, 
+                  }
+                : null
+        );
+    };
+
     return (
-        <AuthContext.Provider value={{ isLoggedIn, user, logout, setUser }}>
+        <AuthContext.Provider
+            value={{
+                isLoggedIn,
+                user,
+                logout,
+                setUser,
+                updateNavName,
+                updateNavProfileImage,
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );
