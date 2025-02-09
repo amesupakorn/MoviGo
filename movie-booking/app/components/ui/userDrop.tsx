@@ -1,46 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import api from "@/lib/axios";
+import { useAuth } from "@/app/context/setLogged";
+
 
 const UserDropdown = () => {
+    const { isLoggedIn, user, logout } = useAuth();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false); 
-    const [profileImage, setProfileImage] = useState("");
-    const [username, setUsername] = useState("");
-    const [token, setToken] = useState<string | null>(null);
 
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            const storedToken = localStorage.getItem("token");
-            setToken(storedToken);
-        }
-    }, []);
-    
-    const logout = () => {
-        localStorage.removeItem("token");
-        setIsLoggedIn(false);
-    };
-
-
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                if (token) {
-                    const response = await api.get(`/profile`);
-                    if (response.data.user) {
-                        setIsLoggedIn(true);
-                        setUsername(response.data.user.name);
-                        setProfileImage(response.data.user.profileImage);
-                    }
-                }
-            } catch (error) {
-                console.error("Failed to fetch user data:", error);
-                setIsLoggedIn(false);
-            }
-        };
-    
-        fetchUserData();
-    }, [token]); 
 
 
     return (
@@ -49,7 +15,7 @@ const UserDropdown = () => {
                 <div className="relative">
                     {/* Profile Image */}
                     <img
-                        src={profileImage}
+                        src={user?.profileImage || "/uploads/profile-default.png"}
                         alt="User Profile"
                         className="w-8 h-8 rounded-full cursor-pointer border border-gray-300"
                         onMouseEnter={() => setIsDropdownOpen(true)}
@@ -64,12 +30,12 @@ const UserDropdown = () => {
                             {/* User Info */}
                             <div className="flex items-center px-4 pb-3 border-b">
                                 <img
-                                    src={profileImage}
+                                    src={user?.profileImage || "/uploads/profile-default.png"}
                                     alt="User Profile"
                                     className="w-12 h-12 rounded-full border border-gray-300"
                                 />
                                 <div className="ml-4">
-                                    <h4 className="text-gray-800 font-semibold">{username}</h4>
+                                    <h4 className="text-gray-800 font-semibold">{user?.name}</h4>
                                     <div className="flex space-x-1 items-center">
                                         <svg className="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
@@ -79,7 +45,6 @@ const UserDropdown = () => {
                                 </div>
                             </div>
 
-                            {/* Menu Items */}
                             <ul className="mt-3">
                                 <Link href="/client/profile/">
                                 <li className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">

@@ -1,5 +1,6 @@
 import "./globals.css";
 import { AlertProvider } from "@/app/context/AlertContext";
+import { AuthProvider } from "@/app/context/setLogged";
 import GlobalErrorAlert from "@/app/components/GlobalAlert";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -7,8 +8,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <AlertProvider>
-          <GlobalErrorAlert />
-          {children}
+          <AuthProvider>
+            <GlobalErrorAlert />
+            {children}
+          </AuthProvider>
         </AlertProvider>
       </body>
     </html>
