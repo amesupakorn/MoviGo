@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/app/context/setLogged";
+import { LuTicketCheck } from "react-icons/lu";
 
 
 const UserDropdown = () => {
@@ -56,10 +57,9 @@ const UserDropdown = () => {
                                 </li>
                                 </Link>
                                 <li className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                                    <svg className="h-5 w-5 text-zinc-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                                    </svg>
-                                    <span className="ml-3 text-gray-700">Buying</span>
+                                    <LuTicketCheck
+                                    className="w-5 h-5" />
+                                    <span className="ml-3 text-gray-700">Booking History</span>
                                 </li>
                                 <li className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={logout}>
                                     <svg className="h-5 w-5 text-zinc-800" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
