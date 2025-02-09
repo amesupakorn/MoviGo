@@ -16,9 +16,8 @@ export default function ProfilePage() {
     const [isEditing, setIsEditing] = useState(false);
     const [, setSelectedFile] = useState<File | null>(null);
     const {setError, setSuccess} = useAlert();
-    const [editedUser, setEditedUser] = useState<{ name: string; email: string }>({
-        name: "",
-        email: "",
+    const [editedUser, setEditedUser] = useState<{ name: string;}>({
+        name: ""
     });
 
     useEffect(() => {
@@ -35,7 +34,7 @@ export default function ProfilePage() {
                     const response = await api.get(`/profile`)
                     if (response.data.user) {
                         setUser(response.data.user);
-                        setEditedUser({ name: response.data.user.name, email: response.data.user.email });
+                        setEditedUser({ name: response.data.user.name });
                     }
                 }
             } catch (error) {
@@ -54,7 +53,7 @@ export default function ProfilePage() {
 
     const handleCancel = () => {
         if (user) {
-            setEditedUser({ name: user.name, email: user.email });
+            setEditedUser({ name: user.name });
         }
         setIsEditing(false);
     };
@@ -91,8 +90,8 @@ export default function ProfilePage() {
         try {
             if (token) {
                 const response = await api.put(`/profile`, editedUser);
-                setUser(response.data.user);
                 updateNavName(response.data.user.name);
+
                 setSuccess("Edit your profile success");
                 setIsEditing(false);
             }
@@ -170,7 +169,7 @@ export default function ProfilePage() {
                 <div className="p-6 rounded-lg mb-6">
                     <h2 className="font-bold text-xl mb-4">Email Address</h2>
                     <p className="text-gray-500">Email</p>
-                    <p className="font-semibold">{editedUser.email}</p>
+                    <p className="font-semibold">{user?.email}</p>
                 </div>
 
                 <div className="p-6 rounded-lg mb-6 md:w-[500px] w-full">

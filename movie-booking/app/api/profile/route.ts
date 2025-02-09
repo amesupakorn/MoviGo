@@ -30,9 +30,9 @@ export async function PUT(req: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { name, email, profileImage } = await req.json();
+        const { name } = await req.json();
 
-        if (!name && !email && !profileImage) {
+        if (!name) {
             return NextResponse.json({ error: "No update fields provided" }, { status: 400 });
         }
 
@@ -40,14 +40,10 @@ export async function PUT(req: NextRequest) {
             where: { id: user.id },
             data: {
                 name: name || user.name,
-                email: email || user.email,
-                profileImage: profileImage || user.profileImage,
             },
             select: {
                 id: true,
                 name: true,
-                email: true,
-                profileImage: true,
             },
         });
 
