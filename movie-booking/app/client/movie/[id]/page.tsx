@@ -55,6 +55,9 @@ export default function MovieDetailPage() {
                     Genres: {movie.genres.map(g => g.name).join(", ")}
                 </p>
             </div>
+
+            {/* Poster */}
+          
         </div>
     );
 }
