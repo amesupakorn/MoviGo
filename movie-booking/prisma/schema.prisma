@@ -3,16 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // คุณสามารถเปลี่ยนเป็น MySQL หรือ SQLite ได้
+  provider = "postgresql" // หรือเปลี่ยนเป็น MySQL, SQLite
   url      = env("DATABASE_URL") // URL ของฐานข้อมูล
-}
-
-model Cinema {
-  id         String      @id @default(uuid())        // Primary key
-  name       String                                  // ชื่อโรงภาพยนตร์
-  location   String                                  // ที่ตั้ง
-  screenings Screening[]                             // ความสัมพันธ์กับ Screening
-  seats      Seat[]                                  // ความสัมพันธ์กับที่นั่ง
 }
 
 model Movie {
@@ -20,50 +12,66 @@ model Movie {
   title       String                                   // ชื่อภาพยนตร์
   duration    Int                                      // ความยาว (นาที)
   description String                                   // รายละเอียด
-  poster      String                                   // URL ของโปสเตอร์ภาพยนตร์
-  screenings  Screening[]                              // ความสัมพันธ์กับ Screening
+  poster_path String                                   // URL ของโปสเตอร์ภาพยนตร์
+  showtimes   Showtime[]                               // ความสัมพันธ์กับ Showtime
 }
 
-model Screening {
-  id         String      @id @default(uuid())       // Primary key
-  cinema     Cinema      @relation(fields: [cinemaId], references: [id])
-  cinemaId   String                                 // FK -> Cinema
-  movie      Movie       @relation(fields: [movieId], references: [id])
-  movieId    String                                 // FK -> Movie
-  date       DateTime                               // วันที่ฉาย
-  time       String                               // เวลาเริ่มฉาย
-  bookings   Booking[]                              // ความสัมพันธ์กับ Booking
+model Location {
+  id         String      @id @default(uuid())        // Primary key
+  name       String                                  // ชื่อสถานที่ (เช่น สาขา)
+  address    String                                  // ที่ตั้งของสถานที่
+  subCinemas Cinema[]                             // ความสัมพันธ์กับ SubCinema
+}
+
+model Cinema {
+  id         String      @id @default(uuid())        // Primary key
+  name       String                                  // ชื่อโรงหนังย่อย (เช่น โรง 1, โรง 2)
+  type       String                                  // ประเภทโรงหนัง (เช่น IMAX, 4DX)
+  location   Location    @relation(fields: [locationId], references: [id])
+  locationId String                                  // FK -> Location
+  showtimes  Showtime[]                              // ความสัมพันธ์กับ Showtime
+}
+
+model Showtime {
+  id          String      @id @default(uuid())       // Primary key
+  movie       Movie       @relation(fields: [movieId], references: [id])
+  movieId     String                                  // FK -> Movie
+  subCinema   Cinema   @relation(fields: [subCinemaId], references: [id])
+  subCinemaId String                                  // FK -> SubCinema
+  date        DateTime                                // วันที่ฉาย
+  time        String                                  // เวลาเริ่มฉาย
+  seats       Seat[]                                  // ความสัมพันธ์กับ Seat
+  Booking  Booking[]
 }
 
 model Seat {
-  id        String      @id @default(uuid())        // Primary key
-  row       String                                   // แถวที่นั่ง (A, B, C...)
-  number    Int                                      // หมายเลขที่นั่ง
-  cinema    Cinema      @relation(fields: [cinemaId], references: [id])
-  cinemaId  String                                  // FK -> Cinema
-  bookings  Booking[]                               // ความสัมพันธ์กับ Booking
-  isAvailable Boolean @default(true)            // สถานะของที่นั่ง (true=ว่าง, false=ถูกจอง)
-
+  id           String      @id @default(uuid())      // Primary key
+  row          String                                  // แถวที่นั่ง (A, B, C...)
+  number       Int                                     // หมายเลขที่นั่ง
+  showtime     Showtime    @relation(fields: [showtimeId], references: [id])
+  showtimeId   String                                  // FK -> Showtime
+  isAvailable  Boolean     @default(true)             // สถานะของที่นั่ง (true=ว่าง, false=ถูกจอง)
+  Booking  Booking[]
 }
 
 model Booking {
   id           String      @id @default(uuid())     // Primary key
-  screening    Screening   @relation(fields: [screeningId], references: [id])
-  screeningId  String                                 // FK -> Screening
+  showtime     Showtime    @relation(fields: [showtimeId], references: [id])
+  showtimeId   String                                 // FK -> Showtime
   user         User        @relation(fields: [userId], references: [id])
   userId       String                                 // FK -> User
   seat         Seat        @relation(fields: [seatId], references: [id])
   seatId       String                                 // FK -> Seat
   status       String                                 // สถานะ (reserved, paid, canceled)
-  createdAt    DateTime    @default(now())           // เวลาที่สร้าง
+  createdAt    DateTime    @default(now())            // เวลาที่สร้าง
 }
 
 model User {
-  id         String      @id @default(uuid())      // Primary key
-  name       String                                  // ชื่อผู้ใช้
-  email      String      @unique                    // อีเมล (ต้องไม่ซ้ำกัน)
-  password   String                                  // รหัสผ่าน
-  profileImage String?   @default("/uploads/profile-default.png") // รูปโปรไฟล์
-  bookings   Booking[]                              // ความสัมพันธ์กับ Booking
-  createdAt  DateTime    @default(now())            // เวลาที่สร้าง
+  id           String      @id @default(uuid())     // Primary key
+  name         String                                 // ชื่อผู้ใช้
+  email        String      @unique                   // อีเมล (ต้องไม่ซ้ำกัน)
+  password     String                                 // รหัสผ่าน
+  profileImage String?     @default("/uploads/profile-default.png") // รูปโปรไฟล์
+  bookings     Booking[]                              // ความสัมพันธ์กับ Booking
+  createdAt    DateTime    @default(now())           // เวลาที่สร้าง
 }
