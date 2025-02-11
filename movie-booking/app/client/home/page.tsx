@@ -98,7 +98,7 @@ const Homepage = () => {
                         moviesToShow.map((movie) => (
                             <Link
                                 key={movie.id}
-                                href={`/movies/${movie.id}`}
+                                href={`/client/movie/${movie.id}`}
                                 className="relative group bg-white rounded-lg shadow-md overflow-hidden mx-auto w-full max-w-[250px] h-[450px] hover:scale-105 transition-transform hover:shadow-xl flex flex-col"
                                 onMouseEnter={() => fetchMovieDetail(movie.id)} //โหลด Movie Detail เมื่อ Hover
                             >
