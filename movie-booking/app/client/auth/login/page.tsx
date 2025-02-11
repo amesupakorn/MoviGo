@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Loading from "@/app/components/ui/loading/loadOne";
 import { useAlert } from "@/app/context/AlertContext";
@@ -9,7 +8,6 @@ import api from "@/lib/axios";
 
 
 export default function LoginPage() {
-  const router = useRouter();
   const [form, setForm] = useState({ email: "", password: "" });
   const { setError } = useAlert();   
   const [isLoading, setIsLoading] = useState(false);
@@ -44,8 +42,8 @@ export default function LoginPage() {
         localStorage.setItem("token", res.data.token);
 
         setTimeout(() => {
-            router.push("/client/home");
-            setIsLoading(false);
+          window.location.href = '/client/home';
+          setIsLoading(false);
         }, 500);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {

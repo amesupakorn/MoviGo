@@ -7,7 +7,6 @@ const api = axios.create({
   },
 });
 
-// Interceptor สำหรับเพิ่ม Token อัตโนมัติ
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token"); 

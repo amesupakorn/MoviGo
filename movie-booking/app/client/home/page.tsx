@@ -15,7 +15,7 @@ const Homepage = () => {
     const [moviesDetail, setMoviesDetail] = useState<{ [key: number]: MovieDetail | null }>({});
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
 
     const categories = {
         "Popular": "/movies/popular",

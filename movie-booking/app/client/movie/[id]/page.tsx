@@ -1,33 +1,22 @@
 "use client";
 import { useEffect, useState } from "react";
-import { MovieDetail, Review, MovieImage, MovieVideo } from "@/lib/types/movie";
 import { useParams } from "next/navigation";
+import { MovieDetail } from "@/lib/types/movie";
 
 export default function MovieDetailPage() {
-    const { id } = useParams(); 
+    const { id } = useParams();
     const [movie, setMovie] = useState<MovieDetail | null>(null);
-    const [reviews, setReviews] = useState<Review[]>([]);
-    const [images, setImages] = useState<MovieImage[]>([]);
-    const [videos, setVideos] = useState<MovieVideo[]>([]);
     const [loading, setLoading] = useState(true);
     const [moviesDetail, setMoviesDetail] = useState<{ [key: number]: MovieDetail | null }>({});
 
     useEffect(() => {
         if (!id) return;
 
-        const loadMovieData = async () => {
+        const loadMovieDetail = async () => {
             try {
-                const [movieRes, reviewRes, imageRes, videoRes] = await Promise.all([
-                    fetch(`/api/movies/${id}`).then(res => res.json()),
-                    fetch(`/api/movies/${id}/review`).then(res => res.json()),
-                    fetch(`/api/movies/${id}/images`).then(res => res.json()),
-                    fetch(`/api/movies/${id}/video`).then(res => res.json()),
-                ]);
-
-                setMovie(movieRes);
-                setReviews(reviewRes);
-                setImages(imageRes);
-                setVideos(videoRes);
+                const res = await fetch(`/api/movies/${id}`);
+                const data = await res.json();
+                setMovie(data);
             } catch (error) {
                 console.error("Error fetching movie details:", error);
             } finally {
@@ -35,7 +24,7 @@ export default function MovieDetailPage() {
             }
         };
 
-        loadMovieData();
+        loadMovieDetail();
     }, [id]);
     
 

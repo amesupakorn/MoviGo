@@ -1,5 +1,5 @@
 export interface Movie {
-    backdrop_path: any;
+    backdrop_path: string;
     id: number;
     title: string;
     poster_path: string;
