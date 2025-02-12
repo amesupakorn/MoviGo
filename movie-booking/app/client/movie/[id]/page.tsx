@@ -14,6 +14,7 @@ export default function MovieDetailPage() {
         const loadMovieDetail = async () => {
             try {
                 const res = await fetch(`/api/movies/${id}`);
+                
                 const data = await res.json();
                 setMovie(data);
             } catch (error) {
@@ -38,6 +39,7 @@ export default function MovieDetailPage() {
                     alt={movie.title}
                     className="w-full h-full object-cover rounded-lg shadow-lg"
                 />
+               
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <h1 className="text-4xl font-bold text-white">{movie.title}</h1>
                 </div>
