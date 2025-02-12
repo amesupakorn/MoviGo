@@ -5,6 +5,7 @@ export interface Movie {
     poster_path: string;
     overview: string;
     release_date: string;
+    duration: string;
 }
 
 export interface MovieBannerProps {

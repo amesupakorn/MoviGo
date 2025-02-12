@@ -8,7 +8,7 @@ export async function GET(
   try {
     const { id } = params;
 
-    const cinema = await prisma.showtime.findUnique({
+    const showtime = await prisma.showtime.findUnique({
       where: { id },
       include: {
         seats: {
@@ -22,11 +22,11 @@ export async function GET(
       },
     });
 
-    if (!cinema) {
+    if (!showtime) {
       return NextResponse.json({ error: "showtime not found" }, { status: 404 });
     }
 
-    return NextResponse.json(cinema, { status: 200 });
+    return NextResponse.json(showtime, { status: 200 });
   } catch (error) {
     console.error("Failed to fetch showtime:", error);
     return NextResponse.json({ error: "Failed to fetch showtime" }, { status: 500 });
