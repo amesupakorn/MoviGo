@@ -7,6 +7,7 @@ import MovieBanner from "@/app/components/MovieBanner";
 import Link from "next/link";
 import { IoMdPlayCircle } from "react-icons/io";
 import { format } from "date-fns";
+import LoadTwo from "@/app/components/ui/loading/loadTwo";
 
 const Homepage = () => {
     const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
@@ -78,7 +79,7 @@ const Homepage = () => {
         ? nowPlayingMovies 
         : upcomingMovies;
 
-    if (loading) return <p className="text-center">Loading...</p>;
+    if (loading) return <LoadTwo />;
     if (error) return <p className="text-center text-red-500">{error}</p>;
 
     return (

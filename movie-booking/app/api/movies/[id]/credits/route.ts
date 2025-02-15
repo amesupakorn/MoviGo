@@ -3,7 +3,6 @@ import { fetchCreditMovies } from "@/lib/movies/detail";
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
     try {
-
         const movieId = Number(params.id);
         if (!movieId) return NextResponse.json({ error: "Invalid movie ID" }, { status: 400 });
 
