@@ -1,6 +1,6 @@
 import { apiTmdb } from "@/lib/tmdb";
 import { MovieDetail } from "@/lib/types/movie";
-import { Review, MovieImage, MovieVideo } from "@/lib/types/movie";
+import { Review, MovieImage, MovieVideo, MovieCredit } from "@/lib/types/movie";
 
 
 // ✅ Fetch Movie Detail by ID
@@ -29,3 +29,7 @@ export const fetchMovieVideos = async (movieId: number): Promise<MovieVideo[]> =
     return response.data.results;
 };
 
+export const fetchCreditMovies = async (movieId: number): Promise<MovieCredit[]> => {
+    const response = await apiTmdb.get<{ cast: MovieCredit[] }>(`/movie/${movieId}/credits`);
+    return response.data.cast;
+};

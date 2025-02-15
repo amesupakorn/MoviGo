@@ -35,7 +35,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <Navbar />
         </div>
 
-        <div className="flex-grow md:overflow-y-auto mt-20">{children}</div>
+        <div className="flex-grow md:overflow-y-auto">{children}</div>
         
       </div>
     <Footer />

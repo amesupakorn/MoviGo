@@ -50,3 +50,10 @@ export interface MovieVideo {
     site: string;
     type: string;
 }
+
+export interface MovieCredit {
+    id: string;
+    name: string;
+    profile_path: string;
+    character: string;
+}

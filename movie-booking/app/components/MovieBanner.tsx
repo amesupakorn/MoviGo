@@ -44,7 +44,7 @@ const MovieBanner: React.FC<MovieBannerProps> = ({ movies }) => {
     }, [movies]);
 
     return (
-        <div className="relative w-full h-[350px] md:h-[450px] lg:h-[600px] overflow-hidden">
+        <div className="relative w-full h-[250px] max-sm:h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
             <div className="carousel w-full h-full relative">
                 {movies.map((movie, index) => (
                     <div
@@ -57,7 +57,7 @@ const MovieBanner: React.FC<MovieBannerProps> = ({ movies }) => {
 
                         {/* ✅ Overlay Content */}
                         <div className="absolute bottom-4 left-4 p-4 rounded-lg text-white text-left mb-5">
-                            <h1 className="text-3xl lg:text-3xl font-bold max-w-2xl">{movie.title}</h1>
+                            <h1 className="text-xl sm:text-xl md:text-3xl lg:text-3xl font-bold max-w-2xl">{movie.title}</h1>
                             <div className="flex items-center space-x-4 text-sm text-gray-200">
 
                                 {moviesDetail[movie.id]?.runtime && (
@@ -66,9 +66,9 @@ const MovieBanner: React.FC<MovieBannerProps> = ({ movies }) => {
                                 <span className="text-gray-400">|</span>
 
                                 {moviesDetail[movie.id]?.genres && (
-                                    <span>{moviesDetail[movie.id]?.genres.map(g => g.name).join("/")}</span>
+                                    <span className="hidden sm:block">{moviesDetail[movie.id]?.genres.map(g => g.name).join("/")}</span>
                                 )}
-                                <span className="text-gray-400">|</span>
+                                <span className="text-gray-400 hidden sm:inline">|</span>
 
                                 {movie.release_date && (
                                     <span>{format(new Date(movie.release_date), "d MMMM yyyy")}</span>
