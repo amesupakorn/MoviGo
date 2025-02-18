@@ -16,7 +16,17 @@ export interface Cinema {
 
 export interface Showtime {
   id: string;
-  movie: Movie; 
+  movie: Movie;
+  subCinema: Cinema;
   date: Date;
   time: string;
+  seat: Seat[];
+}
+export interface Seat {
+  id: string;            
+  row: string;           
+  number: number;       
+  price: number;      
+  showtimeId: string;  
+  isAvailable: boolean;  
 }
