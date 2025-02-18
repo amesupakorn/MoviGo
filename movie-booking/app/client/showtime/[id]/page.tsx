@@ -3,9 +3,13 @@ import React, { useEffect, useState } from "react";
 import SeatStandard from "@/app/components/ui/seat/standard";
 import SeatPremium from "@/app/components/ui/seat/premium";
 import { useParams } from "next/navigation";
-import { Showtime } from "@/lib/types/booking";
+import { Showtime, Cinema } from "@/lib/types/booking";
 import api from "@/lib/axios";
 import LoadTwo from "@/app/components/ui/loading/loadTwo";
+import { Movie } from "@/lib/types/movie";
+import { LuAudioLines } from "react-icons/lu";
+import { PiSubtitles } from "react-icons/pi";
+
 
 const CinemaSeatBooking = () => {
   const rows = ["M", "L", "K", "J", "H", "G", "F", "E", "D", "C", "B", "A"]; // Reversed rows
@@ -14,16 +18,37 @@ const CinemaSeatBooking = () => {
 
   
   const { id } = useParams();
+  const [formattedDate, setFormattedDate] = useState<string | null>(null);
   const [show, setShowtime] = useState<Showtime | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [cinema, setCinema] = useState<Cinema | null>(null);
 
+  
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const fetchshowtime = async () => {
+    const fetchShowtime = async () => {
       if (!id) return;
       try {
         const response = await api.get(`/showtime/${id}`);
         setShowtime(response.data);
+
+        const cinemaResponse = await api.get(`/cinema/${response.data.subCinemaId}`);
+        const movieResponse = await api.get(`/movies/${response.data.movieId}`);
+
+        setCinema(cinemaResponse.data);
+        setMovie(movieResponse.data);
+
+        // Date and Time formatting logic moved here
+        const date = new Date(response.data.date); 
+        const dateStr = date.toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        });
+
+        setFormattedDate(dateStr);
+
       } catch (err) {
         setError("Failed to fetch location details.");
         console.error(err);
@@ -32,94 +57,89 @@ const CinemaSeatBooking = () => {
       }
     };
 
-    fetchshowtime();
+    fetchShowtime();
   }, [id]);
+
+
 
   if (loading) return <LoadTwo/> ;
   if (error) return <div className="text-red-500">{error}</div>;
 
 
+  
+
+
   return (
 
 
-    <div className="min-h-screen bg-gray-100 p-12">
+    <div className="min-h-screen bg-gray-100 p-2 justify-center items-center">
 
-<div className="bg-gray-100 p-6 min-h-screen">
-      {/* Movie Poster */}
-      <div className="flex justify-center">
-        <img
-          className="w-72 h-auto rounded-lg shadow-lg"
-          src={`https://image.tmdb.org/t/p/w500${show?.movie.poster_path}`}
-          alt={show?.movie.title}
-        />
-      </div>
 
-      {/* Movie Info */}
-      <div className="mt-6">
-        <h1 className="text-3xl font-bold text-center">${show?.movie.title}</h1>
-        <p className="text-lg text-center text-gray-700 mt-2">
-          19 February 2025 | 12:20
-        </p>
-        <p className="text-base text-center text-gray-500">
-          Empir' Cineclub Emporium Sukhumvit
-        </p>
-      </div>
+      {/* showtime detail */}
+      <div className="w-full flex justify-center items-center  mb-3">
+        <div className="w-[1000px] p-6 bg-white rounded-lg">
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            {/* Movie Poster */}
+            <div className="w-48 h-auto">
+              <img
+                src={`https://image.tmdb.org/t/p/w500${movie?.poster_path}`}
+                alt="Movie Poster"
+                className="w-full h-full object-cover rounded-lg"
+              />
+            </div>
 
-      {/* Movie Details and Pricing */}
-      <div className="mt-8 flex justify-center gap-8">
-        <div className="text-center">
-          <p className="text-xl font-semibold">CINEMA 4</p>
-        </div>
-        <div className="text-center flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-300 rounded-full"></div> {/* Replace with seat icon */}
-          <p className="text-sm">Standard 320 THB</p>
-        </div>
-        <div className="text-center flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-700 rounded-full"></div> {/* Replace with seat icon */}
-          <p className="text-sm">Premium 350 THB</p>
-        </div>
-      </div>
+            {/* Movie Info */}
+            <div className="flex-1">
+              <h2 className="text-xl font-semibold text-gray-900">
+                {movie?.title}
+              </h2>
+              <p className="text-base text-blue-600 mt-2">{formattedDate} | {show?.time}</p>
 
-      {/* Language and Subtitle */}
-      <div className="mt-6 flex justify-center gap-8">
-        <div className="text-center">
-          <p className="text-sm">Audio: ENG</p>
-        </div>
-        <div className="text-center">
-          <p className="text-sm">Subtitles: TH</p>
-        </div>
-      </div>
+              <div className="flex items-center gap-2 mt-4 text-sm md:text-base">
+                {/* Cinema Name */}
+                <div className="text-lg text-gray-700">{cinema?.name}</div>
 
-      {/* Continue Button */}
-      <div className="mt-8 flex justify-center">
-        <button className="bg-blue-600 text-white px-6 py-3 rounded-full text-lg">
-          Continue
-        </button>
-      </div>
-    </div>
-      {/* Cinema Information */}
-      <div className="text-center mb-8">
-        <div className="flex items-center justify-center gap-6">
-          <div className="bg-gray-200 p-6 rounded-md shadow-md">
-            <h1 className="text-4xl font-bold">CINEMA 12</h1>
+                {/* Vertical Divider */}
+                <div className="border-l border-gray-400 h-6 mx-2 "></div>
+
+                {/* Audio */}
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold">
+                    <LuAudioLines />
+                  </span>
+                  <span className="text-gray-700">ENG</span>
+                </div>
+
+                {/* Vertical Divider */}
+                <div className="border-l border-gray-400 h-6 mx-2"></div>
+
+                {/* Subtitles */}
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold">
+                    <PiSubtitles />
+                  </span>
+                  <span className="text-gray-700">TH</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="mt-6">
-          <h2 className="text-xl font-bold text-gray-800">ZIGMA CINESTADIUM</h2>
-        </div>
       </div>
+     
 
       {/* Pricing Information */}
-      <div className="flex justify-center items-center gap-2 mb-8">
+
+      <div className="bg-white max-w-full mt-10 p-12">
+      <div className="flex justify-center items-center gap-2 mb-12">
         <div className="flex-col justify-center items-center text-center gap-3">
-          <div className="w-10 h-10 md:w-12 md:w-12 mx-10 mb-4">
+          <div className="w-10 h-10 md:w-10 md:w-10 mx-10 mb-2">
             <SeatStandard />
           </div>
           <span className="text-base text-gray-700">Standard</span>
           <p className="text-xs md:text-sm">320 THB</p>
         </div>
         <div className="flex-col text-sm md:text-xl justify-center items-center text-center gap-3">
-          <div className="w-10 h-10 md:w-12 md:w-12 mx-10 mb-4">
+          <div className="w-10 h-10 md:w-12 md:w-10 mx-10 mb-2">
             <SeatPremium />
           </div>
           <span className="text-base text-gray-700">Premium</span>
@@ -131,19 +151,21 @@ const CinemaSeatBooking = () => {
       <div className="flex justify-between">
         <div className="w-full overflow-x-auto">
           {/* Screen */}
-          <div className="relative justify-center mb-10 text-center">
-            <img
-              alt="screen"
-              src="/uploads/screen.svg"
-              className="w-full md:w-full md:h-24 h-12 mx-auto"
-            />
-            <span className="absolute top-6 left-1/2 transform -translate-x-1/2 text-gray-800 font-semibold text-sm sm:text-base">
-              SCREEN
+         <div className="justify-around w-[350px] md:w-full">
+            <div className="relative justify-center mb-10 text-center ">
+                <img
+                alt="screen"
+                src="/uploads/screen.svg"
+                className="md:w-full md:h-24 h-12 mx-auto"
+                />
+                <span className="absolute top-6 left-1/2 transform -translate-x-1/2 text-gray-800 font-semibold text-sm sm:text-base">
+                SCREEN
             </span>
-          </div>
+            </div>
+        </div>
 
           {/* Seats */}
-          <div className="flex justify-around gap-4">
+          <div className="flex justify-around">
             {/* Left Section */}
             <div className="space-y-2">
               {rows.map((row) => (
@@ -154,11 +176,11 @@ const CinemaSeatBooking = () => {
                       .fill(null)
                       .map((_, index) =>
                         premiumRows.includes(row) ? (
-                          <div className="md:h-8 md:w-8 h-5 w-5" key={index}>
+                          <div className="md:h-12 md:w-12 h-5 w-5" key={index}>
                             <SeatPremium />
                           </div>
                         ) : (
-                          <div className="md:h-8 md:w-8 h-5 w-5" key={index}>
+                          <div className="md:h-12 md:w-12 h-5 w-5" key={index}>
                             <SeatStandard />
                           </div>
                         )
@@ -177,11 +199,11 @@ const CinemaSeatBooking = () => {
                       .fill(null)
                       .map((_, index) =>
                         premiumRows.includes(row) ? (
-                          <div className="md:h-8 md:w-8 h-5 w-5" key={index}>
+                          <div className="md:h-12 md:w-12 h-5 w-5" key={index}>
                             <SeatPremium />
                           </div>
                         ) : (
-                          <div className="md:h-8 md:w-8 h-5 w-5" key={index}>
+                          <div className="md:h-12 md:w-12 h-5 w-5" key={index}>
                             <SeatStandard />
                           </div>
                         )
@@ -195,7 +217,7 @@ const CinemaSeatBooking = () => {
         </div>
 
         {/* Right Panel (for Desktop) */}
-        <div className="w-1/4 bg-white p-6 rounded-lg shadow-md hidden md:block">
+        <div className="w-1/4 bg-gray-50 p-2 rounded-lg shadow-md hidden md:block">
             <div className="p-2">
                 <h3 className="text-base font-bold text-gray-800">Captain America : Brave New World</h3>
                 <p className="text-sm text-blue-600">19 February 2025</p>
@@ -208,7 +230,7 @@ const CinemaSeatBooking = () => {
 
 
         
-          <div className="bg-gray-100 rounded-xl p-4 w-full items-center text-center justify-center mt-12 ">
+          <div className="bg-white rounded-xl p-4 w-full items-center text-center justify-center mt-36 ">
 
             <h3 className="text-sm font-bold text-gray-800">Selected Seat</h3>
 
@@ -239,6 +261,8 @@ const CinemaSeatBooking = () => {
           </div>
         </div>
       </div>
+      </div>
+   
     </div>
   );
 };

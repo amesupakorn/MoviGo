@@ -11,6 +11,7 @@ export interface Cinema {
   id: string;
   name: string;
   type: string;
+  location: Location;
   showtimes: Showtime[]; 
 }
 
