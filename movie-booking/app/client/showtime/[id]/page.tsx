@@ -9,14 +9,12 @@ import LoadTwo from "@/app/components/ui/loading/loadTwo";
 import { Movie } from "@/lib/types/movie";
 import { LuAudioLines } from "react-icons/lu";
 import { PiSubtitles } from "react-icons/pi";
+import { FaCircleCheck } from "react-icons/fa6";
 
 
 const CinemaSeatBooking = () => {
-  const rows = ["M", "L", "K", "J", "H", "G", "F", "E", "D", "C", "B", "A"]; // Reversed rows
-  const seatsPerRow = 12;
-  const premiumRows = ["A", "B", "C", "D", "E", "F"]; // Premium rows
-
-  
+  const [leftSelected, setLeftSelected] = useState<string[]>([]);
+  const [rightSelected, setRightSelected] = useState<string[]>([]);
   const { id } = useParams();
   const [formattedDate, setFormattedDate] = useState<string | null>(null);
   const [show, setShowtime] = useState<Showtime | null>(null);
@@ -61,17 +59,46 @@ const CinemaSeatBooking = () => {
   }, [id]);
 
 
+  const rows = ["M", "L", "K", "J", "H", "G", "F", "E", "D", "C", "B", "A"]; // Reversed rows
+  const seatsPerRow = 12;
+  const premiumRows = ["A", "B", "C", "D", "E", "F"]; // Premium rows
+
+  const handleSelectSeat = (row: string, seatIndex: number, isLeft: boolean) => {
+    const selectedState = isLeft ? leftSelected : rightSelected;
+    const setter = isLeft ? setLeftSelected : setRightSelected;
+
+    const seatIdentifier = `${row}-${seatIndex}`;
+    if (selectedState.includes(seatIdentifier)) {
+      setter(selectedState.filter(seat => seat !== seatIdentifier)); // Deselect seat
+    } else {
+      setter([...selectedState, seatIdentifier]); // Select seat
+    }
+  };
+
+
+  // สร้างการแสดงที่นั่งที่เลือก
+  const selectedSeats = [...leftSelected, ...rightSelected].map(seatIdentifier => {
+    const [row, number] = seatIdentifier.split('-');
+    
+    // ใช้เลขที่นั่งที่มีการต่อจากฝั่งซ้าย
+    const seatNumber = parseInt(number); // ไม่ต้องบวกแค่ใช้หมายเลขที่คำนวณ
+    return `${row}${seatNumber}`;
+  });
+
+  const seatPrice = (seat: string) => {
+    const [row] = seat.split('-');
+    return premiumRows.includes(row) ? 350 : 320; 
+  };
+
+  const totalPrice = selectedSeats.reduce((total, seat) => total + seatPrice(seat), 0);
+    
 
   if (loading) return <LoadTwo/> ;
   if (error) return <div className="text-red-500">{error}</div>;
 
 
-  
-
-
   return (
-
-
+    
     <div className="min-h-screen bg-gray-100 p-2 justify-center items-center">
 
 
@@ -129,8 +156,8 @@ const CinemaSeatBooking = () => {
 
       {/* Pricing Information */}
 
-      <div className="bg-white max-w-full mt-10 p-12">
-      <div className="flex justify-center items-center gap-2 mb-12">
+      <div className="bg-white max-w-full mt-10 p-2 md:p-12">
+      <div className="flex justify-center items-center gap-2 mb-12 md:mt-2 mt-10">
         <div className="flex-col justify-center items-center text-center gap-3">
           <div className="w-10 h-10 md:w-10 md:w-10 mx-10 mb-2">
             <SeatStandard />
@@ -164,56 +191,60 @@ const CinemaSeatBooking = () => {
             </div>
         </div>
 
-          {/* Seats */}
-          <div className="flex justify-around">
-            {/* Left Section */}
-            <div className="space-y-2">
-              {rows.map((row) => (
-                <div key={row} className="flex items-center gap-2">
-                  <span className="text-gray-600 font-medium w-6 text-center">{row}</span>
-                  <div className="flex gap-1">
-                    {Array(seatsPerRow / 2)
-                      .fill(null)
-                      .map((_, index) =>
-                        premiumRows.includes(row) ? (
-                          <div className="md:h-12 md:w-12 h-5 w-5" key={index}>
-                            <SeatPremium />
-                          </div>
-                        ) : (
-                          <div className="md:h-12 md:w-12 h-5 w-5" key={index}>
-                            <SeatStandard />
-                          </div>
-                        )
-                      )}
-                  </div>
-                </div>
-              ))}
-            </div>
+        <div className="flex justify-around gap-4">
+        <div className="md:w-20 space-y-2">
+                {rows.map((row) => (
+                  <div key={row} className="flex items-center gap-2">
+                    <span className="text-gray-600 font-medium w-6 text-center">{row}</span>
+                    <div className="flex gap-1">
+                      {Array(seatsPerRow / 2).fill(null).map((_, index) => {
+                        const seatIdentifier = `${row}-${index}`;
+                        const isSelected = leftSelected.includes(seatIdentifier);
 
-            {/* Right Section */}
-            <div className="space-y-2">
-              {rows.map((row) => (
-                <div key={row} className="flex items-center gap-2 justify-end">
-                  <div className="flex gap-1">
-                    {Array(seatsPerRow / 2)
-                      .fill(null)
-                      .map((_, index) =>
-                        premiumRows.includes(row) ? (
-                          <div className="md:h-12 md:w-12 h-5 w-5" key={index}>
-                            <SeatPremium />
-                          </div>
-                        ) : (
-                          <div className="md:h-12 md:w-12 h-5 w-5" key={index}>
-                            <SeatStandard />
-                          </div>
-                        )
-                      )}
+                        return (
+                          <div
+                            key={index}
+                            onClick={() => handleSelectSeat(row, index, true)}
+                            className="md:h-8 md:w-8 h-6 w-6 cursor-pointer"
+                            >
+                            {isSelected && <FaCircleCheck className="text-red-500 md:h-8 md:w-8 h-5 w-5" />}
+                            {!isSelected && (premiumRows.includes(row) ? <SeatPremium /> : <SeatStandard />)}
+                        </div>
+                        );
+                      })}
+                    </div>
                   </div>
-                  <span className="text-gray-600 font-medium w-6 text-center">{row}</span>
+                ))}
+              </div>
+
+              {/* Right Section */}
+            <div className="md:w-20 space-y-2">
+              {rows.map((row) => (
+              <div key={row} className="flex items-center gap-2 justify-end">
+                <div className="flex gap-1">
+                  {Array(seatsPerRow / 2).fill(null).map((_, index) => {
+                    const seatIdentifier = `${row}-${index}`;
+                    const isSelected = rightSelected.includes(seatIdentifier);
+
+                    return (
+                      <div
+                        key={index}
+                        onClick={() => handleSelectSeat(row, index, false)}
+                        className="md:h-8 md:w-8 h-6 w-6 cursor-pointer"
+                      >
+                        {isSelected && <FaCircleCheck className="text-red-500 md:h-8 md:w-8 h-5 w-5" />}
+                        
+                        {/* Show seat only when not selected */}
+                        {!isSelected && (premiumRows.includes(row) ? <SeatPremium /> : <SeatStandard />)}
+                      </div>
+                    );
+                  })}
                 </div>
-              ))}
-            </div>
+                <span className="text-gray-600 font-medium w-6 text-center">{row}</span>
+              </div>
+            ))}
           </div>
+      </div>
         </div>
 
         {/* Right Panel (for Desktop) */}
@@ -230,21 +261,33 @@ const CinemaSeatBooking = () => {
 
 
         
-          <div className="bg-white rounded-xl p-4 w-full items-center text-center justify-center mt-36 ">
+            <div className="bg-white rounded-xl p-4 w-full items-center text-center justify-center mt-36 ">
+              <h3 className="text-sm font-bold text-gray-800">Selected Seat</h3>
 
-            <h3 className="text-sm font-bold text-gray-800">Selected Seat</h3>
+              {/* แสดงที่นั่งที่เลือก */}
+              <div className="mb-4">
+                {selectedSeats.length > 0 ? (
+                  selectedSeats.join(", ") // แสดงแถวและตัวเลขที่เลือก
+                ) : (
+                  <span className="text-gray-500">No seat selected</span>
+                )}
+              </div>
 
-            <div className="mb-4">
+              <h3 className="text-sm font-bold text-gray-800 mt-16 mb-12">Total</h3>
 
-            </div>
+              {/* แสดงราคาที่นั่งที่เลือก */}
+              <div className="mb-4">
+                {selectedSeats.length > 0 ? (
+                  `${totalPrice} THB`
+                ) : (
+                  <span className="text-gray-500">Please select seats</span>
+                )}
+              </div>
 
-            <h3 className="text-sm font-bold text-gray-800 mt-16 mb-12">Total</h3>
-
-
-            <button className="mt-6 w-full bg-blue-500 text-white py-2 rounded-lg">
+              <button className="mt-6 w-full bg-blue-500 text-white py-2 rounded-lg">
                 Continue
-            </button>
-          </div>
+              </button>
+            </div>
           
         </div>
 
