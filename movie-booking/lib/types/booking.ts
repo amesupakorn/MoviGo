@@ -1,4 +1,5 @@
 import { Movie } from "@/lib/types/movie";
+import { User } from "@/lib/types/user";
 
 export interface Location {
   id: string;
@@ -30,4 +31,13 @@ export interface Seat {
   price: number;      
   showtimeId: string;  
   isAvailable: boolean;  
+}
+
+export interface Booking {
+  id: string;
+  showtime: Showtime; 
+  user: User;         
+  seat: Seat;        
+  status: string;     
+  createdAt: Date;    
 }
