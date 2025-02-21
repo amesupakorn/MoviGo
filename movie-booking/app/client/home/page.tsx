@@ -17,6 +17,7 @@ const Homepage = () => {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [, startTransition] = useTransition();
+    const [isSmallScreen, setIsSmallScreen] = useState(false);
 
     const categories = {
         "Popular": "/movies/popular",
@@ -48,6 +49,18 @@ const Homepage = () => {
         loadMovies();
     }, []);
 
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth < 768);
+        };
+        handleResize();
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
     //โหลดข้อมูล movieDetail ทีละเรื่องเมื่อ hover
     const fetchMovieDetail = async (id: number) => {
         if (moviesDetail[id]) return;
@@ -70,7 +83,7 @@ const Homepage = () => {
     if (error) return <p className="text-center text-red-500">{error}</p>;
 
     return (
-        <div>
+        <div className="max-sm:mt-[40px] md:mt-[80px] lg:mt-20">
             <MovieBanner movies={popularMovies} />  
 
             <div className="container mx-auto py-6">
@@ -94,13 +107,14 @@ const Homepage = () => {
                 </div>
 
                 {/* Movies Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-6 px-10">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-6 py-6 px-4">
                     {moviesToShow.length > 0 ? (
                         moviesToShow.map((movie) => (
+                            
                             <Link
                                 key={movie.id}
-                                href={`/movies/${movie.id}`}
-                                className="relative group bg-white rounded-lg shadow-md overflow-hidden mx-auto w-full max-w-[250px] h-[450px] hover:scale-105 transition-transform hover:shadow-xl flex flex-col"
+                                href={`/client/movie/${movie.id}`}
+                                className="relative group bg-white rounded-lg shadow-md overflow-hidden mx-auto w-full md:max-w-[250px] md:h-[450px] hover:scale-105 transition-transform hover:shadow-xl flex flex-col"
                                 onMouseEnter={() => fetchMovieDetail(movie.id)} //โหลด Movie Detail เมื่อ Hover
                             >
                                 <img
@@ -109,7 +123,12 @@ const Homepage = () => {
                                     className="w-full h-100 object-cover"
                                 />
                                 <div className="p-4 flex flex-col justify-end flex-grow">
-                                    <h3 className="text-lg font-bold">{movie.title}</h3>
+                                <h3 className="text-lg font-bold">
+                                    {isSmallScreen && movie?.title?.length > 9
+                                        ? `${movie.title.substring(0, 9)}...`
+                                        : movie?.title}
+
+                                </h3>
                                     <p className="text-sm text-gray-600">
                                         {movie.release_date ? format(new Date(movie.release_date), "dd MMM yyyy") : "No date available"}
                                     </p>
@@ -118,7 +137,9 @@ const Homepage = () => {
                                 {/* Movie Detail (Hover) */}
                                 <div className="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-center text-white p-4">
                                     <IoMdPlayCircle className="w-8 h-8"/>
-                                    <h3 className="text-lg font-bold mt-2">{movie.title}</h3>
+                                    <h3 className="text-lg font-bold mt-2">
+
+                                    </h3>
                                     {moviesDetail[movie.id] ? (
                                         <>
                                             <p className="text-gray-300 text-sm">Runtime: {moviesDetail[movie.id]?.runtime} mins</p>
