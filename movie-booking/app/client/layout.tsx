@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/nav";
 import { useAlert } from "@/app/context/AlertContext";
 import LoadTwo from "@/app/components/ui/loading/loadTwo";
+import Footer from "../components/Footer";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
@@ -26,15 +27,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
    
 
   return (
-    
-    <div className="flex min-h-screen flex-col md:flex-row md:overflow-hidden">
-        {loading && <LoadTwo />}
+    <div>
+      <div className="flex min-h-screen flex-col md:flex-row md:overflow-hidden">
+          {loading && <LoadTwo />}
 
-      <div className="">
-        <Navbar />
+        <div className="">
+          <Navbar />
+        </div>
+
+        <div className="flex-grow md:overflow-y-auto">{children}</div>
+        
       </div>
-
-      <div className="flex-grow md:overflow-y-auto mt-20">{children}</div>
+    <Footer />
     </div>
   );
 }
