@@ -3,25 +3,29 @@ import React, { useEffect, useState } from "react";
 import SeatStandard from "@/app/components/ui/seat/standard";
 import SeatPremium from "@/app/components/ui/seat/premium";
 import { useParams } from "next/navigation";
-import { Showtime, Cinema } from "@/lib/types/booking";
+import { Showtime, Cinema, Seat } from "@/lib/types/booking";
 import api from "@/lib/axios";
 import LoadTwo from "@/app/components/ui/loading/loadTwo";
 import { Movie } from "@/lib/types/movie";
 import { LuAudioLines } from "react-icons/lu";
 import { PiSubtitles } from "react-icons/pi";
 import { FaCircleCheck } from "react-icons/fa6";
+import { useAlert } from "@/app/context/AlertContext";
+import { VscAccount } from "react-icons/vsc";
+
 
 const CinemaSeatBooking = () => {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]); // Unified state for selected seats
   const { id } = useParams();
   const [formattedDate, setFormattedDate] = useState<string | null>(null);
   const [show, setShowtime] = useState<Showtime | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [seatReserve, setSeat] = useState<Seat | null>(null);
   const [movie, setMovie] = useState<Movie | null>(null);
   const [cinema, setCinema] = useState<Cinema | null>(null);
 
   const [isSmallScreenOne, setIsSmallScreenOne] = useState(false);
   const [isSmallScreenTwo, setIsSmallScreenTwo] = useState(false);
+  const { setError, setSuccess } = useAlert();   
 
   const [loading, setLoading] = useState(true);
 
@@ -51,6 +55,9 @@ const CinemaSeatBooking = () => {
 
         const cinemaResponse = await api.get(`/cinema/${response.data.subCinemaId}`);
         const movieResponse = await api.get(`/movies/${response.data.movieId}`);
+        const movieResponse = await api.get(`/movies/${response.data.movieId}`);
+
+
 
         setCinema(cinemaResponse.data);
         setMovie(movieResponse.data);
@@ -103,33 +110,28 @@ const CinemaSeatBooking = () => {
 
   const handleSubmitBooking = async () => {
     const showtimeId = id;  
-    const status = "reserved";  // สถานะการจองที่นั่ง
+    const status = "reserved";
 
     try {
-      const response = await fetch('/api/booking/seat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer token',  // ใส่ token ที่เกี่ยวข้อง
-        },
-        body: JSON.stringify({ showtimeId, selectedSeats, status }), // ส่งข้อมูลที่นั่งที่เลือก
+      const response = await api.post('/booking', {
+        showtimeId,      // ส่งข้อมูล showtimeId
+        selectedSeats,   // ส่งที่นั่งที่เลือก
+        status,          // ส่งสถานะ
       });
 
-      const result = await response.json();
-      if (response.ok) {
-        alert('Booking successful');
-      } else {
-        alert(result.error || 'Error creating booking');
+      if(response){
+        setSuccess("booking confirm");
       }
+  
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      alert('Something went wrong. Please try again.');
+      setError('Something went wrong. Please try again.');
     }
   };
 
 
 
   if (loading) return <LoadTwo />;
-  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <div className="min-h-screen bg-gray-100 justify-center items-center">
