@@ -78,7 +78,7 @@ const CinemaSeatBooking = () => {
 
 
   const rows = ["M", "L", "K", "J", "H", "G", "F", "E", "D", "C", "B", "A"];
-  const seatsPerRow = 20;
+  const seatsPerRow = 13;
   const premiumRows = ["A", "B", "C", "D", "E", "F"];
 
   // Handle seat selection
@@ -100,6 +100,33 @@ const CinemaSeatBooking = () => {
     (total, seat) => total + seatPrice(seat),
     0
   );
+
+  const handleSubmitBooking = async () => {
+    const showtimeId = id;  
+    const status = "reserved";  // สถานะการจองที่นั่ง
+
+    try {
+      const response = await fetch('/api/booking/seat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer token',  // ใส่ token ที่เกี่ยวข้อง
+        },
+        body: JSON.stringify({ showtimeId, selectedSeats, status }), // ส่งข้อมูลที่นั่งที่เลือก
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert('Booking successful');
+      } else {
+        alert(result.error || 'Error creating booking');
+      }
+    } catch (error) {
+      alert('Something went wrong. Please try again.');
+    }
+  };
+
+
 
   if (loading) return <LoadTwo />;
   if (error) return <div className="text-red-500">{error}</div>;
@@ -152,17 +179,17 @@ const CinemaSeatBooking = () => {
       </div>
 
      
-      <div className="bg-white max-w-full mt-12 p-2 md:p-1">
-      <div className="flex justify-center items-center gap-2 mb-12 md:mt-8">
+      <div className="bg-white max-w-full mt-12 p-2 md:p-1 ">
+      <div className="flex justify-center items-center gap-2 mb-10 mt-10 md:mt-8">
         <div className="flex-col justify-center items-center text-center gap-3">
-          <div className="w-10 h-10 md:w-10 mx-10 mb-2">
+          <div className="w-10 h-10 md:w-12 mx-10 mb-4">
             <SeatStandard />
           </div>
           <span className="text-base text-gray-700">Standard</span>
           <p className="text-xs md:text-sm">320 THB</p>
         </div>
         <div className="flex-col text-sm md:text-xl justify-center items-center text-center gap-3">
-          <div className="w-10 h-10 md:w-10 mx-10 mb-2">
+          <div className="w-10 h-10 md:w-12 mx-10 mb-4">
             <SeatPremium />
           </div>
           <span className="text-base text-gray-700">Premium</span>
@@ -174,7 +201,7 @@ const CinemaSeatBooking = () => {
         <div className="w-full flex justify-center p-4">
           <div className="w-full md:w-3/4 flex gap-8">
           <div className={`flex flex-col w-full ${isSmallScreenTwo ? 'w-[530px]' : ''}`}>
-              <div className="relative justify-center mb-2 text-center">
+              <div className="relative justify-center mb-6 text-center">
                 <img
                   alt="screen"
                   src="/uploads/screen.svg"
@@ -186,7 +213,7 @@ const CinemaSeatBooking = () => {
               </div>
 
               {/* Seat Selection */}
-              <div className="w-full px-0 md:px-4 overflow-x-auto">
+              <div className={`flex flex-col w-full overflow-x-auto h-[500px]  ${isSmallScreenOne ? 'px-0' : 'px-12'}`}>
 
               <table className="table-auto">
                   <tbody>
@@ -205,10 +232,10 @@ const CinemaSeatBooking = () => {
                                 <td
                                   key={seatIndex}
                                   onClick={() => handleSelectSeat(row, seatIndex)}
-                                  className="md:h-8 md:w-8 h-6 w-6 cursor-pointer"
+                                  className="md:h-12 md:w-12 h-6 w-6 cursor-pointer"
                                 >
                                   {isSelected && (
-                                    <FaCircleCheck className="text-red-500 md:h-8 md:w-8 h-5 w-5" />
+                                    <FaCircleCheck className="text-red-500 md:h-11 md:w-11 h-5 w-5" />
                                   )}
                                   {!isSelected &&
                                     (premiumRows.includes(row) ? (
@@ -251,7 +278,7 @@ const CinemaSeatBooking = () => {
                     {selectedSeats.length > 0 ? `${totalPrice} THB` : "Please select seats"}
                   </div>
 
-                  <button className="mt-6 w-full h-12 bg-blue-500 text-white py-2 rounded-sm">
+                  <button onClick={handleSubmitBooking} className="mt-6 w-full h-12 bg-blue-500 text-white py-2 rounded-sm hover:bg-blue-600">
                     Continue
                   </button>
                 </div>
@@ -263,13 +290,26 @@ const CinemaSeatBooking = () => {
 
       {/* Mobile Fixed Bottom Panel */}
       {isSmallScreenOne && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white p-6 shadow-lg border-t-2 border-gray-300 ">
-          <div className="flex justify-between items-center">
-            <div className="text-xl text-gray-800 font-semibold">Selected Seat</div>
-            <div className="text-xl text-gray-700">0 THB</div>
+        <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-blue-600  to-blue-400 p-2 border-t-2 border-gray-300">
+          <div className="flex justify-between items-center mt-2">
+            <div className="text-xs flex flex-col font-semibold">
+              <p className="text-white">Selected Seat</p>
+              <div className="mb-2 text-white font-bold text-sm">
+                    {selectedSeats.length > 0 ? selectedSeats.join(", ") : "-"}
+                  </div>
+              </div>
+            
+            <div className="text-xs flex flex-col font-semibold text-right">
+              <p className="text-white">total</p>
+              <div className="mb-2 text-white font-bold text-sm">
+                    {selectedSeats.length > 0 ? `${totalPrice} THB` : "O THB"}
+                  </div>
+
+            </div>
           </div>
-          <div className="flex justify-between mt-4">
-            <button className="text-white bg-blue-500 w-full py-2 rounded-lg">
+
+          <div className="flex justify-between mt-2">
+            <button className="text-blue-500 w-full py-2 rounded-lg bg-white border-white border hover:bg-blue-500 hover:text-white">
               Continue
             </button>
           </div>

@@ -48,11 +48,12 @@ model Seat {
   id           String      @id @default(uuid())      // Primary key
   row          String                                  // แถวที่นั่ง (A, B, C...)
   number       Int                                     // หมายเลขที่นั่ง
-  price        Int
   showtime     Showtime    @relation(fields: [showtimeId], references: [id])
   showtimeId   String                                  // FK -> Showtime
   isAvailable  Boolean     @default(true)             // สถานะของที่นั่ง (true=ว่าง, false=ถูกจอง)
   Booking  Booking[]
+
+  @@unique([row, number, showtimeId]) 
 }
 
 model Booking {
