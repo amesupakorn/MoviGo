@@ -19,7 +19,7 @@ const CinemaSeatBooking = () => {
   const { id } = useParams();
   const [formattedDate, setFormattedDate] = useState<string | null>(null);
   const [show, setShowtime] = useState<Showtime | null>(null);
-  const [seatReserve, setSeat] = useState<Seat | null>(null);
+  const [seatReserve, setSeat] = useState<Seat[]>([]);  // An array of seats
   const [movie, setMovie] = useState<Movie | null>(null);
   const [cinema, setCinema] = useState<Cinema | null>(null);
 
@@ -33,9 +33,9 @@ const CinemaSeatBooking = () => {
     const handleResize = () => {
         const width = window.innerWidth;
 
-        setIsSmallScreenOne(width < 1000);
+        setIsSmallScreenOne(width < 1200);
 
-        setIsSmallScreenTwo(width >= 1000 && width < 1200);
+        setIsSmallScreenTwo(width >= 1200 && width < 1200);
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -55,12 +55,13 @@ const CinemaSeatBooking = () => {
 
         const cinemaResponse = await api.get(`/cinema/${response.data.subCinemaId}`);
         const movieResponse = await api.get(`/movies/${response.data.movieId}`);
-        const movieResponse = await api.get(`/movies/${response.data.movieId}`);
+        const seatResponse = await api.get(`/seats/${id}`);
 
 
 
         setCinema(cinemaResponse.data);
         setMovie(movieResponse.data);
+        setSeat(seatResponse.data);
 
         const date = new Date(response.data.date); 
         const dateStr = date.toLocaleDateString("en-GB", {
@@ -108,6 +109,14 @@ const CinemaSeatBooking = () => {
     0
   );
 
+  const isReserved = (row: string, seatIndex: number) => {
+    const seatIdentifier = `${row}${seatIndex + 1}`;
+
+    return seatReserve.some(seat => `${seat.row}${seat.number}` === seatIdentifier && !seat.isAvailable);
+
+  };
+
+
   const handleSubmitBooking = async () => {
     const showtimeId = id;  
     const status = "reserved";
@@ -121,6 +130,8 @@ const CinemaSeatBooking = () => {
 
       if(response){
         setSuccess("booking confirm");
+        window.location.reload();
+
       }
   
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -215,7 +226,7 @@ const CinemaSeatBooking = () => {
               </div>
 
               {/* Seat Selection */}
-              <div className={`flex flex-col w-full overflow-x-auto h-[500px]  ${isSmallScreenOne ? 'px-0' : 'px-12'}`}>
+              <div className={`flex flex-col w-full overflow-x-auto  ${isSmallScreenOne ? 'px-0  h-[500px]' : 'px-12 h-[700px]'}`}>
 
               <table className="table-auto">
                   <tbody>
@@ -229,23 +240,22 @@ const CinemaSeatBooking = () => {
                             .map((_, seatIndex) => {
                               const seatIdentifier = `${row}${seatIndex + 1}`;
                               const isSelected = selectedSeats.includes(seatIdentifier);
+                              const reserved = isReserved(row, seatIndex);
 
                               return (
                                 <td
-                                  key={seatIndex}
-                                  onClick={() => handleSelectSeat(row, seatIndex)}
-                                  className="md:h-12 md:w-12 h-6 w-6 cursor-pointer"
-                                >
-                                  {isSelected && (
-                                    <FaCircleCheck className="text-red-500 md:h-11 md:w-11 h-5 w-5" />
-                                  )}
-                                  {!isSelected &&
-                                    (premiumRows.includes(row) ? (
-                                      <SeatPremium />
-                                    ) : (
-                                      <SeatStandard />
-                                    ))}
-                                </td>
+                                key={seatIndex}
+                                onClick={() => !reserved && handleSelectSeat(row, seatIndex)}
+                                className="md:h-12 md:w-12 h-6 w-6 cursor-pointer"
+                              >
+                                {reserved ? (
+                                  <VscAccount className="text-gray-400 md:h-12 md:w-10 h-5 w-5 mx-1" />
+                                ) : isSelected ? (
+                                  <FaCircleCheck className="text-red-500 md:h-11 md:w-11 h-5 w-5" />
+                                ) : (
+                                  premiumRows.includes(row) ? <SeatPremium /> : <SeatStandard />
+                                )}
+                              </td>
                               );
                             })}
                         </td>
@@ -259,17 +269,17 @@ const CinemaSeatBooking = () => {
 
             {/* Right Panel for Desktop */}
             {!isSmallScreenOne && (
-              <div className={`w-1/4 bg-gray-50 p-2 rounded-lg shadow-md ${isSmallScreenTwo ? '' : ''}`}>
+              <div className={`w-1/4 bg-gray-50 p-2 rounded-lg shadow-md h-[700px] ${isSmallScreenTwo ? '' : ''}`}>
                 <div className="p-2 ">
                   <h3 className="text-xl font-bold text-gray-800">{movie?.title}</h3>
                   <p className="text-sm text-blue-600 mt-2">{formattedDate}</p>
                   <p className="text-sm text-blue-600">{show?.time}</p>
                 </div>
                 <div className="p-2 mt-4">
-                  <h3 className="text-base font-bold text-gray-800">CINEMA 12</h3>
+                  <h3 className="text-base font-bold text-gray-800 mb-12">CINEMA 12</h3>
                 </div>
 
-                <div className="bg-white rounded-xl p-4 w-full items-center text-center justify-center mt-24 ">
+                <div className="bg-white rounded-xl p-4 w-full items-center text-center justify-cente mt-32 ">
                   <h3 className="text-sm font-bold text-gray-800 mb-2">Selected Seat</h3>
                   <div className="mb-2 text-blue-600 font-bold text-2xl">
                     {selectedSeats.length > 0 ? selectedSeats.join(", ") : "-"}
@@ -292,17 +302,17 @@ const CinemaSeatBooking = () => {
 
       {/* Mobile Fixed Bottom Panel */}
       {isSmallScreenOne && (
-        <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-blue-600  to-blue-400 p-2 border-t-2 border-gray-300">
-          <div className="flex justify-between items-center mt-2">
+        <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-blue-600 to-blue-400 p-2 border-t-2 border-gray-300">
+          <div className="flex justify-between items-center">
             <div className="text-xs flex flex-col font-semibold">
-              <p className="text-white">Selected Seat</p>
+              <p className="text-white mb-1">Selected Seat</p>
               <div className="mb-2 text-white font-bold text-sm">
                     {selectedSeats.length > 0 ? selectedSeats.join(", ") : "-"}
                   </div>
               </div>
             
             <div className="text-xs flex flex-col font-semibold text-right">
-              <p className="text-white">total</p>
+              <p className="text-white mb-1">total</p>
               <div className="mb-2 text-white font-bold text-sm">
                     {selectedSeats.length > 0 ? `${totalPrice} THB` : "O THB"}
                   </div>
@@ -311,7 +321,7 @@ const CinemaSeatBooking = () => {
           </div>
 
           <div className="flex justify-between mt-2">
-            <button className="text-blue-500 w-full py-2 rounded-lg bg-white border-white border hover:bg-blue-500 hover:text-white">
+            <button  onClick={handleSubmitBooking} className="text-blue-500 w-full py-2 rounded-lg bg-white border-white border hover:bg-blue-500 hover:text-white">
               Continue
             </button>
           </div>
