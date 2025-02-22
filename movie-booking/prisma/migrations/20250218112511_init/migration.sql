@@ -44,6 +44,7 @@ CREATE TABLE "Seat" (
     "id" TEXT NOT NULL,
     "row" TEXT NOT NULL,
     "number" INTEGER NOT NULL,
+    "price" INTEGER NOT NULL,
     "showtimeId" TEXT NOT NULL,
     "isAvailable" BOOLEAN NOT NULL DEFAULT true,
 

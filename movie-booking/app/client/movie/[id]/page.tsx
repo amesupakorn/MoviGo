@@ -73,7 +73,7 @@ export default function MovieDetailPage() {
 
                         {/* Movie Details */}
                         <div className="w-full sm:w-2/3 md:w-2/4 lg:w-1/5 sm:text-left">
-                            <h1 className="text-3xl sm:text-3xl md:text-2xl font-bold">{movie.title}</h1>
+                        <h1 className="text-3xl max-sm:text-xl sm:text-2xl font-bold">{movie.title}</h1>
                             <p className="text-gray-600">
                                 Release: {movie.release_date ? format(new Date(movie.release_date), "dd MMMM yyyy") : "No date available"}
                             </p>
