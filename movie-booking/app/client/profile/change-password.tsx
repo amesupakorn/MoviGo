@@ -2,6 +2,7 @@
 import { useState } from "react";
 import api from "@/lib/axios";
 import { TbLockPassword } from "react-icons/tb";
+import { useAlert } from "@/app/context/AlertContext";
 
 
 export default function ChangePassword() {
@@ -12,7 +13,7 @@ export default function ChangePassword() {
         confirmPassword: "",
     });
     const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
+    const { setSuccess } = useAlert();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPasswords({ ...passwords, [e.target.name]: e.target.value });
@@ -25,19 +26,19 @@ export default function ChangePassword() {
         }
 
         try {
-            const response = await api.put("/profile/change-password", {
+            // setError(" ")
+            await api.put("/auth/change-password", {
                 oldPassword: passwords.oldPassword,
                 newPassword: passwords.newPassword,
             });
 
-            if (response.status === 200) {
-                setSuccess("Password updated successfully!");
-                setIsEditing(false);
-                setPasswords({ oldPassword: "", newPassword: "", confirmPassword: "" });
-            }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (error) {
-            setError("Failed to update password. Please try again.");
+            setSuccess("Password updated successfully!");
+            setIsEditing(false);
+            setError(" ");
+            setPasswords({ oldPassword: "", newPassword: "", confirmPassword: "" });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (err : any) {
+            setError(err.response?.data?.error || "Failed to update password. Please try again.");
         }
     };
 
@@ -60,7 +61,6 @@ export default function ChangePassword() {
             ) : (
                 <div className="space-y-3">
                     {error && <p className="text-red-500">{error}</p>}
-                    {success && <p className="text-green-500">{success}</p>}
 
                     <div>
                         <label className="text-gray-500">Current Password</label>
