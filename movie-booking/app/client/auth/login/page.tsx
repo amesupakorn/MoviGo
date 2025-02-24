@@ -56,20 +56,19 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen">
-        <div className="flex justify-center items-center min-h-[100vh]">
-        <div className="flex flex-col md:flex-row items-center bg-white rounded-lg shadow-lg p-4 space-y-6 md:space-y-2 md:space-x-6">
+      <div className="flex justify-center items-center md:min-h-[100vh] min-h-[90vh]">
+        <div className="flex flex-col md:flex-row items-center bg-white rounded-lg md:shadow-lg  p-4 space-y-6 md:space-y-2 md:space-x-6">
             <div className="hidden md:block">
                 <img src="/image/login.jpg" className="w-[600px] h-[500px]" alt="login" />
             </div>
 
-            <div className="w-full max-w-[400px]">
-                <h1 className="text-2xl font-bold text-gray-800 mb-2">Lets Start Booking 🎬</h1>
+            <div className="w-full max-w-[400px] space-y-2">
+                <h1 className="md:text-2xl text-3xl font-bold text-gray-800 mb-2">Lets Start Booking 🎬</h1>
                 <p className="text-gray-600 mb-6">Please login or sign up to continue</p>
 
-                <form className="space-y-4" onSubmit={handleSubmit}>
+                <form className="space-y-6 md:space-y-4" onSubmit={handleSubmit}>
                   {/* Email Input */}
-                  <div className="relative">
+                  <div className="relative mt-6">
                       <input
                       type="email"
                       name="email"
@@ -126,14 +125,14 @@ export default function LoginPage() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className={`w-full rounded rounded-3xl flex justify-center items-center font-medium transition ${
+                    className={`w-full mb-2 rounded rounded-3xl flex justify-center items-center font-medium transition ${
                     isLoading ? "bg-gray-400 py-1 cursor-not-allowed" : "bg-gray-900 py-3 text-white hover:bg-gray-700"
                     }`}>
                     {isLoading ? <Loading /> : "Log In"}
                   </button>
                 </form>
 
-                <p className="text-gray-500 text-center mt-4">
+                <p className="text-gray-500 text-center ">
                   Don&apos;t have an account?{" "}
                   <Link href="signup/" className="text-gray-800 hover:underline">
                       Sign Up
@@ -142,6 +141,5 @@ export default function LoginPage() {
             </div>
         </div>
       </div>
-    </div>
   );
 }

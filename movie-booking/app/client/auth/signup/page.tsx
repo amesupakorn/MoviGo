@@ -70,7 +70,7 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen">
     <div className="flex justify-center items-center min-h-[100vh]">
-    <div className="flex flex-col md:flex-row items-center bg-white rounded-lg shadow-lg p-4  space-y-6 md:space-y-2 md:space-x-6">
+    <div className="flex flex-col md:flex-row items-center bg-white rounded-lg md:shadow-lg p-4  space-y-6 md:space-y-2 md:space-x-6">
 
         <div className="hidden md:block ">
             <img
