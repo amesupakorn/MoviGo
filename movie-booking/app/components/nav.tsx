@@ -121,7 +121,7 @@ const Navbar = () => {
     
                 );
             })}
-               <li className="border-t-2  md:hidden">
+               <li className="px-6 border-t-2 py-2 md:hidden">
                   <UserDropdown/>
                 </li>
             </ul>

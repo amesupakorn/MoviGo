@@ -131,7 +131,7 @@ const UserDropdown = () => {
         </div>
       ) : (
         <Link href="/client/auth/login">
-          <button className="bg-gray-900 w-[200px] md:w-full text-white font-medium rounded-lg px-5 py-1.5 hover:bg-gray-600">
+          <button className="bg-gray-900 w-full  text-white font-medium rounded-lg px-5 py-1.5 hover:bg-gray-600">
             Login
           </button>
         </Link>
@@ -143,17 +143,17 @@ const UserDropdown = () => {
 
           <ul className="mt-2">
                 <Link href="/client/profile/">
-                  <li className="flex items-center hover:bg-gray-100 cursor-pointer">
+                  <li className="flex items-center cursor-pointer">
 
-                    <span className="ml-3 text-gray-500">Profile</span>
+                    <span className="ml-3 hover:text-blue-500 text-gray-500">Profile</span>
                   </li>
                 </Link>
-                <li className="flex items-center hover:bg-gray-100 cursor-pointer mb-1">
+                <li className="flex items-center hover:text-blue-500 cursor-pointer mb-1">
                   <span className="ml-3 text-gray-500">Booking History</span>
                 </li>
 
                 <li
-                  className="flex items-center hover:bg-gray-100 cursor-pointer border-t-2 mt-2 mb-2"
+                  className="flex items-center hover:text-blue-500 cursor-pointer border-t-2 mt-2 mb-2"
                   onClick={logout}
                 >
                   <span className="ml-3 text-red-500">Logout</span>
