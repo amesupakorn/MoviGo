@@ -103,7 +103,7 @@ export default function ProfilePage() {
     };
 
     return (
-        <div className="mt-12 md:mt-28 flex flex-col justify-center items-center">
+        <div className="mt-12 md:mt-32 flex flex-col justify-center items-center">
             <div className="w-full  md:w-[1000px] md:p-12 p-10  items-center text-white rounded-xs md:rounded-xl bg-gradient-to-r from-blue-600 to-blue-400 ">
                 <div className="flex flex-row">
                     <img
@@ -112,7 +112,7 @@ export default function ProfilePage() {
                             className="h-24 w-24 md:w-24 md:h-24 rounded-full object-cover mr-4 md:mt-4"
                         />
                     <div className="flex flex-col mt-4">
-                        <h2 className="text-lg md:text-3xl md:mb-4">{user?.name}</h2>
+                        <h2 className="text-lg md:text-3xl md:mb-4">{editedUser.name}</h2>
                         <div className="flex flex-row space-x-2">
                             <p className="text-xl my-1 md:text-2xl"><MdOutlineMailOutline /></p>
                             <h3 className="ext-base flex md:text-xl"> {user?.email}</h3>
@@ -155,13 +155,13 @@ export default function ProfilePage() {
                 <div>
                     <div className=" p-6 mb-6 border-b-2">
                         <h2 className="font-bold text-xl mb-4">Personal Information</h2>
-                        <div className="grid grid-cols-2 gap-6">
+                        <div className=" gap-6">
                             <div>
                                 <label className="text-gray-500 ">Username</label>
                                 {isEditing ? (
                                     <input
                                         type="text"
-                                        className="border p-2 rounded rounded-xl w-full bg-gray-100"
+                                        className="border p-2 mt-2 rounded rounded-xl w-full bg-gray-100"
                                         value={editedUser.name}
                                         onChange={(e) => setEditedUser({ ...editedUser, name: e.target.value })}
                                     />
@@ -175,7 +175,7 @@ export default function ProfilePage() {
 
 
                     {/* Edit/Save/Cancel Buttons */}
-                        <div className="mt-6 flex space-x-2">
+                        <div className="mt-4 flex space-x-2">
                             {isEditing ? (
                                 <>
                                     <button onClick={handleSave} className="bg-blue-500 text-white px-10 py-2 rounded-lg">

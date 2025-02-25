@@ -20,7 +20,7 @@ const Navbar = () => {
   const menus = ["HOME", "MOVIES", "CINEMAS"];
 
   return (
-    <nav className="bg-white shadow-md fixed w-full p-2 top-0 z-10">
+    <nav className="bg-white shadow-md fixed w-full md:p-0 p-2 top-0 z-10">
       <div className="container mx-auto px-4 mt-4">
         <div className="flex items-center justify-between">
           <button

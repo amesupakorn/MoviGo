@@ -12,6 +12,7 @@ import { PiSubtitles } from "react-icons/pi";
 import { FaCircleCheck } from "react-icons/fa6";
 import { useAlert } from "@/app/context/AlertContext";
 import { VscAccount } from "react-icons/vsc";
+import Loading from "@/app/components/ui/loading/loadOne";
 
 
 const CinemaSeatBooking = () => {
@@ -26,6 +27,7 @@ const CinemaSeatBooking = () => {
   const [isSmallScreenOne, setIsSmallScreenOne] = useState(false);
   const [isSmallScreenTwo, setIsSmallScreenTwo] = useState(false);
   const { setError, setSuccess } = useAlert();   
+  const [isLoading, setIsLoading] = useState(false);
 
   const [loading, setLoading] = useState(true);
 
@@ -85,8 +87,8 @@ const CinemaSeatBooking = () => {
 
 
 
-  const rows = ["M", "L", "K", "J", "H", "G", "F", "E", "D", "C", "B", "A"];
-  const seatsPerRow = 13;
+  const rows = ["L", "K", "J", "H", "G", "F", "E", "D", "C", "B", "A"];
+  const seatsPerRow = 12;
   const premiumRows = ["A", "B", "C", "D", "E", "F"];
 
   // Handle seat selection
@@ -118,21 +120,30 @@ const CinemaSeatBooking = () => {
 
 
   const handleSubmitBooking = async () => {
+    setIsLoading(true);
+
     const showtimeId = id;  
     const status = "reserved";
 
     try {
       const response = await api.post('/booking', {
-        showtimeId,      // ส่งข้อมูล showtimeId
-        selectedSeats,   // ส่งที่นั่งที่เลือก
-        status,          // ส่งสถานะ
+        showtimeId,     
+        selectedSeats,  
+        status,          
       });
+
 
       if(response){
         setSuccess("booking confirm");
-        window.location.reload();
 
+        setTimeout(() => {
+          window.location.reload();
+          setIsLoading(false);
+
+        }, 2000);
       }
+      
+
   
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
@@ -232,33 +243,41 @@ const CinemaSeatBooking = () => {
                   <tbody>
                     {rows.map((row) => (
                       <tr key={row}>
+                        {/* แสดงชื่อแถว */}
                         <td className="text-gray-600 font-medium text-center w-10">{row}</td>
-                        {/* Seats for this row */}
-                        <td className="flex gap-1 w-full justify-center">
-                          {Array(seatsPerRow)
-                            .fill(null)
-                            .map((_, seatIndex) => {
-                              const seatIdentifier = `${row}${seatIndex + 1}`;
-                              const isSelected = selectedSeats.includes(seatIdentifier);
-                              const reserved = isReserved(row, seatIndex);
 
-                              return (
-                                <td
-                                key={seatIndex}
-                                onClick={() => !reserved && handleSelectSeat(row, seatIndex)}
-                                className="md:h-12 md:w-12 h-6 w-6 cursor-pointer"
-                              >
-                                {reserved ? (
-                                  <VscAccount className="text-gray-400 md:h-12 md:w-10 h-5 w-5 mx-1" />
-                                ) : isSelected ? (
-                                  <FaCircleCheck className="text-red-500 md:h-11 md:w-11 h-5 w-5" />
-                                ) : (
-                                  premiumRows.includes(row) ? <SeatPremium /> : <SeatStandard />
-                                )}
-                              </td>
-                              );
-                            })}
+                        {/* ที่นั่ง */}
+                        <td className="w-full">
+                          <div className="flex gap-1 justify-center">
+                            {Array(seatsPerRow)
+                              .fill(null)
+                              .map((_, seatIndex) => {
+                                const seatIdentifier = `${row}${seatIndex + 1}`;
+                                const isSelected = selectedSeats.includes(seatIdentifier);
+                                const reserved = isReserved(row, seatIndex);
+
+                                return (
+                                  <div
+                                    key={seatIndex}
+                                    onClick={() => !reserved && handleSelectSeat(row, seatIndex)}
+                                    className="md:h-12 md:w-12 h-6 w-6 cursor-pointer"
+                                  >
+                                    {reserved ? (
+                                      <VscAccount className="text-gray-400 md:h-12 md:w-10 h-5 w-5 mx-1" />
+                                    ) : isSelected ? (
+                                      <FaCircleCheck className="text-red-500 md:h-11 md:w-11 h-5 w-5" />
+                                    ) : premiumRows.includes(row) ? (
+                                      <SeatPremium />
+                                    ) : (
+                                      <SeatStandard />
+                                    )}
+                                  </div>
+                                );
+                              })}
+                          </div>
                         </td>
+
+                        {/* แสดงชื่อแถวอีกครั้ง */}
                         <td className="text-gray-600 font-medium text-center w-10">{row}</td>
                       </tr>
                     ))}
@@ -286,12 +305,16 @@ const CinemaSeatBooking = () => {
                   </div>
 
                   <h3 className="text-sm font-bold text-gray-800 mt-6 mb-2">Total</h3>
-                  <div className="mb-2 text-blue-600 font-bold text-xl">
+                  <div className="mb-6 text-blue-600 font-bold text-xl">
                     {selectedSeats.length > 0 ? `${totalPrice} THB` : "Please select seats"}
                   </div>
 
-                  <button onClick={handleSubmitBooking} className="mt-6 w-full h-12 bg-blue-500 text-white py-2 rounded-sm hover:bg-blue-600">
-                    Continue
+                  <button disabled={isLoading} onClick={handleSubmitBooking}
+                   className={`w-full mb-2 rounded rounded-3xl flex justify-center items-center font-medium transition ${
+                    isLoading ? "bg-gradient-to-r from-blue-200 to-blue-400 cursor-not-allowed " : "bg-gradient-to-r from-blue-600 to-blue-400 py-2 text-white hover:bg-gray-700"
+                    }`}>
+                    
+                    {isLoading ? <Loading /> : "Continue"}
                   </button>
                 </div>
               </div>
