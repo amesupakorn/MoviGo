@@ -77,4 +77,16 @@ model User {
   profileImage String?     @default("/uploads/profile-default.png") // รูปโปรไฟล์
   bookings     Booking[]                              // ความสัมพันธ์กับ Booking
   createdAt    DateTime    @default(now())           // เวลาที่สร้าง
+
+  Order Order[]
+}
+
+model Order {
+  id          String     @id @default(uuid())
+  order_id    String
+  user        User       @relation(fields: [userId], references: [id])
+  userId      String     
+  status      String     
+  totalAmount Int       
+  session_id  String
 }
