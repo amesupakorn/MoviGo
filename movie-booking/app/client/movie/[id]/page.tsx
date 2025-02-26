@@ -58,8 +58,8 @@ export default function MovieDetailPage() {
 
 
             {/* Movie Info Section */}
-            <div className="container mx-auto md:p-6 bg-white shadow-lg rounded-lg mt-6">
-                <div className="container mx-auto md:py-8 px-4">
+            <div className="container mx-auto sm: md:p-6 bg-white shadow-lg rounded-lg mt-6">
+                <div className="container mx-auto max-sm:pb-8 sm:pb-8 md:pb-8 px-4">
                     
                     <div className="flex flex-col lg:flex-row items-start space-y-6 lg:space-y-0 lg:space-x-6">
                         {/* Movie Poster */}
@@ -104,7 +104,7 @@ export default function MovieDetailPage() {
                     {/* Cast Section */}
                     <h3 className="text-xl font-bold mt-20">Cast</h3>
                     <div className="overflow-x-auto mt-4">
-                        <div className="flex gap-10">
+                        <div className="flex gap-10 max-sm:gap-0.5">
                             {credits.slice(0, 10).map((actor, index) => (
                                 <div key={index} className="text-center flex-shrink-0">
                                     <img
@@ -114,7 +114,7 @@ export default function MovieDetailPage() {
                                                 : "/uploads/default_profile.jpg"
                                         }
                                         alt={actor.name}
-                                        className="w-auto max-sm:w-28 max-sm:h-36 md:w-32 h-48 object-cover rounded-lg mx-auto"
+                                        className="w-auto max-sm:w-24 max-sm:h-32 md:w-32 h-48 object-cover rounded-lg mx-auto"
                                     />
                                     <p className="mt-2 text-gray-700 break-words w-[150px]">{actor.name}</p>
                                     <p className="text-sm text-gray-500 break-words w-[120px]">{actor.character}</p>
@@ -133,7 +133,7 @@ export default function MovieDetailPage() {
                                 <img
                                     src={`https://image.tmdb.org/t/p/w500${img.file_path}`}
                                     alt={`Image for ${movie.title}`}
-                                    className="w-auto max-sm:w-48 sm:h-auto md:w-56 object-cover rounded-lg mx-auto"
+                                    className="w-auto max-sm:w-48 sm:w-48 md:w-56 object-cover rounded-lg mx-auto"
                                 />
                             </div>
                         ))}

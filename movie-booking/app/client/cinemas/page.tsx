@@ -64,8 +64,8 @@ const LocationPage = () => {
                   key={location.id}
                   className="bg-white p-6 shadow-md hover:shadow-lg transition-shadow flex justify-between cursor-pointer hover:bg-gray-100 border border-gray-200 border-[1px]"
                 >
-                  <h2 className="text-xl font-bold mb-2">{location.name}</h2>
-                  <p className="text-gray-600">{location.address}</p>
+                  <h2 className="text-xl sm:text-lg max-sm:text-sm font-bold mb-2">{location.name}</h2>
+                  <p className="text-gray-600 text-sm max-sm:text-xs">{location.address}</p>
                 </div>
             </Link>
           ))}
