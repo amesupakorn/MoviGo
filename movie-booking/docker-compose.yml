@@ -20,7 +20,7 @@ services:
 
   # Stripe CLI for testing payments
   stripe-cli:
-    image: node:16
+    image: node:18
     container_name: stripe-cli
     command: ["stripe", "login"]
     environment:
