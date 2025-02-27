@@ -64,11 +64,15 @@ const CinemaSeatBooking = () => {
         const movieResponse = await api.get(`/movies/${response.data.movieId}`);
         const seatResponse = await api.get(`/seats/${id}`);
 
-
-
-        setCinema(cinemaResponse.data);
-        setMovie(movieResponse.data);
-        setSeat(seatResponse.data);
+        if(cinemaResponse){
+          setCinema(cinemaResponse.data);
+        }
+        if(movieResponse){
+          setMovie(movieResponse.data);
+        }
+        if(seatResponse.data){
+          setSeat(seatResponse.data);
+        }
 
         const date = new Date(response.data.date); 
         const dateStr = date.toLocaleDateString("en-GB", {
@@ -118,7 +122,9 @@ const CinemaSeatBooking = () => {
 
   const isReserved = (row: string, seatIndex: number) => {
     const seatIdentifier = `${row}${seatIndex + 1}`;
-
+    if (!Array.isArray(seatReserve)) {
+      return false; 
+    }
     return seatReserve.some(seat => `${seat.row}${seat.number}` === seatIdentifier && !seat.isAvailable);
 
   };
@@ -130,23 +136,20 @@ const CinemaSeatBooking = () => {
     const status = "reserved";
 
     try {
-      await api.post('/booking', {
-        showtimeId,     
-        selectedSeats,  
-        status,          
-      });
+        const res_booking = await api.post('/booking', {
+          showtimeId,     
+          selectedSeats,  
+          status,          
+        });
 
-      const res_payment = await api.post('/payment', {
-        selectedSeats
-      })  
-
-      if(res_payment.data.url){        
-        setTimeout(() => {
-          
-          router.push(res_payment.data.url);
-          setIsLoading(false);
-        }, 2000);
-      }
+  
+       if(res_booking.data.url){        
+          setTimeout(() => {
+  
+            router.push(res_booking.data.url);
+            setIsLoading(false);
+          }, 2000);
+        }
   
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {

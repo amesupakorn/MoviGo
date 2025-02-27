@@ -9,7 +9,7 @@ export async function GET(
     const { orderId } = params;
 
     const order = await prisma.order.findUnique({
-      where: { id: orderId },
+      where: { order_id: orderId },
     
     });
 

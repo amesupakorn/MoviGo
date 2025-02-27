@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma"; // Prisma client
 import { getUserFromToken } from "@/lib/auth"; // Helper function to get user from token
+import axios from "axios";
 
 export async function POST(req: NextRequest) {
   try {
@@ -9,6 +10,8 @@ export async function POST(req: NextRequest) {
     // Get user info from the request header
     const authHeader = req.headers.get("authorization");
     const user = await getUserFromToken(authHeader);
+    const token = authHeader!.split(" ")[1];  
+
     
     if (!selectedSeats || !showtimeId || !user || !user.id || !status) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -72,7 +75,22 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    return NextResponse.json({ bookedSeats }, { status: 201 });
+
+      const paymentResponse = await axios.post(`${process.env.HOST_URL}/api/payment`, {
+        selectedSeats,   
+        bookedSeats,   
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,  
+        },
+      });
+
+    if (paymentResponse?.data?.url) {
+      return NextResponse.json({ url: paymentResponse.data.url }, { status: 200 });
+    } else {
+      return NextResponse.json({ error: 'Payment session creation failed' }, { status: 500 });
+    }
+  
   } catch (error) {
     console.error("Error during seat booking:", error); // Log the error to help debug
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

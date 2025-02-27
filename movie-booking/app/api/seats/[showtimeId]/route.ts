@@ -23,7 +23,7 @@ export async function GET(req: NextRequest, { params }: { params: { showtimeId: 
     
 
     if (!seats || seats.length === 0) {
-      return NextResponse.json({ message: "No available seats found" }, { status: 404 });
+      return NextResponse.json({ message: "No available seats found" }, { status: 200 });
     }
 
     return NextResponse.json(seats, { status: 200 }); 
