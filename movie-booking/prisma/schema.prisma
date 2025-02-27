@@ -89,8 +89,8 @@ model Order {
   order_id    String
   user        User       @relation(fields: [userId], references: [id])
   userId      String     
-  booking     Booking   @relation(fields: [bookId], references: [id])
-  bookId      String
+  booking     Booking?   @relation(fields: [bookId], references: [id])
+  bookId      String?
   status      String     
   totalAmount Int       
   session_id  String
