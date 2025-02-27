@@ -1,13 +1,34 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Loading from "@/app/components/ui/loading/loadOne";
+import { useParams } from "next/navigation";
+import { Order } from "@/lib/types/booking"
+import api from "@/lib/axios";
 
 const PaymentPageError = () => {
   const [isLoadingTry, setIsLoadingTry] = useState(false);
   const [isLoadingHome, setIsLoadingHome] = useState(false);
+  const [, setOrder] =  useState<Order | null>(null);
 
+  const { orderId } = useParams();
+
+   useEffect(() => {
+          if (!orderId) return;
+  
+          const fetchData = async () => {
+              try {
+                const response = await api.get(`/booking/${orderId}`);
+                setOrder(response.data)
+  
+              } catch (err) {
+                  console.error("Error fetching movie details:", err);
+              }
+          };
+  
+          fetchData();
+      }, [orderId]);
 
   // เปลี่ยนเส้นทางกลับไปยังหน้าจ่ายเงิน
   const handleBackToPayment = () => {

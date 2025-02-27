@@ -6,9 +6,6 @@ export async function POST(req: NextRequest) {
   try {
     const { selectedSeats, showtimeId, status }: { selectedSeats: string[], showtimeId: string, status: string } = await req.json();
     
-    // Log request data to verify it's being passed correctly
-    console.log("Request Data:", { selectedSeats, showtimeId, status });
-
     // Get user info from the request header
     const authHeader = req.headers.get("authorization");
     const user = await getUserFromToken(authHeader);
@@ -21,7 +18,6 @@ export async function POST(req: NextRequest) {
     const bookedSeats = [];
     const premiumRows = ["A", "B", "C", "D", "E", "F"];
 
-    console.log("User ID:", userId); // Log user ID to verify
 
     for (const seatIdentifier of selectedSeats) {
       const match = seatIdentifier.match(/^([A-Za-z]+)(\d+)$/);
@@ -35,8 +31,6 @@ export async function POST(req: NextRequest) {
             row_number_showtimeId: { row, number: parseInt(seatNumber), showtimeId }
           },
         });
-
-        console.log("Seat:", seat); // Log seat identifier
 
         if (!seat) {
           console.log("Seat not found, creating new seat...");
@@ -65,13 +59,13 @@ export async function POST(req: NextRequest) {
           },
         });
 
-        // Update the seat status to unavailable after booking
         await prisma.seat.update({
           where: { id: seat.id },
           data: { isAvailable: false },
         });
 
         bookedSeats.push(booking);
+
       } else {
         console.error(`Invalid seat identifier: ${seatIdentifier}`);
         return NextResponse.json({ error: `Invalid seat identifier format: ${seatIdentifier}` }, { status: 400 });

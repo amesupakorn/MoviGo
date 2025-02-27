@@ -13,12 +13,16 @@ import { FaCircleCheck } from "react-icons/fa6";
 import { useAlert } from "@/app/context/AlertContext";
 import { VscAccount } from "react-icons/vsc";
 import Loading from "@/app/components/ui/loading/loadOne";
+import { useRouter } from "next/navigation";
 
 
 const CinemaSeatBooking = () => {
-  const [selectedSeats, setSelectedSeats] = useState<string[]>([]); // Unified state for selected seats
   const { id } = useParams();
+  const router = useRouter();
+
+  const [selectedSeats, setSelectedSeats] = useState<string[]>([]); 
   const [formattedDate, setFormattedDate] = useState<string | null>(null);
+
   const [show, setShowtime] = useState<Showtime | null>(null);
   const [seatReserve, setSeat] = useState<Seat[]>([]);  // An array of seats
   const [movie, setMovie] = useState<Movie | null>(null);
@@ -26,11 +30,12 @@ const CinemaSeatBooking = () => {
 
   const [isSmallScreenOne, setIsSmallScreenOne] = useState(false);
   const [isSmallScreenTwo, setIsSmallScreenTwo] = useState(false);
+
   const { setError, setSuccess } = useAlert();   
   const [isLoading, setIsLoading] = useState(false);
-
   const [loading, setLoading] = useState(true);
 
+  
   useEffect(() => {
     const handleResize = () => {
         const width = window.innerWidth;
@@ -121,29 +126,27 @@ const CinemaSeatBooking = () => {
 
   const handleSubmitBooking = async () => {
     setIsLoading(true);
-
     const showtimeId = id;  
     const status = "reserved";
 
     try {
-      const response = await api.post('/booking', {
+      await api.post('/booking', {
         showtimeId,     
         selectedSeats,  
         status,          
       });
 
+      const res_payment = await api.post('/payment', {
+        selectedSeats
+      })  
 
-      if(response){
-        setSuccess("booking confirm");
-
+      if(res_payment.data.url){        
         setTimeout(() => {
-          window.location.reload();
+          
+          router.push(res_payment.data.url);
           setIsLoading(false);
-
         }, 2000);
       }
-      
-
   
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
