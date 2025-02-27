@@ -67,6 +67,9 @@ model Booking {
   seatId       String                                 // FK -> Seat
   status       String                                 // สถานะ (reserved, paid, canceled)
   createdAt    DateTime    @default(now())            // เวลาที่สร้าง
+
+  Order Order[]
+
 }
 
 model User {
@@ -86,6 +89,8 @@ model Order {
   order_id    String
   user        User       @relation(fields: [userId], references: [id])
   userId      String     
+  booking     Booking   @relation(fields: [bookId], references: [id])
+  bookId      String
   status      String     
   totalAmount Int       
   session_id  String
