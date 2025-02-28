@@ -44,6 +44,22 @@ model Showtime {
   Booking  Booking[]
 }
 
+
+model Booking {
+  id           String      @id @default(uuid())     // Primary key
+  showtime     Showtime    @relation(fields: [showtimeId], references: [id])
+  showtimeId   String                                 // FK -> Showtime
+  user         User        @relation(fields: [userId], references: [id])
+  userId       String                                 // FK -> User
+  seat         Seat        @relation(fields: [seatId], references: [id])
+  seatId       String                                 // FK -> Seat
+  status       String                                 // สถานะ (reserved, paid, canceled)
+  createdAt    DateTime    @default(now())            // เวลาที่สร้าง
+  order        Order?      @relation(fields: [orderId], references: [id])
+  orderId      String?                               // FK -> Order
+
+}
+
 model Seat {
   id           String      @id @default(uuid())      // Primary key
   row          String                                  // แถวที่นั่ง (A, B, C...)
@@ -57,20 +73,6 @@ model Seat {
   @@unique([row, number, showtimeId]) 
 }
 
-model Booking {
-  id           String      @id @default(uuid())     // Primary key
-  showtime     Showtime    @relation(fields: [showtimeId], references: [id])
-  showtimeId   String                                 // FK -> Showtime
-  user         User        @relation(fields: [userId], references: [id])
-  userId       String                                 // FK -> User
-  seat         Seat        @relation(fields: [seatId], references: [id])
-  seatId       String                                 // FK -> Seat
-  status       String                                 // สถานะ (reserved, paid, canceled)
-  createdAt    DateTime    @default(now())            // เวลาที่สร้าง
-
-  Order Order[]
-
-}
 
 model User {
   id           String      @id @default(uuid())     // Primary key
@@ -89,9 +91,8 @@ model Order {
   order_id    String     @unique 
   user        User       @relation(fields: [userId], references: [id])
   userId      String     
-  booking     Booking?   @relation(fields: [bookId], references: [id])
-  bookId      String?
   status      String     
   totalAmount Int       
   session_id  String     @unique 
+  booking     Booking[]  
 }
