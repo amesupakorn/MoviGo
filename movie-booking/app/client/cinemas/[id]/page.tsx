@@ -10,6 +10,7 @@ import { Movie } from "@/lib/types/movie";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import { IoIosTimer } from "react-icons/io";
 
 
 const LocationDetailPage = () => {
@@ -30,6 +31,32 @@ const LocationDetailPage = () => {
   const [moviePosters, setMoviePosters] = useState<{ [key: string]: string }>({});
 
   const userTimezone = dayjs.tz.guess();
+
+  // ✅ ปรับจำนวนปุ่มวันที่ตามขนาดหน้าจอ
+  const getVisibleDaysCount = () => {
+    if (typeof window !== "undefined") {
+      const width = window.innerWidth;
+      if (width < 500) return 2;
+      if (width < 640) return 3; // max-sm
+      if (width < 768) return 4; // sm
+      if (width < 1024) return 5; // md
+      return 6; // lg ขึ้นไป
+    }
+    return 6; // ค่าเริ่มต้น
+  };
+
+  const [visibleCount, setVisibleCount] = useState(getVisibleDaysCount());
+  const next30Days = Array.from({ length: 30 }, (_, index) => today.add(index, "day"));
+  const visibleDays = next30Days.slice(startIndex, startIndex + visibleCount);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setVisibleCount(getVisibleDaysCount());
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
 
@@ -81,11 +108,6 @@ const LocationDetailPage = () => {
   if (isLoading) return <LoadTwo />;
   if (error) return <div className="text-red-500">{error}</div>;
 
-  // สร้างวันที่ล่วงหน้า 30 วัน
-  const next30Days = Array.from({ length: 30 }, (_, index) => today.add(index, "day"));
-
-  // จำกัดให้แสดงทีละ 6 วัน
-  const visibleDays = next30Days.slice(startIndex, startIndex + 6);
 
 
 
@@ -114,10 +136,8 @@ const LocationDetailPage = () => {
         <div className="flex justify-center space-x-5 overflow-x-auto mb-6 w-full">
           {/* ปุ่มเลื่อนไปซ้าย */}
           {startIndex > 0 && (
-            <button
-              className="text-3xl hover:text-blue-500 transition duration-200"
-              onClick={() => setStartIndex((prev) => Math.max(prev - 1, 0))}
-            >
+            <button className="text-2xl hover:text-blue-500 transition duration-200"
+              onClick={() => setStartIndex((prev) => Math.max(prev - 1, 0))}>
               <FaCaretLeft />
             </button>
           )}
@@ -178,12 +198,14 @@ const LocationDetailPage = () => {
                   const posterPath = firstShowtime ? moviePosters[movieId] : null;
 
                   return (
-                    <div key={movieId} className="border-gray-300 ">
-                      <div className="flex flex-col md:flex-row gap-4">
+                    <div key={movieId} className="max-w-5xl w-full">
+
+                      {/* ✅ โปสเตอร์หนัง&รายละเอียดหนัง */}
+                      <div className="grid grid-cols-1 grid-cols-[auto_1fr] gap-4 md:gap-6 items-start">
                         
                         {/* ✅ โปสเตอร์หนัง */}
                         {posterPath && (
-                          <div className="w-full md:w-1/4">
+                          <div className="w-full max-w-[80px] sm:max-w-[100px] md:max-w-[120px]">
                             <img
                               src={`https://image.tmdb.org/t/p/w500${posterPath}`}
                               alt={firstShowtime?.movie.title || "Movie Poster"}
@@ -191,81 +213,88 @@ const LocationDetailPage = () => {
                             />
                           </div>
                         )}
-
+                      
                         {/* ✅ รายละเอียดหนังและรอบฉาย */}
-                        <div className="flex-1">
+                        <div className="flex flex-col justify-start md:justify-between">
                           {firstShowtime && (
-                            <div className="mb-4">
-                              <p className="text-sm text-gray-700 mb-1">
-                                <strong>{cinema.name}</strong>
+                            <div className="mb-2 md:mb-4">
+                              <p className="text-lg sm:text-xl md:text-2xl lg:text-2xl font-bold text-gray-900 mb-1">
+                                {firstShowtime.movie.title}
                               </p>
-                              <p className="text-sm text-gray-700 mb-1">
-                                <strong>Movie:</strong> {firstShowtime.movie.title}
-                              </p>
-                              <p className="text-sm text-gray-700">
-                                <strong>Duration:</strong> {firstShowtime.movie.duration} mins
-                              </p>
+                              <span className="mt-2 text-gray-600 flex items-center">
+                                <IoIosTimer className="mr-1" />
+                                {firstShowtime.movie.duration} mins
+                              </span>
                             </div>
                           )}
+                        </div>
+                      
+                      </div>
 
-                          <div className="grid grid-cols-1 gap-4 mt-2">
-                            <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4 items-start">
-                              
-                              {/* ✅ ประเภทโรงภาพยนตร์ */}
-                              <div className="flex flex-col md:justify-center border-r border-gray-300 pr-4 h-full">
-                                <p className="text-gray-700 font-bold text-lg">{cinema.type}</p>
-                                <div className="flex items-center gap-2 mt-2 md:mt-0">
-                                  <FaVolumeUp className="text-gray-600" />
-                                  <span className="text-sm">ENG</span>
-                                  <span className="border px-1 text-xs">SUB</span>
-                                </div>
-                              </div>
+                      <div className="mt-6">
+                        <div className="border-t border-gray-400 pt-4 flex items-center gap-4 text-gray-700">
+                          {/* ✅ ชื่อโรงภาพยนตร์ */}
+                          <p className="text-sm sm:text-sm md:text-lg lg:text-lg font-bold">
+                            <strong>{cinema.name}</strong>
+                          </p>
 
-                              {/* ✅ ปุ่มเลือกเวลา */}
-                              <div className="flex gap-3 flex-wrap md:gap-4 w-full">
-                                
-                                {(() => {
-                                  // ✅ ค้นหา showtime ที่ใกล้ที่สุด (>= เวลาปัจจุบัน)
-                                  const upcomingShowtimes = filteredShowtimes.filter(showtime =>
-                                    dayjs(`${selectedDate.format("YYYY-MM-DD")} ${showtime.time.split(":").slice(0, 2).join(":")}`, "YYYY-MM-DD HH:mm")
-                                      .isAfter(dayjs())
-                                  );
-                                  const nearestShowtime = upcomingShowtimes.length > 0 ? upcomingShowtimes[0].time : null;
+                          <div className="h-5 w-px bg-gray-300"></div>
 
-                                  return filteredShowtimes.map((showtime) => {
-                                    // ✅ แปลงเวลา showtime.time และตรวจสอบกับเวลาปัจจุบัน
-                                    const formattedTime = showtime.time.split(":").slice(0, 2).join(":");
-                                    const showtimeMoment = dayjs(`${selectedDate.format("YYYY-MM-DD")} ${formattedTime}`, "YYYY-MM-DD HH:mm");
-                                    const isPast = showtimeMoment.isBefore(dayjs()); // ✅ เช็คว่าเวลาหมดหรือยัง
-                                    const isNearest = showtime.time === nearestShowtime; // ✅ เช็คว่าเป็นเวลาล่าสุดที่กำลังจะถึงไหม
-                                    const uniqueKey = `${cinema.id}-${showtime.id}`; // ✅ ป้องกัน key ซ้ำ
+                          {/* ✅ ประเภทโรง */}
+                          <p className="text-sm sm:text-sm md:text-lg lg:text-lg text-gray-700 font-bold">{cinema.type}</p>
 
-                                    return (
-                                      <button
-                                        key={uniqueKey}
-                                        className={`px-5 py-2 rounded-md border transition-all text-lg font-medium
-                                          px-3 py-0.5 text-[12px] 
-                                          sm:px-6 sm:py-2 sm:text-[15px] 
-                                          md:px-8 md:py-2 md:text-[18px] ${
-                                          isPast
-                                            ? "bg-gray-200 text-gray-400 cursor-not-allowed" // ❌ เวลาที่หมดแล้ว
-                                            : isNearest
-                                            ? "bg-gradient-to-r from-blue-500 to-blue-300 text-white" // ✅ ปุ่มที่ใกล้ที่สุด 
-                                            : selectedTime === showtime.time
-                                            ? "border-blue-500 text-blue-500 bg-blue-100" // ✅ ปุ่มที่ถูกเลือก แต่ไม่ใช่ nearest
-                                            : "border-blue-500 text-blue-500 hover:bg-blue-100" // 🟡 ปุ่มปกติที่ hover ได้
-                                        }`}
-                                        onClick={() => !isPast && setSelectedTime(showtime.time)} // ❌ ปิดคลิกปุ่มที่หมดเวลา
-                                        disabled={isPast} // ❌ ปิดการกดปุ่มที่หมดเวลาแล้ว
-                                      >
-                                        {formattedTime}
-                                      </button>
-                                    );
-                                  });
-                                })()}
-                              </div>
-                            </div>
+                          <div className="h-5 w-px bg-gray-300"></div>
+
+                          {/* ✅ ภาษา */}
+                          <div className="flex items-center gap-2">
+                            <FaVolumeUp className="text-gray-600" />
+                            <span className="text-sm">ENG</span>
+                            <span className="border px-1 text-xs">SUB</span>
                           </div>
+                        </div>
+
+                          {/* ✅ ปุ่มเลือกรอบ */}
+                        <div className="mt-4 flex gap-2">
+                                
+                          {(() => {
+                                  // ✅ ค้นหา showtime ที่ใกล้ที่สุด (>= เวลาปัจจุบัน)
+                            const upcomingShowtimes = filteredShowtimes.filter(showtime =>
+                            dayjs(`${selectedDate.format("YYYY-MM-DD")} ${showtime.time.split(":").slice(0, 2).join(":")}`, "YYYY-MM-DD HH:mm")
+                            .isAfter(dayjs())
+                            );
+                            const nearestShowtime = upcomingShowtimes.length > 0 ? upcomingShowtimes[0].time : null;
+
+                            return filteredShowtimes.map((showtime) => {
+                            // ✅ แปลงเวลา showtime.time และตรวจสอบกับเวลาปัจจุบัน
+                            const formattedTime = showtime.time.split(":").slice(0, 2).join(":");
+                            const showtimeMoment = dayjs(`${selectedDate.format("YYYY-MM-DD")} ${formattedTime}`, "YYYY-MM-DD HH:mm");
+                            const isPast = showtimeMoment.isBefore(dayjs()); // ✅ เช็คว่าเวลาหมดหรือยัง
+                            const isNearest = showtime.time === nearestShowtime; // ✅ เช็คว่าเป็นเวลาล่าสุดที่กำลังจะถึงไหม
+                            const uniqueKey = `${cinema.id}-${showtime.id}`; // ✅ ป้องกัน key ซ้ำ
+
+                            return (
+                              <button
+                                key={uniqueKey}
+                                className={`rounded-md border transition-all text-lg font-medium
+                                            px-3 py-0.5 text-[11px] 
+                                            sm:px-6 sm:py-2 sm:text-[15px] 
+                                            md:px-8 md:py-2 md:text-[18px] ${
+                                            isPast
+                                              ? "bg-gray-200 text-gray-400 cursor-not-allowed" // ❌ เวลาที่หมดแล้ว
+                                              : isNearest
+                                              ? "bg-gradient-to-r from-blue-500 to-blue-300 text-white" // ✅ ปุ่มที่ใกล้ที่สุด 
+                                              : selectedTime === showtime.time
+                                              ? "border-blue-500 text-blue-500 bg-blue-100" // ✅ ปุ่มที่ถูกเลือก แต่ไม่ใช่ nearest
+                                              : "border-blue-500 text-blue-500 hover:bg-blue-100" // 🟡 ปุ่มปกติที่ hover ได้
+                                }`}
+                                onClick={() => !isPast && setSelectedTime(showtime.time)} // ❌ ปิดคลิกปุ่มที่หมดเวลา
+                                disabled={isPast} // ❌ ปิดการกดปุ่มที่หมดเวลาแล้ว
+                                >
+                                {formattedTime}
+                              </button>
+                              );
+                              });
+                            })()}
                         </div>
                       </div>
                     </div>
