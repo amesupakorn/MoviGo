@@ -93,5 +93,5 @@ model Order {
   bookId      String?
   status      String     
   totalAmount Int       
-  session_id  String
+  session_id  String     @unique 
 }
