@@ -12,15 +12,18 @@ const PaymentPageError = () => {
   const [isLoadingHome, setIsLoadingHome] = useState(false);
   const [, setOrder] =  useState<Order | null>(null);
 
-  const { orderId } = useParams();
+  const { id } = useParams();
 
    useEffect(() => {
-          if (!orderId) return;
   
           const fetchData = async () => {
               try {
-                const response = await api.get(`/booking/${orderId}`);
+                const response = await api.get(`/booking/${id}`);
                 setOrder(response.data)
+
+                if(response.data.status == 'complete'){
+                  window.location.href = `/payment/success/${id}`;
+                }
   
               } catch (err) {
                   console.error("Error fetching movie details:", err);
@@ -28,7 +31,7 @@ const PaymentPageError = () => {
           };
   
           fetchData();
-      }, [orderId]);
+      }, [id]);
 
   // เปลี่ยนเส้นทางกลับไปยังหน้าจ่ายเงิน
   const handleBackToPayment = () => {
@@ -47,7 +50,7 @@ const PaymentPageError = () => {
       window.location.href = '/client/home';
       setIsLoadingHome(false);
 
-   }, 2000);
+   }, 1000);
 
   }
 

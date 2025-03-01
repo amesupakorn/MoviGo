@@ -94,5 +94,6 @@ model Order {
   status      String     
   totalAmount Int       
   session_id  String     @unique 
+  
   booking     Booking[]  
 }

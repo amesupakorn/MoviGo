@@ -143,13 +143,11 @@ const CinemaSeatBooking = () => {
         });
 
   
-       if(res_booking.data.url){        
-          setTimeout(() => {
-  
+       if(res_booking.data.url){       
             router.push(res_booking.data.url);
             setIsLoading(false);
-          }, 2000);
-        }
+       }
+  
   
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {

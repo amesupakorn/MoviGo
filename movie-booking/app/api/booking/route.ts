@@ -78,12 +78,14 @@ export async function POST(req: NextRequest) {
 
       const paymentResponse = await axios.post(`${process.env.HOST_URL}/api/payment`, {
         selectedSeats,   
-        bookedSeats,   
+        bookedSeats,
+        showtimeId,
       }, {
         headers: {
           Authorization: `Bearer ${token}`,  
         },
       });
+
 
     if (paymentResponse?.data?.url) {
       return NextResponse.json({ url: paymentResponse.data.url }, { status: 200 });

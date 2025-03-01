@@ -10,15 +10,17 @@ const PaymentPageSuccess = () => {
   const [isLoading, setIsLoading] = useState(false);
   
   const [, setOrder] =  useState<Order | null>(null);
-  const { orderId } = useParams();
+  const { id } = useParams();
 
-  useEffect(() => {
-          if (!orderId) return;
-  
+  useEffect(() => {  
           const fetchData = async () => {
               try {
-                const response = await api.get(`/booking/${orderId}`);
+                const response = await api.get(`/booking/${id}`);
                 setOrder(response.data)
+
+                if(response.data.status != 'complete'){
+                  window.location.href = `/payment/cancel/${id}`;
+                }
   
               } catch (err) {
                   console.error("Error fetching movie details:", err);
@@ -26,7 +28,7 @@ const PaymentPageSuccess = () => {
           };
   
           fetchData();
-      }, [orderId]);
+      }, [id]);
   const handleChangePage = () =>{
     setIsLoading(true);
 
@@ -34,7 +36,7 @@ const PaymentPageSuccess = () => {
       window.location.href = '/client/home';
       setIsLoading(false);
 
-   }, 2000);
+   }, 1000);
 
   }
    
