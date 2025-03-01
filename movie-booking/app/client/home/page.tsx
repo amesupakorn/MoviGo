@@ -51,7 +51,7 @@ const Homepage = () => {
 
     useEffect(() => {
         const handleResize = () => {
-            setIsSmallScreen(window.innerWidth < 768);
+            setIsSmallScreen(window.innerWidth < 630);
         };
         handleResize();
         window.addEventListener("resize", handleResize);
@@ -107,7 +107,7 @@ const Homepage = () => {
                 </div>
 
                 {/* Movies Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-6 py-6 px-4">
+                <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-6 py-6 px-4">
                     {moviesToShow.length > 0 ? (
                         moviesToShow.map((movie) => (
                             
@@ -123,15 +123,21 @@ const Homepage = () => {
                                     className="w-full h-100 object-cover"
                                 />
                                 <div className="p-4 flex flex-col justify-end flex-grow">
-                                <h3 className="text-lg font-bold">
-                                    {isSmallScreen && movie?.title?.length > 9
-                                        ? `${movie.title.substring(0, 9)}...`
-                                        : movie?.title}
 
-                                </h3>
+                                    <h3 className="text-sm sm:text-sm md:text-lg font-bold">
+                                        {isSmallScreen && movie?.title?.length > 6
+                                            ? `${movie.title.substring(0, 6)}...`
+                                            : movie?.title}
+                                    </h3>
+
                                     <p className="text-sm text-gray-600">
-                                        {movie.release_date ? format(new Date(movie.release_date), "dd MMM yyyy") : "No date available"}
+                                        {movie.release_date
+                                        ? isSmallScreen
+                                            ? format(new Date(movie.release_date), "dd/MM/yy") // วันที่ย่อเมื่อ max-sm
+                                            : format(new Date(movie.release_date), "dd MMM yyyy") // วันที่เต็ม
+                                        : "No date available"}
                                     </p>
+
                                 </div>
 
                                 {/* Movie Detail (Hover) */}

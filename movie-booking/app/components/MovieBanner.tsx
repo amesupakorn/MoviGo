@@ -44,7 +44,7 @@ const MovieBanner: React.FC<MovieBannerProps> = ({ movies }) => {
     }, [movies]);
 
     return (
-        <div className="relative w-full h-[250px] max-sm:h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
+        <div className="relative w-full h-[250px] max-sm:h-[25s0px] sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
             <div className="carousel w-full h-full relative">
                 {movies.map((movie, index) => (
                     <div

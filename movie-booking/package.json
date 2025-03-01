@@ -17,6 +17,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "dayjs": "^1.11.13",
     "jsonwebtoken": "^9.0.2",
     "ldrs": "^1.0.2",
     "lucide-react": "^0.474.0",

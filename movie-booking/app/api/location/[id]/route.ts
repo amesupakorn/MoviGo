@@ -22,6 +22,7 @@ export async function GET(
               },
               select: {
                 id: true,
+                date: true,
                 time: true,
                 movie: {
                   select: {
