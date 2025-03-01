@@ -17,7 +17,7 @@ const Navbar = () => {
     setActiveMenu(currentPath || null);
   }, [pathname]);
   
-  const menus = ["HOME", "MOVIES", "CINEMAS"];
+  const menus = ["HOME", "CINEMAS"];
 
   return (
     <nav className="bg-white shadow-md fixed w-full md:p-0 p-2 top-0 z-10">

@@ -11,6 +11,8 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { IoIosTimer } from "react-icons/io";
+import { FaCheck } from "react-icons/fa6";
+import Link from "next/link";
 
 
 const LocationDetailPage = () => {
@@ -18,8 +20,6 @@ const LocationDetailPage = () => {
   dayjs.extend(timezone);
   const { id } = useParams();
   const [location, setLocation] = useState<Location | null>(null);
-  const [movie, setMovie] = useState<Movie | null>(null);
-
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -125,12 +125,36 @@ const LocationDetailPage = () => {
         </div>
 
         <div className="flex items-center mb-6">
-              <div className="w-14 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center">1</div>
-              <div className="w-full h-2 bg-blue-300"></div>
-              <div className="w-14 h-8 bg-blue-300 text-white rounded-full flex items-center justify-center">2</div>
-              <div className="w-full h-2 bg-gray-300"></div>
-              <div className="w-14 h-8 bg-gray-300 text-white rounded-full flex items-center justify-center">3</div>
+        {/* Step 1 */}
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <div className="w-10 h-10 rounded-full bg-blue-500 border border-blue-400 text-white flex items-center justify-center ">
+          <FaCheck />
+          </div>
+          <h1>Select Location</h1>
         </div>
+
+        {/* Line between steps */}
+        <div className="flex-1 h-1 transform -translate-y-4 bg-gradient-to-r from-blue-500 to-blue-200 "></div>
+
+        {/* Step 2 */}
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <div className="w-10 h-10 rounded-full bg-white border border-blue-400 border-2 text-blue-500 flex items-center justify-center shadow-md shadow-blue-200">
+            2
+          </div>
+          <h1>Select Showtime</h1>
+        </div>
+
+        {/* Line between steps */}
+        <div className="flex-1 h-1 transform -translate-y-4 bg-gray-300"></div>
+
+        {/* Step 3 */}
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <div className="w-10 h-10 bg-white text-gray-400 border-gray-400 border-2 rounded-full flex items-center justify-center">
+            3
+          </div>
+          <h1>Select Seat</h1>
+        </div>
+      </div>
 
         {/* ปุ่มเลือกวัน */}
         <div className="flex justify-center space-x-5 overflow-x-auto mb-6 w-full">
@@ -273,6 +297,8 @@ const LocationDetailPage = () => {
                             const uniqueKey = `${cinema.id}-${showtime.id}`; // ✅ ป้องกัน key ซ้ำ
 
                             return (
+                              <Link key={uniqueKey} href={`/client/showtime/${showtime.id}`}
+>
                               <button
                                 key={uniqueKey}
                                 className={`rounded-md border transition-all text-lg font-medium
@@ -287,11 +313,12 @@ const LocationDetailPage = () => {
                                               ? "border-blue-500 text-blue-500 bg-blue-100" // ✅ ปุ่มที่ถูกเลือก แต่ไม่ใช่ nearest
                                               : "border-blue-500 text-blue-500 hover:bg-blue-100" // 🟡 ปุ่มปกติที่ hover ได้
                                 }`}
-                                onClick={() => !isPast && setSelectedTime(showtime.time)} // ❌ ปิดคลิกปุ่มที่หมดเวลา
-                                disabled={isPast} // ❌ ปิดการกดปุ่มที่หมดเวลาแล้ว
+                                onClick={() => !isPast && setSelectedTime(showtime.time)} 
+                                disabled={isPast}
                                 >
                                 {formattedTime}
                               </button>
+                              </Link>
                               );
                               });
                             })()}
