@@ -32,7 +32,7 @@ export default function Home() {
     return (
       <div>
           {loading && <LoadTwo />}
-          <div className="p-8 text-white"> {/* Page content */}
+          <div className="bg-zinc-900 p-8 text-white"> {/* Page content */}
               <h1 className="text-2xl">Welcome to My Page</h1>
               <p>This is some content...</p>
           </div>

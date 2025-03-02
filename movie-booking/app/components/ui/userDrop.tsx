@@ -131,7 +131,7 @@ const UserDropdown = () => {
         </div>
       ) : (
         <Link href="/client/auth/login">
-          <button className="bg-amber-600 w-full  text-white font-medium rounded-lg px-5 py-1.5 hover:bg-gray-600">
+          <button className="bg-amber-500 w-full  text-white font-medium rounded-lg px-5 py-1.5 hover:bg-amber-600">
             Login
           </button>
         </Link>

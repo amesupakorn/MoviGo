@@ -164,7 +164,7 @@ const CinemaSeatBooking = () => {
 
     <><div
       className="w-auto h-[150px] max-sm:h-[150px] sm:h-[150px] md:h-[200px] lg:h-[200px] bg-cover bg-top relative inset-0 flex flex-col justify-center max-sm:mt-[40px] md:mt-[80px] lg:mt-24"
-      style={{ backgroundImage: `url("/uploads/cinema.jpg")` }}
+      style={{ backgroundImage: `url("/uploads/sfcinema-cosmobazaar.jpg")` }}
 
     ></div>
     <div className="container mx-auto max-w-5xl p-6 mt-4 bg-zinc-900">
@@ -193,8 +193,8 @@ const CinemaSeatBooking = () => {
     
             {/* Step 3 */}
             <div className="flex flex-col items-center justify-center space-y-4">
-              <div className="w-10 h-10 rounded-full bg-zinc-700 border border-amber-400 border-2 text-amber-500 flex items-center justify-center shadow-md shadow-amber-200">
-                3
+            <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center shadow-md shadow-amber-200">
+            3
               </div>
               <h3 className="text-amber-600 md:text-base text-xs">Select Seat</h3>
             </div>

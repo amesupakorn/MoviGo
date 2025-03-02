@@ -44,7 +44,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="flex-grow md:overflow-y-auto">{children}</div>
         
       </div>
-      <div className="h-[120px] bg-zinc-900"></div>
+      <div className="md:h-[100px] bg-zinc-900"></div>
       <Footer />
     </div>
   );

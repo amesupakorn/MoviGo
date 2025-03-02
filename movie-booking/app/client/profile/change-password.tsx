@@ -44,15 +44,15 @@ export default function ChangePassword() {
 
     return (
         <div >
-            <h2 className="font-bold text-xl mb-4">Password</h2>
+            <h2 className="font-bold text-white text-xl mb-4">Password</h2>
 
             {!isEditing ? (
                 <div>
-                    <p className="text-gray-500">Current Password</p>
-                    <p className="font-semibold mb-2">**********</p>
+                    <p className="text-gray-200">Current Password</p>
+                    <p className="font-semibold mb-2 text-amber-500 mt-2">**********</p>
                     <button
                         onClick={() => setIsEditing(true)}
-                        className="flex text-blue-500 items-center px-4 py-2 rounded-lg border border-blue-500 hover:bg-blue-50">
+                        className="flex text-amber-500 items-center px-4 py-2 rounded-lg border border-amber-500 hover:bg-amber-200">
                         <TbLockPassword />
                         &nbsp;
                         Change Password
@@ -63,43 +63,43 @@ export default function ChangePassword() {
                     {error && <p className="text-red-500">{error}</p>}
 
                     <div>
-                        <label className="text-gray-500">Current Password</label>
+                        <label className="text-gray-300">Current Password</label>
                         <input
                             type="password"
                             name="oldPassword"
                             value={passwords.oldPassword}
                             onChange={handleChange}
-                            className="border p-2 rounded rounded-xl w-full bg-gray-100"
+                            className="border p-2 rounded rounded-xl w-full bg-gray-100 mt-2"
                         />
                     </div>
 
                     <div>
-                        <label className="text-gray-500">New Password</label>
+                        <label className="text-gray-300">New Password</label>
                         <input
                             type="password"
                             name="newPassword"
                             value={passwords.newPassword}
                             onChange={handleChange}
-                            className="border p-2 rounded rounded-xl w-full bg-gray-100"
+                            className="border p-2 rounded rounded-xl w-full bg-gray-100 mt-2"
                         />
                     </div>
 
                     <div>
-                        <label className="text-gray-500">Confirm New Password</label>
+                        <label className="text-gray-300">Confirm New Password</label>
                         <input
                             type="password"
                             name="confirmPassword"
                             value={passwords.confirmPassword}
                             onChange={handleChange}
-                            className="border p-2 rounded rounded-xl w-full bg-gray-100"
+                            className="border p-2 rounded rounded-xl w-full bg-gray-100 mt-2"
                         />
                     </div>
 
                     <div className="mt-6 flex space-x-2">
-                        <button onClick={handleSave} className="bg-blue-500 text-white px-10 py-2 rounded-lg">
+                        <button onClick={handleSave} className="transition-colors duration-300 bg-amber-500 text-white px-10 py-2 rounded-lg hover:bg-amber-600">
                                 Save
                         </button>
-                        <button onClick={() => setIsEditing(false)} className="text-blue-500 border border-blue-500 px-10 py-2 rounded-lg">
+                        <button onClick={() => setIsEditing(false)} className="transition-colors duration-300 text-amber-500 border border-amber-500 px-10 py-2 rounded-lg hover:bg-amber-100">
                            Cancel
                         </button>
                     </div>

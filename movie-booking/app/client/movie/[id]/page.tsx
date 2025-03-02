@@ -106,7 +106,7 @@ export default function MovieDetailPage() {
                     <div className="w-8 h-[2px] bg-amber-600 mb-4"></div>
 
                     <div className="overflow-x-auto mt-4">
-                        <div className="flex gap-10 max-sm:gap-0.5">
+                        <div className="flex gap-10">
                             {credits.slice(0, 10).map((actor, index) => (
                                 <div key={index} className="flex-shrink-0">
                                     <img
@@ -119,7 +119,7 @@ export default function MovieDetailPage() {
                                         className="w-auto max-sm:w-24 max-sm:h-32 md:w-32 h-48 object-cover rounded-lg mx-auto"
                                     />
                                     <p className="mt-2 text-gray-100 break-words">{actor.name}</p>
-                                    <p className="text-sm text-gray-300 break-words mt-1">{actor.character}</p>
+                                    <p className="text-xs  text-gray-300 break-words mt-1">{actor.character}</p>
                                 </div>
                             ))}
                         </div>
@@ -152,6 +152,6 @@ export default function MovieDetailPage() {
                 <p className="text-gray-300 mt-2">{movie.overview}</p>
             </div>
         </div>
-        
+
     );
 }

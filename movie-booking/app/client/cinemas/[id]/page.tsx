@@ -120,27 +120,27 @@ const LocationDetailPage = () => {
       <div className="container mx-auto max-w-5xl p-6">
 
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-3xl max-sm:text-2xl sm:text-2xl md:text-3xl font-bold">{location?.name}</h1>
+          <h1 className="text-3xl text-white max-sm:text-2xl sm:text-2xl md:text-3xl font-bold">{location?.name}</h1>
         </div>
 
         <div className="flex items-center mb-6">
         {/* Step 1 */}
         <div className="flex flex-col items-center justify-center space-y-4">
-          <div className="w-10 h-10 rounded-full bg-blue-500 border border-blue-400 text-white flex items-center justify-center ">
+          <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center ">
           <FaCheck />
           </div>
-          <h3 className="text-blue-600 md:text-base text-xs">Select Location</h3>
+          <h3 className="text-amber-600 md:text-base text-xs">Select Location</h3>
         </div>
 
         {/* Line between steps */}
-        <div className="flex-1 h-1 transform -translate-y-4 bg-gradient-to-r from-blue-500 to-blue-200 "></div>
+        <div className="flex-1 h-1 transform -translate-y-4 bg-gradient-to-r from-amber-500 to-amber-200 "></div>
 
         {/* Step 2 */}
         <div className="flex flex-col items-center justify-center space-y-4">
-          <div className="w-10 h-10 rounded-full bg-white border border-blue-400 border-2 text-blue-500 flex items-center justify-center shadow-md shadow-blue-200">
-            2
+        <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center shadow-md shadow-amber-200">
+        2
           </div>
-          <h3 className="text-blue-600 md:text-base text-xs">Select Showtime</h3>
+          <h3 className="text-amber-600 md:text-base text-xs">Select Showtime</h3>
         </div>
 
         {/* Line between steps */}
@@ -148,10 +148,10 @@ const LocationDetailPage = () => {
 
         {/* Step 3 */}
         <div className="flex flex-col items-center justify-center space-y-4">
-          <div className="w-10 h-10 bg-white text-gray-400 border-gray-400 border-2 rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 bg-white text-gray-400 border-amber-400 border-2 rounded-full flex items-center justify-center">
             3
           </div>
-          <h3 className="text-blue-600 md:text-base text-xs">Select Seat</h3>
+          <h3 className="text-amber-600 md:text-base text-xs">Select Seat</h3>
         </div>
       </div>
 
@@ -159,7 +159,7 @@ const LocationDetailPage = () => {
         <div className="flex justify-center space-x-5 overflow-x-auto mb-6 w-full">
           {/* ปุ่มเลื่อนไปซ้าย */}
           {startIndex > 0 && (
-            <button className="text-2xl hover:text-blue-500 transition duration-200"
+            <button className="text-2xl text-white hover:text-amber-500 transition duration-200"
               onClick={() => setStartIndex((prev) => Math.max(prev - 1, 0))}>
               <FaCaretLeft />
             </button>
@@ -172,8 +172,8 @@ const LocationDetailPage = () => {
                 key={index}
                 className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all duration-100 ${
                   isSelected
-                    ? "border-blue-500 text-blue-500"
-                    : "border-gray-300 text-gray-500 bg-transparent hover:border-blue-500 hover:text-blue-500"
+                    ? "border-amber-500 text-amber-500"
+                    : "border-gray-300 text-gray-200 bg-transparent hover:border-amber-500 hover:text-amber-500"
                 }`}
                 onClick={() => setSelectedDate(dayjs(date))}
               >
@@ -186,7 +186,7 @@ const LocationDetailPage = () => {
           {/* ปุ่มเลื่อนไปขวา */}
           {startIndex + 6 < next30Days.length && (
             <button
-              className="text-3xl hover:text-blue-500 transition duration-200"
+              className="text-3xl text-white  hover:text-amber-500 transition duration-200"
               onClick={() => setStartIndex((prev) => prev + 1)}
             >
               <FaCaretRight />
@@ -212,7 +212,7 @@ const LocationDetailPage = () => {
             const movieIds = [...new Set(filteredShowtimes.map(showtime => showtime.movie.id))];
             
             return (
-              <div key={cinema.id} className="bg-white p-6 shadow-md border border-gray-200">
+              <div key={cinema.id} className="bg-zinc-800 p-6 shadow-md border border-gray-300 rounded-3xl">
 
                 {/* ✅ แสดงแยกเป็นแต่ละหนัง */}
                 {movieIds.map(movieId => {
@@ -241,10 +241,10 @@ const LocationDetailPage = () => {
                         <div className="flex flex-col justify-start md:justify-between">
                           {firstShowtime && (
                             <div className="mb-2 md:mb-4">
-                              <p className="text-lg sm:text-xl md:text-2xl lg:text-2xl font-bold text-gray-900 mb-1">
+                              <p className="text-lg sm:text-xl md:text-2xl lg:text-2xl font-bold text-white mb-1">
                                 {firstShowtime.movie.title}
                               </p>
-                              <span className="mt-2 text-gray-600 flex items-center">
+                              <span className="mt-2 text-amber-500 flex items-center">
                                 <IoIosTimer className="mr-1" />
                                 {firstShowtime.movie.duration} mins
                               </span>
@@ -255,24 +255,24 @@ const LocationDetailPage = () => {
                       </div>
 
                       <div className="mt-6">
-                        <div className="border-t border-gray-400 pt-4 flex items-center gap-4 text-gray-700">
+                        <div className="border-t border-gray-200 pt-4 flex items-center gap-4">
                           {/* ✅ ชื่อโรงภาพยนตร์ */}
-                          <p className="text-sm sm:text-sm md:text-lg lg:text-lg font-bold">
+                          <p className="text-sm sm:text-sm md:text-lg lg:text-lg font-bold text-gray-100">
                             <strong>{cinema.name}</strong>
                           </p>
 
                           <div className="h-5 w-px bg-gray-300"></div>
 
                           {/* ✅ ประเภทโรง */}
-                          <p className="text-sm sm:text-sm md:text-lg lg:text-lg text-gray-700 font-bold">{cinema.type}</p>
+                          <p className="text-sm sm:text-sm md:text-lg lg:text-lg text-gray-100 font-bold">{cinema.type}</p>
 
                           <div className="h-5 w-px bg-gray-300"></div>
 
                           {/* ✅ ภาษา */}
                           <div className="flex items-center gap-2">
-                            <FaVolumeUp className="text-gray-600" />
-                            <span className="text-sm">ENG</span>
-                            <span className="border px-1 text-xs">SUB</span>
+                            <FaVolumeUp className="text-gray-100" />
+                            <span className="text-sm text-gray-100">ENG</span>
+                            <span className="border px-1 text-xs text-gray-100">SUB</span>
                           </div>
                         </div>
 
@@ -300,17 +300,17 @@ const LocationDetailPage = () => {
 >
                               <button
                                 key={uniqueKey}
-                                className={`rounded-md border transition-all text-lg font-medium
+                                className={`transition-colors duration-300 rounded-md border transition-all text-lg font-medium
                                             px-3 py-0.5 text-[11px] 
                                             sm:px-6 sm:py-2 sm:text-[15px] 
                                             md:px-8 md:py-2 md:text-[18px] ${
                                             isPast
                                               ? "bg-gray-200 text-gray-400 cursor-not-allowed" // ❌ เวลาที่หมดแล้ว
                                               : isNearest
-                                              ? "bg-gradient-to-r from-blue-500 to-blue-300 text-white" // ✅ ปุ่มที่ใกล้ที่สุด 
+                                              ? "bg-gradient-to-r from-amber-500 to-amber-300 text-white" // ✅ ปุ่มที่ใกล้ที่สุด 
                                               : selectedTime === showtime.time
-                                              ? "border-blue-500 text-blue-500 bg-blue-100" // ✅ ปุ่มที่ถูกเลือก แต่ไม่ใช่ nearest
-                                              : "border-blue-500 text-blue-500 hover:bg-blue-100" // 🟡 ปุ่มปกติที่ hover ได้
+                                              ? "border-amber-500 text-amber-500  bg-amber-100" // ✅ ปุ่มที่ถูกเลือก แต่ไม่ใช่ nearest
+                                              : "border-amber-500 text-amber-500  hover:bg-amber-100" // 🟡 ปุ่มปกติที่ hover ได้
                                 }`}
                                 onClick={() => !isPast && setSelectedTime(showtime.time)} 
                                 disabled={isPast}
