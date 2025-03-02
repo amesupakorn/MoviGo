@@ -167,80 +167,80 @@ const CinemaSeatBooking = () => {
       style={{ backgroundImage: `url("/uploads/cinema.jpg")` }}
 
     ></div>
-    <div className="container mx-auto max-w-5xl p-6 ">
-      <div className="flex items-center mb-6">
+    <div className="container mx-auto max-w-5xl p-6 mt-4 bg-zinc-900">
+      <div className="flex items-center ">
             {/* Step 1 */}
             <div className="flex flex-col items-center justify-center space-y-4">
-              <div className="w-10 h-10 rounded-full bg-blue-500 border border-blue-400 text-white flex items-center justify-center ">
+              <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center ">
               <FaCheck />
               </div>
-              <h1>Select Location</h1>
+              <h3 className="text-amber-600 md:text-base text-xs">Select Location</h3>
             </div>
     
             {/* Line between steps */}
-            <div className="flex-1 h-1 transform -translate-y-4  bg-blue-500 "></div>
+            <div className="flex-1 h-1 transform -translate-y-4  bg-amber-500 "></div>
     
             {/* Step 2 */}
             <div className="flex flex-col items-center justify-center space-y-4">
-              <div className="w-10 h-10 rounded-full bg-blue-500 border border-blue-400 text-white flex items-center justify-center ">
+              <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center ">
               <FaCheck />
               </div>
-              <h1>Select Showtime</h1>
+              <h3 className="text-amber-600 md:text-base text-xs">Select Showtime</h3>
             </div>
     
             {/* Line between steps */}
-            <div className="flex-1 h-1 transform -translate-y-4 bg-gradient-to-r from-blue-500 to-blue-200 "></div>
+            <div className="flex-1 h-1 transform -translate-y-4 bg-gradient-to-r from-amber-500 to-amber-200 "></div>
     
             {/* Step 3 */}
             <div className="flex flex-col items-center justify-center space-y-4">
-              <div className="w-10 h-10 rounded-full bg-white border border-blue-400 border-2 text-blue-500 flex items-center justify-center shadow-md shadow-blue-200">
+              <div className="w-10 h-10 rounded-full bg-zinc-700 border border-amber-400 border-2 text-amber-500 flex items-center justify-center shadow-md shadow-amber-200">
                 3
               </div>
-              <h1>Select Seat</h1>
+              <h3 className="text-amber-600 md:text-base text-xs">Select Seat</h3>
             </div>
           </div>
     </div>
 
-    <div className="min-h-screen justify-center items-center">
+    <div className="min-h-screen bg-zinc-900 justify-center items-center">
         {/* showtime detail */}
        
         {isSmallScreenOne && (
         <div className="w-full flex justify-center items-center mb-3">
-          <div className="w-[1000px] p-6 bg-white rounded-lg">
-            <div className="flex flex-col md:flex-row items-center gap-6 shadow-lg">
+          <div className="w-[1000px] p-2 bg-zinc-900 rounded-lg">
+            <div className="flex flex-col md:flex-row items-center gap-6 shadow-md p-4">
               <div className="w-48 h-auto">
                 <img
                   src={`https://image.tmdb.org/t/p/w500${movie?.poster_path}`}
                   alt="Movie Poster"
-                  className="w-full h-full object-cover rounded-lg" />
+                  className="w-full h-full object-cover rounded-lg " />
               </div>
 
               <div className="flex-1">
-                <h2 className="text-xl font-semibold text-gray-900">
+                <h2 className="text-xl font-semibold text-white">
                   {movie?.title}
                 </h2>
-                <p className="text-base text-blue-600 mt-2">
+                <p className="text-base text-amber-600 mt-2">
                   {formattedDate} | {show?.time}
                 </p>
 
                 <div className="flex items-center gap-2 mt-4 text-sm md:text-base">
-                  <div className="text-lg text-gray-700">{cinema?.name}</div>
+                  <div className="text-lg text-gray-200">{cinema?.name}</div>
                   <div className="border-l border-gray-400 h-6 mx-2 "></div>
 
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold">
+                    <span className="font-semibold text-gray-200">
                       <LuAudioLines />
                     </span>
-                    <span className="text-gray-700">ENG</span>
+                    <span className="text-gray-200">ENG</span>
                   </div>
 
                   <div className="border-l border-gray-400 h-6 mx-2"></div>
 
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold">
+                    <span className="font-semibold text-gray-200">
                       <PiSubtitles />
                     </span>
-                    <span className="text-gray-700">TH</span>
+                    <span className="text-gray-200">TH</span>
                   </div>
                 </div>
               </div>
@@ -249,21 +249,21 @@ const CinemaSeatBooking = () => {
         </div>
         )};
 
-        <div className=" bg-white max-w-full  p-2 md:p-1 ">
+        <div className="bg-zinc-900 max-w-full  p-2 md:p-1 ">
           <div className="flex justify-center items-center gap-2 mb-10 mt-10 md:mt-8">
             <div className="flex-col justify-center items-center text-center gap-3">
               <div className="w-10 h-10 md:w-12 mx-10 mb-4">
                 <SeatStandard />
               </div>
-              <span className="text-base text-gray-700">Standard</span>
-              <p className="text-xs md:text-sm">320 THB</p>
+              <span className="text-base text-white">Standard</span>
+              <p className="text-xs md:text-sm text-gray-300">320 THB</p>
             </div>
             <div className="flex-col text-sm md:text-xl justify-center items-center text-center gap-3">
               <div className="w-10 h-10 md:w-12 mx-10 mb-4">
                 <SeatPremium />
               </div>
-              <span className="text-base text-gray-700">Premium</span>
-              <p className="text-xs md:text-sm">350 THB</p>
+              <span className="text-base text-white">Premium</span>
+              <p className="text-xs md:text-sm text-gray-300">350 THB</p>
             </div>
           </div>
 
@@ -276,7 +276,7 @@ const CinemaSeatBooking = () => {
                     alt="screen"
                     src="/uploads/screen.svg"
                     className="md:w-full md:h-24 mx-auto" />
-                  <span className="absolute top-6 left-1/2 transform -translate-x-1/2 text-gray-800 font-semibold text-sm sm:text-base">
+                  <span className="absolute top-6 left-1/2 transform -translate-x-1/2 text-white font-semibold text-sm sm:text-base">
                     SCREEN
                   </span>
                 </div>
@@ -289,7 +289,7 @@ const CinemaSeatBooking = () => {
                       {rows.map((row) => (
                         <tr key={row}>
                           {/* แสดงชื่อแถว */}
-                          <td className="text-gray-600 font-medium text-center w-10">{row}</td>
+                          <td className="text-gray-200 font-medium text-center w-10">{row}</td>
 
                           {/* ที่นั่ง */}
                           <td className="w-full">
@@ -323,7 +323,7 @@ const CinemaSeatBooking = () => {
                           </td>
 
                           {/* แสดงชื่อแถวอีกครั้ง */}
-                          <td className="text-gray-600 font-medium text-center w-10">{row}</td>
+                          <td className="text-gray-200 font-medium text-center w-10">{row}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -333,52 +333,58 @@ const CinemaSeatBooking = () => {
 
               {/* Right Panel for Desktop */}
               {!isSmallScreenOne && (
-                <div className={`w-1/4 bg-gray-50 p-2 rounded-lg shadow-md h-[750px] ${isSmallScreenTwo ? '' : ''}`}>
+                <div className={`w-1/4 bg-zinc-700 p-2 rounded-lg shadow-md h-[750px] ${isSmallScreenTwo ? '' : ''}`}>
                    <img
                       src={`https://image.tmdb.org/t/p/w500${movie?.poster_path}`}
                       alt="Movie Poster"
                       className=" object-cover rounded-lg" />
 
                   <div className="p-2 ">
-                    <h3 className="text-xl font-bold text-gray-800">{movie?.title}</h3>
-                    <p className="text-sm text-blue-600 mt-2">{formattedDate} {show?.time}</p>
-                  <div className="text-md mt-2">{cinema?.name}</div>
+                    <h3 className="text-xl font-bold text-white">{movie?.title}</h3>
+                    <p className="text-sm text-amber-500 mt-2">{formattedDate} {show?.time}</p>
+                  <div className="text-md mt-2 text-white">{cinema?.name}</div>
                   <div className="flex">
 
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold">
+                    <span className="font-semibold text-gray-300">
                         <LuAudioLines />
                       </span>
-                      <span className="text-sm text-gray-700">ENG</span>
+                      <span className="text-sm text-gray-300">ENG</span>
                     </div>
 
                     <div className="border-l border-gray-400 h-6 mx-2"></div>
 
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold">
+                    <div className="flex items-center gap-2 ">
+                      <span className="font-semibold text-gray-300">
                         <PiSubtitles />
                       </span>
-                      <span className="text-sm text-gray-700">TH</span>
+                      <span className="text-sm text-gray-300">TH</span>
                     </div>
                   </div>
                   </div>
 
-                  <div className="bg-white rounded-xl p-4 w-full items-center text-center justify-cente  ">
-                    <h3 className="text-sm font-bold text-gray-800 mb-2">Selected Seat</h3>
-                    <div className="mb-2 text-blue-600 font-bold text-2xl">
+                  <div className="bg-zinc-800 rounded-xl p-4 w-full items-center text-center justify-cente mt-4">
+                    <h3 className="text-sm font-bold text-white mb-2">Selected Seat</h3>
+                    <div className="mb-2 text-amber-500 font-bold text-2xl">
                       {selectedSeats.length > 0 ? selectedSeats.join(", ") : "-"}
                     </div>
 
-                    <h3 className="text-sm font-bold text-gray-800 mt-2 mb-2">Total</h3>
-                    <div className="mb-6 text-blue-600 font-bold text-lg">
+                    <h3 className="text-sm font-bold text-white  mt-2 mb-2">Total</h3>
+                    <div className="mb-6 text-amber-500 font-bold text-lg">
                       {selectedSeats.length > 0 ? `${totalPrice} THB` : "Please select seats"}
                     </div>
 
-                    <button disabled={isLoading} onClick={handleSubmitBooking}
-                      className={`w-full  rounded rounded-3xl flex justify-center items-center font-medium hover:bg-blue-300 transition ${isLoading ? "bg-gradient-to-r from-blue-200 to-blue-400 cursor-not-allowed " : "bg-gradient-to-r from-blue-600 to-blue-400 py-2 text-white hover:bg-gray-700"}`}>
-
-                      {isLoading ? <Loading /> : "Continue"}
-                    </button>
+                    <button
+                        disabled={selectedSeats.length === 0 || isLoading}
+                        onClick={handleSubmitBooking}
+                        className={`w-full rounded rounded-3xl flex justify-center items-center font-medium transition-colors duration-300 ${
+                          selectedSeats.length === 0 || isLoading
+                            ? "bg-gradient-to-r from-amber-600 to-amber-400 py-2 text-white opacity-80 cursor-not-allowed"
+                            : "bg-gradient-to-r from-amber-600 to-amber-400 py-2 text-white hover:shadow-lg hover:shadow-amber-200"
+                        }`}
+                      >
+                        {isLoading ? <Loading /> : "Continue"}
+                      </button>
                   </div>
                 </div>
               )}
@@ -388,7 +394,7 @@ const CinemaSeatBooking = () => {
 
         {/* Mobile Fixed Bottom Panel */}
         {isSmallScreenOne && (
-          <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-blue-600 to-blue-400 p-2 border-t-2 border-gray-300">
+          <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-amber-600 to-amber-400 p-2 border-t-2 border-gray-300">
             <div className="flex justify-between items-center">
               <div className="text-xs flex flex-col font-semibold">
                 <p className="text-white mb-1">Selected Seat</p>
@@ -407,7 +413,13 @@ const CinemaSeatBooking = () => {
             </div>
 
             <div className="flex justify-between mt-2">
-              <button disabled={isLoading} onClick={handleSubmitBooking} className={`text-blue-500 w-full py-2 rounded-lg transition-colors duration-300  ${isLoading ? "bg-white border-white border-2" : "bg-white border-white border-2 hover:bg-blue-500 hover:text-white"}`}>
+              <button  
+                disabled={selectedSeats.length === 0 || isLoading}
+                onClick={handleSubmitBooking} 
+                className={`text-amber-500 w-full py-2 rounded-lg transition-colors duration-300  
+                ${selectedSeats.length === 0 || isLoading? 
+                "text-zinc-700 bg-amber-500 border-2  cursor-not-allowed" : 
+                "bg-white border-white border-2 hover:bg-amber-500 hover:text-white"}`}>
                 Continue
               </button>
             </div>

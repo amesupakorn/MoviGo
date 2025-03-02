@@ -58,7 +58,7 @@ export default function MovieDetailPage() {
 
 
             {/* Movie Info Section */}
-            <div className="container mx-auto sm: md:p-6 bg-white shadow-lg rounded-lg mt-6">
+            <div className="container mx-auto sm: md:p-6 bg-zinc-800 shadow-lg rounded-lg mt-6">
                 <div className="container mx-auto max-sm:pb-8 sm:pb-8 md:pb-8 px-4">
                     
                     <div className="flex flex-col lg:flex-row items-start space-y-6 lg:space-y-0 lg:space-x-6">
@@ -73,14 +73,14 @@ export default function MovieDetailPage() {
 
                         {/* Movie Details */}
                         <div className="w-full sm:w-2/3 md:w-2/4 lg:w-1/5 sm:text-left">
-                        <h1 className="text-3xl max-sm:text-xl sm:text-2xl font-bold">{movie.title}</h1>
-                            <p className="text-gray-600">
+                        <h1 className="text-3xl max-sm:text-xl sm:text-2xl text-white font-bold">{movie.title}</h1>
+                            <p className="text-gray-100">
                                 Release: {movie.release_date ? format(new Date(movie.release_date), "dd MMMM yyyy") : "No date available"}
                             </p>
-                            <p className="mt-2 text-gray-600">
+                            <p className="mt-2 text-gray-100">
                                 Genres: {movie.genres.map((genre) => genre.name).join(", ")}
                             </p>
-                            <span className="mt-2 text-gray-600 flex items-center">
+                            <span className="mt-2 text-amber-400 flex items-center">
                                 <IoIosTimer className="mr-1" />
                                 {movie.runtime} mins
                             </span>
@@ -102,11 +102,13 @@ export default function MovieDetailPage() {
                     </div>
 
                     {/* Cast Section */}
-                    <h3 className="text-xl font-bold mt-20">Cast</h3>
+                    <h3 className="text-xl text-white font-bold mt-20">Cast</h3>
+                    <div className="w-8 h-[2px] bg-amber-600 mb-4"></div>
+
                     <div className="overflow-x-auto mt-4">
                         <div className="flex gap-10 max-sm:gap-0.5">
                             {credits.slice(0, 10).map((actor, index) => (
-                                <div key={index} className="text-center flex-shrink-0">
+                                <div key={index} className="flex-shrink-0">
                                     <img
                                         src={
                                             actor.profile_path
@@ -116,16 +118,16 @@ export default function MovieDetailPage() {
                                         alt={actor.name}
                                         className="w-auto max-sm:w-24 max-sm:h-32 md:w-32 h-48 object-cover rounded-lg mx-auto"
                                     />
-                                    <p className="mt-2 text-gray-700 break-words w-[150px]">{actor.name}</p>
-                                    <p className="text-sm text-gray-500 break-words w-[120px]">{actor.character}</p>
+                                    <p className="mt-2 text-gray-100 break-words">{actor.name}</p>
+                                    <p className="text-sm text-gray-300 break-words mt-1">{actor.character}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
-                    <hr className="mt-10" />
 
                     {/* Image */}
-                    <h3 className="text-xl font-bold mt-10">Image</h3>
+                    <h3 className="text-xl text-white font-bold mt-4">Image</h3>
+                    <div className="w-10 h-[2px] bg-amber-600 mb-4"></div>
                     <div className="overflow-x-auto mt-4">
                         <div className="flex gap-10">
                         {images.map((img, index) => (
@@ -144,9 +146,12 @@ export default function MovieDetailPage() {
 
             {/* Synopsis Section */}
             <div className="container mx-auto p-6 mt-6">
-                <h3 className="text-xl font-bold">SYNOPSIS</h3>
-                <p className="text-gray-700 mt-2">{movie.overview}</p>
+                <h3 className="text-xl text-white font-bold">SYNOPSIS</h3>
+                <div className="w-14 h-[2px] bg-amber-600 mb-4"></div>
+
+                <p className="text-gray-300 mt-2">{movie.overview}</p>
             </div>
         </div>
+        
     );
 }

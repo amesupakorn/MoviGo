@@ -6,7 +6,6 @@ import { Location } from "@/lib/types/booking";
 import { useParams } from "next/navigation";
 import LoadTwo from "@/app/components/ui/loading/loadTwo";
 import { FaCaretRight,FaCaretLeft, FaVolumeUp } from "react-icons/fa";
-import { Movie } from "@/lib/types/movie";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -130,7 +129,7 @@ const LocationDetailPage = () => {
           <div className="w-10 h-10 rounded-full bg-blue-500 border border-blue-400 text-white flex items-center justify-center ">
           <FaCheck />
           </div>
-          <h1>Select Location</h1>
+          <h3 className="text-blue-600 md:text-base text-xs">Select Location</h3>
         </div>
 
         {/* Line between steps */}
@@ -141,7 +140,7 @@ const LocationDetailPage = () => {
           <div className="w-10 h-10 rounded-full bg-white border border-blue-400 border-2 text-blue-500 flex items-center justify-center shadow-md shadow-blue-200">
             2
           </div>
-          <h1>Select Showtime</h1>
+          <h3 className="text-blue-600 md:text-base text-xs">Select Showtime</h3>
         </div>
 
         {/* Line between steps */}
@@ -152,7 +151,7 @@ const LocationDetailPage = () => {
           <div className="w-10 h-10 bg-white text-gray-400 border-gray-400 border-2 rounded-full flex items-center justify-center">
             3
           </div>
-          <h1>Select Seat</h1>
+          <h3 className="text-blue-600 md:text-base text-xs">Select Seat</h3>
         </div>
       </div>
 

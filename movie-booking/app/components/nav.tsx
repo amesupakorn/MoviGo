@@ -20,7 +20,7 @@ const Navbar = () => {
   const menus = ["HOME", "CINEMAS"];
 
   return (
-    <nav className="bg-white shadow-md fixed w-full md:p-0 p-2 top-0 z-10">
+    <nav className="bg-zinc-900 shadow-md fixed w-full md:p-0 p-2 top-0 z-10">
       <div className="container mx-auto px-4 mt-4">
         <div className="flex items-center justify-between">
           <button
@@ -42,25 +42,25 @@ const Navbar = () => {
                 />
               </svg>
             ) : (
-              <svg className="h-6 w-6 text-zinc-900"  width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="4" y1="6" x2="20" y2="6" />  <line x1="4" y1="12" x2="14" y2="12" />  <line x1="4" y1="18" x2="18" y2="18" /></svg>
+              <svg className="h-6 w-6 text-white"  width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="4" y1="6" x2="20" y2="6" />  <line x1="4" y1="12" x2="14" y2="12" />  <line x1="4" y1="18" x2="18" y2="18" /></svg>
 
             )}
           </button>
           {/* Logo */}
 
-          <div className="text-2xl font-bold text-gray-900">MovieGo</div>
+          <div className="text-2xl font-bold text-white">MovieGo</div>
 
-          <svg className="md:hidden md:flex h-6 w-6 text-zinc-800"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />  <line x1="3" y1="6" x2="21" y2="6" />  <path d="M16 10a4 4 0 0 1-8 0" /></svg>
+          <svg className="md:hidden md:flex h-6 w-6 text-white"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />  <line x1="3" y1="6" x2="21" y2="6" />  <path d="M16 10a4 4 0 0 1-8 0" /></svg>
 
           {/* Search Bar */}
           <div className="hidden md:flex flex-grow mx-8">
-            <div className="w-full max-w-[600px] mx-auto flex bg-gray-100 rounded-lg overflow-hidden">
+            <div className="w-full max-w-[600px] mx-auto flex bg-zinc-700 rounded-lg overflow-hidden">
               <input
                 type="text"
                 placeholder="Search here"
-                className="flex-grow bg-transparent outline-none px-4 py-2 text-sm text-gray-700 placeholder-gray-400"
+                className="flex-grow bg-transparent outline-none px-4 py-2 text-white text-sm placeholder-gray-400"
               />
-              <button className="bg-blue-500 hover:bg-gray-600 px-3 flex items-center justify-center">
+              <button className=" hover:bg-zinc-800 px-3 flex items-center justify-center">
                 <svg
                   className="h-5 w-5 text-white"
                   fill="none"
@@ -82,7 +82,7 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-4">
             <div className="w-[1px] h-6 bg-gray-600"></div>
 
-            <svg className="h-6 w-6 text-zinc-800"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />  <line x1="3" y1="6" x2="21" y2="6" />  <path d="M16 10a4 4 0 0 1-8 0" /></svg>
+            <svg className="h-6 w-6 text-white"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />  <line x1="3" y1="6" x2="21" y2="6" />  <path d="M16 10a4 4 0 0 1-8 0" /></svg>
 
             <div className="items-center space-x-4">
               <UserDropdown  />
@@ -93,7 +93,7 @@ const Navbar = () => {
         <div
           className={`${
             isMenuOpen ? "block" : "hidden"
-          } md:flex flex-col md:flex-row md:justify-center   mt-2 border-gray-200`}
+          } md:flex flex-col md:flex-row md:justify-center mt-2 border-gray-200`}
         >
        <ul className="flex flex-col md:flex-row md:space-x-6 text-gray-700 font-medium items-left space-y-2 md:space-y-0">
             {menus.map((menu) => {
@@ -104,15 +104,15 @@ const Navbar = () => {
                     <Link
                     href={`/client/${menu.toLowerCase()}`}
                     className={`cursor-pointer relative text-sm flex items-left px-6 py-2 rounded-md transition-all duration-300 ${
-                        isActive ? "text-blue-500 font-semibold" : "text-gray-700"
-                    } hover:text-blue-500`}
+                        isActive ? "text-amber-500 font-semibold" : "text-white"
+                    } hover:text-amber-500`}
                     onClick={() => setActiveMenu(menu)}
                     >
                     {menu}
                     </Link>
 
                     <span
-                    className={`absolute left-0 bottom-0 w-full h-[3px] bg-blue-500 transition-all duration-300 rounded-md ${
+                    className={`absolute left-0 bottom-0 w-full h-[3px] bg-amber-400 transition-all duration-300 rounded-md ${
                         isActive ? "scale-x-100" : "scale-x-0"
                     } group-hover:scale-x-100`}
                     />

@@ -49,7 +49,7 @@ const LocationPage = () => {
           <div className="w-10 h-10 rounded-full bg-blue-500 border border-blue-400 text-white flex items-center justify-center shadow-lg shadow-blue-200">
             1
           </div>
-          <h1>Select Location</h1>
+          <h3 className="text-blue-600 md:text-base text-xs">Select Location</h3>
         </div>
 
         {/* Line between steps */}
@@ -60,7 +60,7 @@ const LocationPage = () => {
           <div className="w-10 h-10 bg-white text-gray-400 border-gray-400 border-2 rounded-full flex items-center justify-center">
             2
           </div>
-          <h1>Select Showtime</h1>
+          <h3 className="text-blue-600 md:text-base text-xs">Select Showtime</h3>
         </div>
 
         {/* Line between steps */}
@@ -71,7 +71,7 @@ const LocationPage = () => {
           <div className="w-10 h-10 bg-white text-gray-400 border-gray-400 border-2 rounded-full flex items-center justify-center">
             3
           </div>
-          <h1>Select Seat</h1>
+          <h3 className="text-blue-600 md:text-base text-xs">Select Seat</h3>
         </div>
       </div>
 
