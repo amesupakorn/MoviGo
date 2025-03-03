@@ -10,7 +10,6 @@ export async function GET() {
           location: true,
         },
       });
-
     return NextResponse.json({ cinemas }, { status: 200 });
   } catch (error) {
     console.error("Failed to fetch cinemas:", error);

@@ -15,6 +15,7 @@ import { VscAccount } from "react-icons/vsc";
 import Loading from "@/app/components/ui/loading/loadOne";
 import { useRouter } from "next/navigation";
 import { FaCheck } from "react-icons/fa6";
+import Link from "next/link";
 
 
 const CinemaSeatBooking = () => {
@@ -164,16 +165,19 @@ const CinemaSeatBooking = () => {
 
     <><div
       className="w-auto h-[150px] max-sm:h-[150px] sm:h-[150px] md:h-[200px] lg:h-[200px] bg-cover bg-top relative inset-0 flex flex-col justify-center max-sm:mt-[40px] md:mt-[80px] lg:mt-24"
-      style={{ backgroundImage: `url("/uploads/cinema.jpg")` }}
+      style={{ backgroundImage: `url("/uploads/cinema1.jpg")` }}
 
     ></div>
     <div className="container mx-auto max-w-5xl p-6 mt-4 bg-zinc-900">
       <div className="flex items-center ">
             {/* Step 1 */}
             <div className="flex flex-col items-center justify-center space-y-4">
+              <Link href={`/client/cinemas/`}>
               <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center ">
               <FaCheck />
               </div>
+              </Link>
+
               <h3 className="text-amber-600 md:text-base text-xs">Select Location</h3>
             </div>
     
@@ -182,9 +186,12 @@ const CinemaSeatBooking = () => {
     
             {/* Step 2 */}
             <div className="flex flex-col items-center justify-center space-y-4">
-              <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center ">
-              <FaCheck />
-              </div>
+              <Link href={`/client/cinemas/${cinema?.location.id}`}>
+                <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center ">
+                <FaCheck />
+                </div>
+              </Link>
+             
               <h3 className="text-amber-600 md:text-base text-xs">Select Showtime</h3>
             </div>
     
@@ -193,8 +200,8 @@ const CinemaSeatBooking = () => {
     
             {/* Step 3 */}
             <div className="flex flex-col items-center justify-center space-y-4">
-              <div className="w-10 h-10 rounded-full bg-zinc-700 border border-amber-400 border-2 text-amber-500 flex items-center justify-center shadow-md shadow-amber-200">
-                3
+            <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center shadow-md shadow-amber-200">
+            3
               </div>
               <h3 className="text-amber-600 md:text-base text-xs">Select Seat</h3>
             </div>
@@ -310,7 +317,7 @@ const CinemaSeatBooking = () => {
                                       {reserved ? (
                                         <VscAccount className="text-gray-400 md:h-12 md:w-10 h-5 w-5 mx-1" />
                                       ) : isSelected ? (
-                                        <FaCircleCheck className="text-red-500 md:h-11 md:w-11 h-5 w-5" />
+                                        <FaCircleCheck className="text-white md:h-11 md:w-11 h-5 w-5" />
                                       ) : premiumRows.includes(row) ? (
                                         <SeatPremium />
                                       ) : (
@@ -333,7 +340,7 @@ const CinemaSeatBooking = () => {
 
               {/* Right Panel for Desktop */}
               {!isSmallScreenOne && (
-                <div className={`w-1/4 bg-zinc-700 p-2 rounded-lg shadow-md h-[750px] ${isSmallScreenTwo ? '' : ''}`}>
+                <div className={`w-1/4 bg-zinc-700 p-2 rounded-lg shadow-md h-[720px] ${isSmallScreenTwo ? '' : ''}`}>
                    <img
                       src={`https://image.tmdb.org/t/p/w500${movie?.poster_path}`}
                       alt="Movie Poster"
@@ -365,7 +372,7 @@ const CinemaSeatBooking = () => {
 
                   <div className="bg-zinc-800 rounded-xl p-4 w-full items-center text-center justify-cente mt-4">
                     <h3 className="text-sm font-bold text-white mb-2">Selected Seat</h3>
-                    <div className="mb-2 text-amber-500 font-bold text-2xl">
+                    <div className="mb-2 text-amber-500 font-bold text-lg">
                       {selectedSeats.length > 0 ? selectedSeats.join(", ") : "-"}
                     </div>
 
@@ -378,9 +385,11 @@ const CinemaSeatBooking = () => {
                         disabled={selectedSeats.length === 0 || isLoading}
                         onClick={handleSubmitBooking}
                         className={`w-full rounded rounded-3xl flex justify-center items-center font-medium transition-colors duration-300 ${
-                          selectedSeats.length === 0 || isLoading
+                          selectedSeats.length === 0
                             ? "bg-gradient-to-r from-amber-600 to-amber-400 py-2 text-white opacity-80 cursor-not-allowed"
-                            : "bg-gradient-to-r from-amber-600 to-amber-400 py-2 text-white hover:shadow-lg hover:shadow-amber-200"
+                            : isLoading
+                            ? "bg-gradient-to-r from-amber-600 to-amber-400 text-white cursor-not-allowed"
+                            : "bg-gradient-to-r from-amber-600 to-amber-400 py-2 text-white hover:shadow-md hover:shadow-amber-200"
                         }`}
                       >
                         {isLoading ? <Loading /> : "Continue"}
@@ -394,16 +403,16 @@ const CinemaSeatBooking = () => {
 
         {/* Mobile Fixed Bottom Panel */}
         {isSmallScreenOne && (
-          <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-amber-600 to-amber-400 p-2 border-t-2 border-gray-300">
+          <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-amber-600 to-amber-400 p-2 border-t-1 border-gray-300">
             <div className="flex justify-between items-center">
-              <div className="text-xs flex flex-col font-semibold">
+              <div className="text-sm flex flex-col font-semibold">
                 <p className="text-white mb-1">Selected Seat</p>
                 <div className="mb-2 text-white font-bold text-sm">
                   {selectedSeats.length > 0 ? selectedSeats.join(", ") : "-"}
                 </div>
               </div>
 
-              <div className="text-xs flex flex-col font-semibold text-right">
+              <div className="text-sm flex flex-col font-semibold text-right">
                 <p className="text-white mb-1">total</p>
                 <div className="mb-2 text-white font-bold text-sm">
                   {selectedSeats.length > 0 ? `${totalPrice} THB` : "O THB"}
@@ -418,7 +427,7 @@ const CinemaSeatBooking = () => {
                 onClick={handleSubmitBooking} 
                 className={`text-amber-500 w-full py-2 rounded-lg transition-colors duration-300  
                 ${selectedSeats.length === 0 || isLoading? 
-                "text-zinc-700 bg-amber-500 border-2  cursor-not-allowed" : 
+                "text-zinc-200 bg-amber-500 border-2 cursor-not-allowed" : 
                 "bg-white border-white border-2 hover:bg-amber-500 hover:text-white"}`}>
                 Continue
               </button>

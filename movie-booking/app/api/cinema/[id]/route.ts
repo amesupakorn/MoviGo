@@ -11,6 +11,12 @@ export async function GET(
     const cinema = await prisma.cinema.findUnique({
       where: { id },
       include: {
+        location:{
+          select:{
+            id: true,
+            name: true,
+          }
+        },
         showtimes: {
           select: {
             id: true,

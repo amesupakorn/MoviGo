@@ -95,7 +95,7 @@ const Navbar = () => {
             isMenuOpen ? "block" : "hidden"
           } md:flex flex-col md:flex-row md:justify-center mt-2 border-gray-200`}
         >
-       <ul className="flex flex-col md:flex-row md:space-x-6 text-gray-700 font-medium items-left space-y-2 md:space-y-0">
+       <ul className="flex flex-col md:flex-row md:space-x-6 px-2 text-gray-700 font-medium items-left space-y-2 md:space-y-0">
             {menus.map((menu) => {
                 const isActive = activeMenu === menu;
 
@@ -121,7 +121,7 @@ const Navbar = () => {
     
                 );
             })}
-               <li className="px-6 border-t-2 py-2 md:hidden">
+               <li className=" py-2 md:hidden">
                   <UserDropdown/>
                 </li>
             </ul>

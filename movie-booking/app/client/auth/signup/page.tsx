@@ -68,21 +68,19 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen">
-    <div className="flex justify-center items-center min-h-[100vh]">
-    <div className="flex flex-col md:flex-row items-center bg-white rounded-lg md:shadow-lg p-4  space-y-6 md:space-y-2 md:space-x-6">
+    <div className="flex justify-center items-center md:min-h-[100vh] min-h-[90vh]">
+        <div className="flex flex-col md:flex-row items-center rounded-lg md:shadow-lg md:bg-white p-6 space-y-6 md:space-y-2 md:space-x-6">
 
         <div className="hidden md:block ">
             <img
                 src="/image/login.jpg"
-                className="w-[610px] h-[500px]"
+                className="w-[510px] h-[500px]"
                 alt="login"
             />
         </div>
         {/* Form Section */}
-        <div className="w-full max-w-[400px]">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">Sign Up</h1>
-          <p className="text-gray-600 mb-6">Create your account</p>
+        <div className="w-full md:w-full md:max-w-[400px] space-y-4">
+        <h1 className="text-2xl font-bold md:text-gray-800 text-white mb-6">Hello! Register to get Started</h1>
 
           <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Username Input */}
@@ -93,11 +91,11 @@ export default function SignupPage() {
                 value={form.name}
                 onChange={handleChange}
                 placeholder="Username"
-                className="w-full pl-12 pr-4 py-3 rounded-2xl bg-gray-100 border border-gray-300 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
-              />
+                className="w-full pl-12 pr-4 py-3 rounded-xl bg-gray-100 border border-gray-300 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                />
               <div className="absolute inset-y-0 left-4 flex items-center">
                 <svg
-                  className="h-6 w-6 text-gray-500"
+                  className="h-6 w-6 text-gray-900"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -119,11 +117,11 @@ export default function SignupPage() {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="Email"
-                className="w-full pl-12 pr-4 py-3 rounded-2xl bg-gray-100 border border-gray-300 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                className="w-full pl-12 pr-4 py-3 rounded-xl bg-gray-100 border border-gray-300 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
               />
               <div className="absolute inset-y-0 left-4 flex items-center">
                 <svg
-                  className="h-6 w-6 text-gray-500"
+                  className="h-6 w-6  text-gray-900"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -146,11 +144,11 @@ export default function SignupPage() {
                 value={form.password}
                 onChange={handleChange}
                 placeholder="Password"
-                className="w-full pl-12 pr-4 py-3 rounded-2xl bg-gray-100 border border-gray-300 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                className="w-full pl-12 pr-4 py-3 rounded-xl bg-gray-100 border border-gray-300 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
               />
               <div className="absolute inset-y-0 left-4 flex items-center">
                 <svg
-                  className="h-6 w-6 text-gray-500"
+                  className="h-6 w-6  text-gray-900"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -173,11 +171,11 @@ export default function SignupPage() {
                 value={form.confirmPassword}
                 onChange={handleChange}
                 placeholder="Confirm Password"
-                className="w-full pl-12 pr-4 py-3 rounded-2xl bg-gray-100 border border-gray-300 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                className="w-full pl-12 pr-4 py-3 rounded-xl bg-gray-100 border border-gray-300 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
               />
               <div className="absolute inset-y-0 left-4 flex items-center">
                 <svg
-                  className="h-6 w-6 text-gray-500"
+                  className="h-6 w-6  text-gray-900"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -196,22 +194,21 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full rounded-3xl font-medium transition flex items-center justify-center ${
-                  isLoading ? "bg-gray-400 py-1 cursor-not-allowed" : "bg-gray-900  py-3 text-white hover:bg-gray-700"
+              className={`w-full rounded-xl font-medium transition flex items-center justify-center ${
+                  isLoading ? "bg-gray-600 py-1 cursor-not-allowed" : "bg-amber-500  py-3 text-white hover:bg-amber-600"
               }`}>
               {isLoading ? (  <Loading /> ) : ( "Sign Up" )}
             </button>
           </form>
 
-          <p className="text-gray-500 text-center mt-4">
+          <p className="md:text-gray-500 text-gray-200 text-center mt-4">
             Already have an account?{" "}
-            <Link href="login" className="text-gray-800 hover:underline">
+            <Link href="login" className="text-amber-500 hover:underline">
               Login
             </Link>
           </p>
         </div>
       </div>
-    </div>
     </div>
   );
 }
