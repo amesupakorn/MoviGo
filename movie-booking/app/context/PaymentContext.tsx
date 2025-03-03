@@ -1,43 +1,70 @@
 "use client";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import api from "@/lib/axios";
 
-import { createContext, useContext, ReactNode, useState } from "react";
-import Stripe from "stripe";
-
-type PaymentContextType = {
+interface PaymentContextProps {
   paymentStatus: string | null;
-  checkPaymentStatus: (sessionId: string) => Promise<void>;
-};
+  checkPaymentStatus: () => Promise<void>;
+  cancelBooking: () => void;
+}
 
-const PaymentContext = createContext<PaymentContextType | null>(null);
+const PaymentContext = createContext<PaymentContextProps | undefined>(undefined);
 
-export const usePayment = () => {
+export const usePaymentContext = () => {
   const context = useContext(PaymentContext);
   if (!context) {
-    throw new Error("usePayment must be used within a PaymentProvider");
+    throw new Error("usePaymentContext must be used within a PaymentProvider");
   }
   return context;
 };
 
 export const PaymentProvider = ({ children }: { children: ReactNode }) => {
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null); 
 
-  const checkPaymentStatus = async (sessionId: string) => {
+  useEffect(() => {
+    checkPaymentStatus(); 
+  }, []);
+
+  useEffect(() => {
+    if (paymentStatus && paymentStatus !== "complete" && sessionId) {
+      cancelBooking();
+    }
+  }, [paymentStatus, sessionId]); 
+
+  const checkPaymentStatus = async () => {
     try {
-      const stripe = new Stripe(process.env.STRIPE_PUBLISHABLE_KEY!);
-      const session = await stripe.checkout.sessions.retrieve(sessionId);
-      if (session.payment_status === "paid") {
-        setPaymentStatus("Payment Successful");
-      } else {
-        setPaymentStatus("Payment Failed");
+
+        const res_cookie = await api.get(`/cookie/`)
+        const cookie = res_cookie.data.session
+
+        if (!cookie) return;
+
+        setSessionId(cookie); 
+        // Fetch payment status from backend
+        const response = await api.get(`/payment/status`, { params: { cookie } });
+        setPaymentStatus(response.data.status);
+      } catch (error) {
+        console.error("Error checking payment status:", error);
+    }
+  };
+
+  // Function to cancel the booking if payment is not completed
+  const cancelBooking = async () => {
+    try {
+      if (paymentStatus !== "complete" && sessionId) {
+        await api.post("/booking/cancel", {
+          sessionId,
+        });
+        console.log("Booking canceled successfully.");
       }
     } catch (error) {
-      console.error("Error checking payment status:", error);
-      setPaymentStatus("Error checking payment status");
+      console.error("Error canceling booking:", error);
     }
   };
 
   return (
-    <PaymentContext.Provider value={{ paymentStatus, checkPaymentStatus }}>
+    <PaymentContext.Provider value={{ paymentStatus, checkPaymentStatus, cancelBooking }}>
       {children}
     </PaymentContext.Provider>
   );

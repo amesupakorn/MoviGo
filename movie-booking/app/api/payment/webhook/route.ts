@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
 
       // Handle successful payment
       try {
-        const order = await prisma.order.update({
+        await prisma.order.update({
           where: {
             session_id: sessionId,
           },
@@ -52,7 +52,6 @@ export async function POST(req: NextRequest) {
               where: {id: bookId},
               data: {
                 status: "paid",
-                orderId: order.id,
               },
           })
         }
@@ -65,7 +64,6 @@ export async function POST(req: NextRequest) {
       case "checkout.session.expired":
         case "payment_intent.payment_failed":    
         const canceledData = event.data.object;
-        console.log(canceledData)
         const canceledSessionId = canceledData.id;
         const bookIds = canceledData.metadata!.bookId?.split(",") || [];
 

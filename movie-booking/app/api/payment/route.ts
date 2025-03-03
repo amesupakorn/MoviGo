@@ -65,13 +65,24 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Failed to create Stripe session" }, { status: 500 });
     }
     // Update order in the database
-    await prisma.order.create({
+    const order = await prisma.order.create({
       data: {
         order_id: orderId,
         userId: userId,
         status: session.status!,
         totalAmount: totalAmount,
         session_id: session.id,
+      },
+    });
+
+    const bookIds = bookedSeats.map((booking) => booking.id);
+
+    await prisma.booking.updateMany({
+      where: {
+        id: { in: bookIds },
+      },
+      data: {
+        orderId: order.id,
       },
     });
 
