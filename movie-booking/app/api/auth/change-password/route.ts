@@ -28,7 +28,7 @@ export async function PUT(req: NextRequest) {
 
         const passwordMatch = await bcrypt.compare(oldPassword, user.password);
         if (!passwordMatch) {
-            return NextResponse.json({ error: "Incorrect old password" }, { status: 400 });
+            return NextResponse.json({ error: "Incorrect current password" }, { status: 400 });
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 10);

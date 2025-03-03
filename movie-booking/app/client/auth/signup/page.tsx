@@ -19,6 +19,9 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    setIsLoading(true);
+
+
     if (!form.name || !form.email || !form.password || !form.confirmPassword) {
       setError("Please fill out all fields.");
       setIsLoading(false);
@@ -46,8 +49,6 @@ export default function SignupPage() {
     }
 
 
-    setIsLoading(true);
-
 
     try {
       
@@ -57,22 +58,19 @@ export default function SignupPage() {
         router.push("/client/auth/login");
         setIsLoading(false);
 
-      }, 2000);
+      }, 1000);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.response?.data?.error || "Signup failed");
-      setIsLoading(false);
-    } finally{
-      setIsLoading(false);
     }
 
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="min-h-screen">
     <div className="flex justify-center items-center min-h-[100vh]">
-    <div className="flex flex-col md:flex-row items-center bg-white rounded-lg shadow-lg p-4  space-y-6 md:space-y-2 md:space-x-6">
+    <div className="flex flex-col md:flex-row items-center bg-white rounded-lg md:shadow-lg p-4  space-y-6 md:space-y-2 md:space-x-6">
 
         <div className="hidden md:block ">
             <img
@@ -200,13 +198,11 @@ export default function SignupPage() {
               disabled={isLoading}
               className={`w-full rounded-3xl font-medium transition flex items-center justify-center ${
                   isLoading ? "bg-gray-400 py-1 cursor-not-allowed" : "bg-gray-900  py-3 text-white hover:bg-gray-700"
-              }`}
-            >
+              }`}>
               {isLoading ? (  <Loading /> ) : ( "Sign Up" )}
             </button>
           </form>
 
-          {/* Footer */}
           <p className="text-gray-500 text-center mt-4">
             Already have an account?{" "}
             <Link href="login" className="text-gray-800 hover:underline">

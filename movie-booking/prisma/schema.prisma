@@ -44,16 +44,6 @@ model Showtime {
   Booking  Booking[]
 }
 
-model Seat {
-  id           String      @id @default(uuid())      // Primary key
-  row          String                                  // แถวที่นั่ง (A, B, C...)
-  number       Int                                     // หมายเลขที่นั่ง
-  price        Int
-  showtime     Showtime    @relation(fields: [showtimeId], references: [id])
-  showtimeId   String                                  // FK -> Showtime
-  isAvailable  Boolean     @default(true)             // สถานะของที่นั่ง (true=ว่าง, false=ถูกจอง)
-  Booking  Booking[]
-}
 
 model Booking {
   id           String      @id @default(uuid())     // Primary key
@@ -65,7 +55,24 @@ model Booking {
   seatId       String                                 // FK -> Seat
   status       String                                 // สถานะ (reserved, paid, canceled)
   createdAt    DateTime    @default(now())            // เวลาที่สร้าง
+  order        Order?      @relation(fields: [orderId], references: [id])
+  orderId      String?                               // FK -> Order
+
 }
+
+model Seat {
+  id           String      @id @default(uuid())      // Primary key
+  row          String                                  // แถวที่นั่ง (A, B, C...)
+  number       Int                                     // หมายเลขที่นั่ง
+  price        Int
+  showtime     Showtime    @relation(fields: [showtimeId], references: [id])
+  showtimeId   String                                  // FK -> Showtime
+  isAvailable  Boolean     @default(true)             // สถานะของที่นั่ง (true=ว่าง, false=ถูกจอง)
+  Booking  Booking[]
+
+  @@unique([row, number, showtimeId]) 
+}
+
 
 model User {
   id           String      @id @default(uuid())     // Primary key
@@ -75,4 +82,18 @@ model User {
   profileImage String?     @default("/uploads/profile-default.png") // รูปโปรไฟล์
   bookings     Booking[]                              // ความสัมพันธ์กับ Booking
   createdAt    DateTime    @default(now())           // เวลาที่สร้าง
+
+  Order Order[]
+}
+
+model Order {
+  id          String     @id @default(uuid())
+  order_id    String     @unique 
+  user        User       @relation(fields: [userId], references: [id])
+  userId      String     
+  status      String     
+  totalAmount Int       
+  session_id  String     @unique 
+  
+  booking     Booking[]  
 }

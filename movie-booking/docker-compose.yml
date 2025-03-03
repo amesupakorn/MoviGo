@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # Next.js application
+  nextjs:
+    build: .
+    container_name: nextjs-app
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env  
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=${DATABASE_URL}
+    volumes:
+      - .:/app
+    command: "pnpm run dev"
+    networks:
+      - app-network
+
+  # Stripe CLI for testing payments
+  stripe-cli:
+    image: node:18
+    container_name: stripe-cli
+    command: ["stripe", "login"]
+    environment:
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+    volumes:
+      - .:/app
+    networks:
+      - app-network
+    depends_on:
+      - nextjs
+
+networks:
+  app-network:
+    driver: bridge

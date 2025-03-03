@@ -1,0 +1,27 @@
+# ใช้ official Node.js image
+FROM node:18-alpine
+
+# ตั้ง working directory
+WORKDIR /app
+
+# ติดตั้ง pnpm ผ่าน npm (global)
+RUN npm install -g pnpm
+
+# คัดลอก package.json และ pnpm-lock.yaml (ถ้ามี)
+COPY package*.json ./
+COPY pnpm-lock.yaml ./
+
+# ติดตั้ง dependencies
+RUN pnpm install
+
+# คัดลอกทุกไฟล์จากโปรเจค
+COPY . .
+
+# สร้างแอปพลิเคชัน
+RUN pnpm build
+
+# เปิด port ที่แอปพลิเคชันจะฟัง
+EXPOSE 3000
+
+# สั่งให้รันแอปพลิเคชัน
+CMD ["pnpm", "start"]

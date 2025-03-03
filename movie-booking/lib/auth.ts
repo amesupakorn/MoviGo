@@ -14,6 +14,7 @@ if (!JWT_SECRET) {
  * @param authHeader - Authorization Header (`Bearer token`)
  * @returns SafeUser | null
  */
+
 export async function getUserFromToken(authHeader: string | null): Promise<SafeUser | null> {
     try {
         if (!authHeader || !authHeader.startsWith("Bearer ")) {

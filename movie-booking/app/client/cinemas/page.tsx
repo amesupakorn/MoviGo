@@ -9,7 +9,7 @@ import LoadTwo from "@/app/components/ui/loading/loadTwo";
 const LocationPage = () => {
   const [locations, setLocations] = useState<Location[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -43,19 +43,37 @@ const LocationPage = () => {
        
       <div className="container mx-auto max-w-5xl p-6">
 
-        <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl max-sm:text-2xl sm:text-2xl md:text-3xl font-bold">Cinemas Locations</h1>
+      <div className="flex items-center mb-6">
+        {/* Step 1 */}
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <div className="w-10 h-10 rounded-full bg-blue-500 border border-blue-400 text-white flex items-center justify-center shadow-lg shadow-blue-200">
+            1
+          </div>
+          <h3 className="text-blue-600 md:text-base text-xs">Select Location</h3>
         </div>
-        {error && <p className="text-red-500 text-center">{error}</p>}
 
-        <div className="flex items-center mb-6">
-              <div className="w-14 h-8 bg-blue-300 text-white rounded-full flex items-center justify-center">1</div>
-              <div className="w-full h-2 bg-gray-300"></div>
-              <div className="w-14 h-8 bg-gray-300 text-white rounded-full flex items-center justify-center">2</div>
-              <div className="w-full h-2 bg-gray-300"></div>
-              <div className="w-14 h-8 bg-gray-300 text-white rounded-full flex items-center justify-center">3</div>
+        {/* Line between steps */}
+        <div className="flex-1 h-1 transform -translate-y-4 bg-gray-300"></div>
+
+        {/* Step 2 */}
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <div className="w-10 h-10 bg-white text-gray-400 border-gray-400 border-2 rounded-full flex items-center justify-center">
+            2
+          </div>
+          <h3 className="text-blue-600 md:text-base text-xs">Select Showtime</h3>
         </div>
-          
+
+        {/* Line between steps */}
+        <div className="flex-1 h-1 transform -translate-y-4 bg-gray-300"></div>
+
+        {/* Step 3 */}
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <div className="w-10 h-10 bg-white text-gray-400 border-gray-400 border-2 rounded-full flex items-center justify-center">
+            3
+          </div>
+          <h3 className="text-blue-600 md:text-base text-xs">Select Seat</h3>
+        </div>
+      </div>
 
         <div className="flex flex-col space-y-4">
           {locations.map((location) => (

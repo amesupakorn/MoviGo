@@ -95,8 +95,8 @@ const Homepage = () => {
                                 key={category} 
                                 className={`cursor-pointer font-semibold relative text-sm flex items-center justify-center px-6 py-2 rounded-md transition-all duration-300 ${
                                     activeTab === category
-                                        ? "text-blue-500 font-semibold after:absolute after:w-full after:h-1 after:bg-blue-500 after:bottom-0 after:left-0 after:rounded-full"
-                                        : "hover:text-blue-500"
+                                        ? "text-amber-500 font-semibold after:absolute after:w-full after:h-1 after:bg-amber-500 after:bottom-0 after:left-0 after:rounded-full"
+                                        : "text-white hover:text-amber-500"
                                 }`}
                                 onClick={() => startTransition(() => setActiveTab(category as keyof typeof categories))}
                             >

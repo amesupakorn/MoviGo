@@ -1,2 +1,2 @@
 # MoviGo
-Movie Information and Theater Seat Booking System using TMDB API
+Movie Seat Booking System with TMDB API and Next.js

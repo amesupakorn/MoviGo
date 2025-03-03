@@ -1,6 +1,6 @@
 .loadtwo {
     --uib-size: 35px;
-    --uib-color: black;
+    --uib-color: rgb(255, 255, 255);
     --uib-speed: 1s;
     --uib-stroke: 3.5px;
     display: flex;
