@@ -25,10 +25,11 @@ const UserDropdown = () => {
           />
 
           <p
-            className="cursor-pointer md:hidden flex items-center justify-between"
+            className="px-6 cursor-pointer md:hidden md:text-white text-amber-500 border-b-2 border-gray-300  flex items-center justify-between"
             onClick={() => setIsDropdownOpenMobile(!isDropdownOpenMobile)} 
           >
             {user?.name}
+            <span className={`absolute left-0 bottom-0 w-full h-[3px] bg-amber-100 transition-all duration-300 rounded-md`}/>
             <svg
               className={`ml-2 w-4 h-4 transform transition-transform duration-300 ${
                 isDropdownOpenMobile ? "rotate-180" : "rotate-0"
@@ -131,7 +132,7 @@ const UserDropdown = () => {
         </div>
       ) : (
         <Link href="/client/auth/login">
-          <button className="bg-amber-500 w-full  text-white font-medium rounded-lg px-5 py-1.5 hover:bg-amber-600">
+          <button className="bg-amber-500 w-full  text-white font-medium rounded-lg px-5 py-1.5 hover:bg-ambwer-600">
             Login
           </button>
         </Link>
@@ -139,24 +140,39 @@ const UserDropdown = () => {
 
       {/* แสดงข้อมูลสำหรับหน้าจอเล็ก */}
       {isDropdownOpenMobile && (
-        <div className="text-gray-500">
+        <div>
 
-          <ul className="mt-2">
+          <ul className="mt-2 px-6">
                 <Link href="/client/profile/">
                   <li className="flex items-center cursor-pointer">
 
-                    <span className="ml-3 hover:text-blue-500 text-gray-500">Profile</span>
+                    <span className="ml-3 hover:text-amber-500 text-gray-200">Profile</span>
                   </li>
                 </Link>
-                <li className="flex items-center hover:text-blue-500 cursor-pointer mb-1">
-                  <span className="ml-3 text-gray-500">Booking History</span>
+                <li className="flex items-center hover:text-amber-500 cursor-pointer mb-1">
+                  <span className="ml-3 text-gray-200">Booking History</span>
                 </li>
 
                 <li
-                  className="flex items-center hover:text-blue-500 cursor-pointer border-t-2 mt-2 mb-2"
+                  className="flex items-center hover:text-amber-500 cursor-pointer mb-2 px-3"
                   onClick={logout}
                 >
-                  <span className="ml-3 text-red-500">Logout</span>
+                  <svg
+                    className="h-5 w-5 text-red-500"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" />
+                    <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+                    <path d="M7 12h14l-3 -3m0 6l3 -3" />
+                  </svg>
+                  <span className="ml-2 text-red-500">Logout</span>
                 </li>
               </ul>
         </div>

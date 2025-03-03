@@ -144,8 +144,9 @@ const CinemaSeatBooking = () => {
           status,          
         });
 
-  
-       if(res_booking.data.url){       
+       if(res_booking.data){       
+            await api.get(`/cookie/${res_booking.data.session}`);
+
             router.push(res_booking.data.url);
             setIsLoading(false);
        }
@@ -425,11 +426,14 @@ const CinemaSeatBooking = () => {
               <button  
                 disabled={selectedSeats.length === 0 || isLoading}
                 onClick={handleSubmitBooking} 
-                className={`text-amber-500 w-full py-2 rounded-lg transition-colors duration-300  
-                ${selectedSeats.length === 0 || isLoading? 
-                "text-zinc-200 bg-amber-500 border-2 cursor-not-allowed" : 
-                "bg-white border-white border-2 hover:bg-amber-500 hover:text-white"}`}>
-                Continue
+                className={`text-amber-500 w-full rounded-lg transition-colors duration-300  
+                ${selectedSeats.length === 0
+                ?  "text-zinc-200 bg-amber-500 border-2 cursor-not-allowed" 
+                : isLoading
+                ? "bg-white border-white border-2 hover:bg-amber-500 hover:text-white"
+                : "bg-white border-white border-2 py-2 hover:bg-amber-500 hover:text-white"}`}>
+
+                {isLoading ? <Loading /> : "Continue"}
               </button>
             </div>
           </div>

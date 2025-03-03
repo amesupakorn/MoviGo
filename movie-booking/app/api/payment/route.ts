@@ -16,6 +16,7 @@ export async function POST(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
   const user = await getUserFromToken(authHeader);
 
+
   if (!selectedSeats || !user || !bookedSeats) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }
@@ -63,8 +64,6 @@ export async function POST(req: NextRequest) {
     if (!session || !session.id) {
       return NextResponse.json({ error: "Failed to create Stripe session" }, { status: 500 });
     }
-
-    console.log("sddd")
     // Update order in the database
     await prisma.order.create({
       data: {
@@ -76,7 +75,8 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ url: session.url }, { status: 200 });
+
+    return NextResponse.json({ url: session.url, session: session.id }, { status: 200 });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("Error creating payment session:", error);
