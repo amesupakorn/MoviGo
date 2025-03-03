@@ -312,9 +312,9 @@ const LocationDetailPage = () => {
                               <button
                                 key={uniqueKey}
                                 className={`transition-colors duration-300 rounded-md border transition-all text-lg font-medium
-                                            px-3 py-0.5 text-[11px] 
+                                            px-3 py-0.5 text-[12px] 
                                             sm:px-6 sm:py-2 sm:text-[15px] 
-                                            md:px-8 md:py-2 md:text-[18px] ${
+                                            md:px-8 md:py-2 md:text-[16px] ${
                                             isPast
                                               ? "bg-gray-200 text-gray-400 cursor-not-allowed" // ❌ เวลาที่หมดแล้ว
                                               : isNearest
