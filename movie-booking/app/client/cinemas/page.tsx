@@ -36,8 +36,8 @@ const LocationPage = () => {
   return (
     <div>
       <div
-        className="w-auto h-[150px] max-sm:h-[150px] sm:h-[150px] md:h-[200px] lg:h-[200px] bg-cover bg-top relative inset-0 flex flex-col justify-center max-sm:mt-[40px] md:mt-[80px] lg:mt-24"
-        style={{ backgroundImage: `url("/uploads/cinema.jpg")` }}
+        className="w-auto h-[150px] max-sm:h-[150px] sm:h-[150px] md:h-[200px] lg:h-[350px] bg-cover bg-top relative inset-0 flex flex-col justify-center max-sm:mt-[40px] md:mt-[80px] lg:mt-24"
+        style={{ backgroundImage: `url("/uploads/cinema3.jpeg")` }}
       >
       </div>
        
@@ -57,7 +57,7 @@ const LocationPage = () => {
 
         {/* Step 2 */}
         <div className="flex flex-col items-center justify-center space-y-4">
-          <div className="w-10 h-10 bg-white text-gray-400 border-gray-400 border-2 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-white text-gray-400 border-gray-400 border-2 rounded-full flex items-center justify-center">
             2
           </div>
           <h3 className="text-amber-600 md:text-base text-xs">Select Showtime</h3>

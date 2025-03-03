@@ -15,6 +15,7 @@ import { VscAccount } from "react-icons/vsc";
 import Loading from "@/app/components/ui/loading/loadOne";
 import { useRouter } from "next/navigation";
 import { FaCheck } from "react-icons/fa6";
+import Link from "next/link";
 
 
 const CinemaSeatBooking = () => {
@@ -164,16 +165,19 @@ const CinemaSeatBooking = () => {
 
     <><div
       className="w-auto h-[150px] max-sm:h-[150px] sm:h-[150px] md:h-[200px] lg:h-[200px] bg-cover bg-top relative inset-0 flex flex-col justify-center max-sm:mt-[40px] md:mt-[80px] lg:mt-24"
-      style={{ backgroundImage: `url("/uploads/sfcinema-cosmobazaar.jpg")` }}
+      style={{ backgroundImage: `url("/uploads/cinema1.jpg")` }}
 
     ></div>
     <div className="container mx-auto max-w-5xl p-6 mt-4 bg-zinc-900">
       <div className="flex items-center ">
             {/* Step 1 */}
             <div className="flex flex-col items-center justify-center space-y-4">
+              <Link href={`/client/cinemas/`}>
               <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center ">
               <FaCheck />
               </div>
+              </Link>
+
               <h3 className="text-amber-600 md:text-base text-xs">Select Location</h3>
             </div>
     
@@ -182,9 +186,12 @@ const CinemaSeatBooking = () => {
     
             {/* Step 2 */}
             <div className="flex flex-col items-center justify-center space-y-4">
-              <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center ">
-              <FaCheck />
-              </div>
+              <Link href={`/client/cinemas/${cinema?.location.id}`}>
+                <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center ">
+                <FaCheck />
+                </div>
+              </Link>
+             
               <h3 className="text-amber-600 md:text-base text-xs">Select Showtime</h3>
             </div>
     

@@ -12,6 +12,8 @@ import timezone from "dayjs/plugin/timezone";
 import { IoIosTimer } from "react-icons/io";
 import { FaCheck } from "react-icons/fa6";
 import Link from "next/link";
+import { IoLocationSharp } from "react-icons/io5";
+
 
 
 const LocationDetailPage = () => {
@@ -113,22 +115,20 @@ const LocationDetailPage = () => {
   return (
     <div>
       <div
-        className="w-auto h-[150px] max-sm:h-[150px] sm:h-[150px] md:h-[200px] lg:h-[200px] bg-cover bg-top relative inset-0 flex flex-col justify-center max-sm:mt-[40px] md:mt-[80px] lg:mt-24"
-        style={{ backgroundImage: `url("/uploads/cinema.jpg")` }}
+        className="w-auto h-[150px] max-sm:h-[150px] sm:h-[150px] md:h-[200px] lg:h-[280px] bg-cover bg-top relative inset-0 flex flex-col justify-center max-sm:mt-[40px] md:mt-[80px] lg:mt-24"
+        style={{ backgroundImage: `url("/uploads/cinema2.jpg")` }}
       ></div>
-
       <div className="container mx-auto max-w-5xl p-6">
-
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-3xl text-white max-sm:text-2xl sm:text-2xl md:text-3xl font-bold">{location?.name}</h1>
-        </div>
+      
 
         <div className="flex items-center mb-6">
         {/* Step 1 */}
         <div className="flex flex-col items-center justify-center space-y-4">
+        <Link href={`/client/cinemas/`}>
           <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center ">
           <FaCheck />
           </div>
+          </Link>
           <h3 className="text-amber-600 md:text-base text-xs">Select Location</h3>
         </div>
 
@@ -148,8 +148,8 @@ const LocationDetailPage = () => {
 
         {/* Step 3 */}
         <div className="flex flex-col items-center justify-center space-y-4">
-          <div className="w-10 h-10 bg-white text-gray-400 border-amber-400 border-2 rounded-full flex items-center justify-center">
-            3
+        <div className="w-10 h-10 bg-white text-gray-400 border-gray-400 border-2 rounded-full flex items-center justify-center">
+        3
           </div>
           <h3 className="text-amber-600 md:text-base text-xs">Select Seat</h3>
         </div>
@@ -236,19 +236,30 @@ const LocationDetailPage = () => {
                             />
                           </div>
                         )}
+
                       
                         {/* ✅ รายละเอียดหนังและรอบฉาย */}
                         <div className="flex flex-col justify-start md:justify-between">
                           {firstShowtime && (
                             <div className="mb-2 md:mb-4">
-                              <p className="text-lg sm:text-xl md:text-2xl lg:text-2xl font-bold text-white mb-1">
+                              <p className="md:text-lg text-sm sm:text-xl md:text-2xl lg:text-2xl font-bold text-white mb-1">
                                 {firstShowtime.movie.title}
                               </p>
-                              <span className="mt-2 text-amber-500 flex items-center">
+                              <div className="flex md:flex-col md:text-base text-xs md:gap-0 gap-2">
+                                  <span className="mt-1 text-amber-500 flex items-center">
+                                  <IoLocationSharp className="mr-1"/>
+                                  {location.name}
+                                </span>
+                  
+                              <span className="mt-1 text-amber-400 flex items-center">
                                 <IoIosTimer className="mr-1" />
                                 {firstShowtime.movie.duration} mins
                               </span>
-                            </div>
+                              </div>
+                              <Link href={`/client/movie/${firstShowtime.movie.id}`}>
+                              <button className="md:mt-10 mt-5 px-8 py-2 border border-gray-300 md:text-base text-xs text-gray-300 rounded-lg hover:border-gray-400 hover:text-gray-400 transition-colors duration-300 ">Movie Details</button>
+                              </Link>
+                              </div>
                           )}
                         </div>
                       

@@ -103,7 +103,7 @@ const Homepage = () => {
                         return (
                             <li key={category} className="relative group">
                                 <div
-                                    className={`cursor-pointer relative text-sm flex items-left px-6 py-2 rounded-md transition-all duration-300 ${
+                                    className={`cursor-pointer relative md:text-sm text-xs flex items-left md:px-6 px-2 py-2 rounded-md transition-all duration-300 ${
                                         activeTab === category ? "text-amber-500 font-semibold" : "text-white"
                                     } hover:text-amber-500`}
                                     onClick={() => {
@@ -160,22 +160,22 @@ const Homepage = () => {
                                 </div>
 
                                 {/* Movie Detail (Hover) */}
-                                <div className="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-center text-white p-4">
+                                <div className="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-center text-white p-2">
                                     <IoMdPlayCircle className="w-8 h-8"/>
                                     <h3 className="text-lg font-bold mt-2">
 
                                     </h3>
                                     {moviesDetail[movie.id] ? (
-                                        <>
-                                            <p className="text-gray-300 text-sm">Runtime: {moviesDetail[movie.id]?.runtime} mins</p>
-                                            <p className="text-gray-300 text-sm">
-                                                Genres: {moviesDetail[movie.id]?.genres.map(g => g.name).join("/")}
-                                            </p>
-                                        </>
+                                        <div>
+                                            <p className="text-gray-300 md:text-base text-xs">Runtime: {moviesDetail[movie.id]?.runtime} mins</p>
+                                                <p className="text-gray-300 md:text-base text-xs w-s[15px]">
+                                                    Genres: {moviesDetail[movie.id]?.genres.map(g => g.name).join("/")}
+                                                </p>
+                                        </div>
                                     ) : (
                                         <p className="text-gray-400">Loading...</p>
                                     )}
-                                    <button className="mt-20 px-4 py-2 bg-white md:text-base text-xs text-black rounded-lg">More</button>
+                                    <button className="md:mt-20 mt-5 px-4 py-2 bg-white md:text-base text-xs text-black rounded-lg">More</button>
                                 </div>
                             </Link>
                         ))
