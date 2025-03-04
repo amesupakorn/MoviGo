@@ -110,7 +110,7 @@ const Navbar = () => {
             </div>
             {/* Results */}
             {searchResults && (
-              <div className="absolute left-1/2 transform -translate-x-1/2 w-full max-w-[600px] bg-zinc-800 mt-9 rounded-lg shadow-lg max-h-80 overflow-y-auto z-10">
+              <div className="absolute left-1/2 transform  -translate-x-1/2 w-full max-w-[600px] bg-zinc-800 mt-9 rounded-lg shadow-lg max-h-80 overflow-y-auto z-10 ">
                 {searchResults.results.length > 0 ? (
                   searchResults.results.map((movie) => (
                     <Link

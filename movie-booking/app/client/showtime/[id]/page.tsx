@@ -16,11 +16,13 @@ import Loading from "@/app/components/ui/loading/loadOne";
 import { useRouter } from "next/navigation";
 import { FaCheck } from "react-icons/fa6";
 import Link from "next/link";
-
+import { useAuth } from "@/app/context/setLogged"
 
 const CinemaSeatBooking = () => {
   const { id } = useParams();
   const router = useRouter();
+
+  const {isLoggedIn} = useAuth();
 
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]); 
   const [formattedDate, setFormattedDate] = useState<string | null>(null);
@@ -134,6 +136,14 @@ const CinemaSeatBooking = () => {
 
   const handleSubmitBooking = async () => {
     setIsLoading(true);
+
+    if(!isLoggedIn){
+      router.push("/client/auth/login")
+      setError("Please Login")
+      setIsLoading(false);
+      return
+
+    }
     const showtimeId = id;  
     const status = "reserved";
 
@@ -390,7 +400,7 @@ const CinemaSeatBooking = () => {
                             ? "bg-gradient-to-r from-amber-600 to-amber-400 py-2 text-white opacity-80 cursor-not-allowed"
                             : isLoading
                             ? "bg-gradient-to-r from-amber-600 to-amber-400 text-white cursor-not-allowed"
-                            : "bg-gradient-to-r from-amber-600 to-amber-400 py-2 text-white hover:shadow-md hover:shadow-amber-200"
+                            : "bg-gradient-to-r from-amber-600 to-amber-400 py-2 text-white hover:shadow-md hover:shadow-amber-400"
                         }`}
                       >
                         {isLoading ? <Loading /> : "Continue"}
