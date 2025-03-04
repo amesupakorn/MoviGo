@@ -15,7 +15,6 @@ import Link from "next/link";
 import { IoLocationSharp } from "react-icons/io5";
 
 
-
 const LocationDetailPage = () => {
   dayjs.extend(utc);
   dayjs.extend(timezone);
@@ -316,7 +315,7 @@ const LocationDetailPage = () => {
                                             sm:px-6 sm:py-2 sm:text-[15px] 
                                             md:px-8 md:py-2 md:text-[16px] ${
                                             isPast
-                                              ? "bg-gray-200 text-gray-400 cursor-not-allowed" // ❌ เวลาที่หมดแล้ว
+                                              ? "bg-gray-500 text-gray-400 cursor-not-allowed" // ❌ เวลาที่หมดแล้ว
                                               : isNearest
                                               ? "bg-gradient-to-r from-amber-500 to-amber-300 text-white" // ✅ ปุ่มที่ใกล้ที่สุด 
                                               : selectedTime === showtime.time

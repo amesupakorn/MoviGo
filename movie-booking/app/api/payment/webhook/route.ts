@@ -68,7 +68,6 @@ export async function POST(req: NextRequest) {
       const bookIds = canceledData.metadata!.bookId?.split(",") || [];
 
       try {
-c
         await prisma.order.update({
           where: { session_id: canceledSessionId, },
           data: {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma"; // Prisma client
-import { getUserFromToken } from "@/lib/auth"; // Helper function to get user from token
+import { getUserFromToken, SafeUser } from "@/lib/auth"; // Helper function to get user from token
 import axios from "axios";
 
 export async function POST(req: NextRequest) {
@@ -96,5 +96,46 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Error during seat booking:", error); // Log the error to help debug
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+export async function GET(req: NextRequest) {
+  try {
+    const authHeader = req.headers.get("authorization");
+        const user: SafeUser | null = await getUserFromToken(authHeader);
+
+        if (!user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+    // ดึงข้อมูลการจองทั้งหมด
+    const bookings = await prisma.booking.findMany({
+      where: {userId : user.id},
+      include: {
+        showtime: {
+          include: {
+            movie: true,
+            subCinema: {
+              include: {
+                location: true,
+              },
+            },
+          },
+        },
+        user: {
+          select: { id: true, name: true, email: true },
+        },
+        seat: true,
+        order: true,
+      },
+    });
+
+    return NextResponse.json({ success: true, booking: bookings });
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
+    return NextResponse.json(
+      { success: false, message: "Failed to fetch bookings" },
+      { status: 500 }
+    );
   }
 }
