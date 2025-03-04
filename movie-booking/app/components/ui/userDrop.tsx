@@ -101,10 +101,14 @@ const UserDropdown = () => {
                     <span className="ml-3 text-gray-700">Profile</span>
                   </li>
                 </Link>
+                
+                <Link href="/client/history/">
                 <li className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
                   <LuTicketCheck className="w-5 h-5" />
                   <span className="ml-3 text-gray-700">Booking History</span>
                 </li>
+                </Link>
+
                 <li
                   className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
                   onClick={logout}
@@ -145,13 +149,15 @@ const UserDropdown = () => {
           <ul className="mt-2 px-6">
                 <Link href="/client/profile/">
                   <li className="flex items-center cursor-pointer">
-
-                    <span className="ml-3 hover:text-amber-500 text-gray-200">Profile</span>
+                    <span className="ml-3 hover:text-blue-500 text-gray-500">Profile</span>
                   </li>
                 </Link>
-                <li className="flex items-center hover:text-amber-500 cursor-pointer mb-1">
-                  <span className="ml-3 text-gray-200">Booking History</span>
+
+                <Link href="/client/history/">
+                <li className="flex items-center hover:text-blue-500 cursor-pointer mb-1">
+                  <span className="ml-3 text-gray-500">Booking History</span>
                 </li>
+                </Link>
 
                 <li
                   className="flex items-center hover:text-amber-500 cursor-pointer mb-2 px-3"
