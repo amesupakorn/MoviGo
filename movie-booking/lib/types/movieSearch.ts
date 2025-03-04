@@ -5,7 +5,6 @@ export interface MovieSearchResult {
   }
   
   export interface MovieSearchResponse {
-    page: number;
     results: MovieSearchResult[];
   }
   
