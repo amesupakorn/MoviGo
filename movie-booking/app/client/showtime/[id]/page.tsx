@@ -35,7 +35,7 @@ const CinemaSeatBooking = () => {
   const [isSmallScreenOne, setIsSmallScreenOne] = useState(false);
   const [isSmallScreenTwo, setIsSmallScreenTwo] = useState(false);
 
-  const { setError, setSuccess } = useAlert();   
+  const { setError} = useAlert();   
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(true);
 

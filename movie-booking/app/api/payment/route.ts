@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { v4 as uuidv4 } from "uuid";
 import { prisma } from "@/lib/prisma";  // Prisma Client
-import { getUserFromToken } from "@/lib/auth"; // Helper function to get user from token
 import { Booking } from "@/lib/types/booking"
 import { console } from "inspector";
 import { User } from "@/lib/types/user";
