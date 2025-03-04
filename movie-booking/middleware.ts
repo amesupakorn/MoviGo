@@ -4,9 +4,16 @@ import type { NextRequest } from "next/server";
 export function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
 
-  const protectedRoutes = ["/history", "/profile"];
+  const protectedRoutes = ["/client/history", "/client/profile"];
 
   if (pathname.startsWith("/api/")) {
+    const referer = req.headers.get("referer") || "";
+    const userAgent = req.headers.get("user-agent") || "";
+
+    // ✅ อนุญาตให้ API เรียกใช้งานจากโค้ด (เช่น fetch, axios)
+    if (referer.includes("localhost:3000") || userAgent.includes("axios") || userAgent.includes("Postman")) {
+      return NextResponse.next();
+    }
     return NextResponse.redirect(new URL("/client/home", req.url));
   }
 
@@ -17,7 +24,7 @@ export function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL("/client/auth/login", req.url));
     }
 
-    console.log("✅ Middleware allowed access to booking-history");
+    console.log(" Middleware allowed access to booking-history");
   }
 
   return NextResponse.next(); 
@@ -25,5 +32,5 @@ export function middleware(req: NextRequest) {
 
 // 🟢 กำหนดให้ Middleware ใช้กับเฉพาะบางเส้นทาง
 export const config = {
-  matcher: ["/history", "/profile", "/api/:path*"],
+  matcher: ["/client/history", "/client/profile", "/api/:path*"],
 };
