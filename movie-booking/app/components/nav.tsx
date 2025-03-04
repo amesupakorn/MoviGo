@@ -2,12 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
 import UserDropdown from "./ui/userDrop";
 import { useEffect, useState } from "react";
+import api from "@/lib/axios";
+import { MovieSearchResponse } from "@/lib/types/movieSearch";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState<MovieSearchResponse | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
 
   const pathname = usePathname();
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
@@ -16,6 +20,32 @@ const Navbar = () => {
     const currentPath = pathname.split("/").pop()?.toUpperCase(); 
     setActiveMenu(currentPath || null);
   }, [pathname]);
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      if (!searchTerm.trim()) {
+        setSearchResults(null);
+        return;
+      }
+      setIsSearching(true);
+      try {
+        const response = await api.get(`/search`, {
+          params: { query: searchTerm, language: "en-US" },
+        });
+        setSearchResults(response.data);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+    const delayDebounceFn = setTimeout(fetchMovies, 500);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm]);
+
+  const handleSelectMovie = () => {
+    setSearchTerm("");
+  };
   
   const menus = ["HOME", "CINEMAS"];
 
@@ -53,14 +83,16 @@ const Navbar = () => {
           <svg className="md:hidden md:flex h-6 w-6 text-white"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />  <line x1="3" y1="6" x2="21" y2="6" />  <path d="M16 10a4 4 0 0 1-8 0" /></svg>
 
           {/* Search Bar */}
-          <div className="hidden md:flex flex-grow mx-8">
-            <div className="w-full max-w-[600px] mx-auto flex bg-zinc-700 rounded-lg overflow-hidden">
+          <div className="hidden md:flex flex-grow mx-8 relative">
+            <div className="w-full max-w-[600px] mx-auto flex bg-zinc-700 rounded-lg overflow-hidden relative">
               <input
                 type="text"
-                placeholder="Search here"
+                placeholder="Search movies..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="flex-grow bg-transparent outline-none px-4 py-2 text-white text-sm placeholder-gray-400"
               />
-              <button className=" hover:bg-zinc-800 px-3 flex items-center justify-center">
+              <div className="px-3 flex items-center justify-center">
                 <svg
                   className="h-5 w-5 text-white"
                   fill="none"
@@ -74,8 +106,27 @@ const Navbar = () => {
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                   />
                 </svg>
-              </button>
+              </div>
             </div>
+            {/* Results */}
+            {searchResults && (
+              <div className="absolute left-1/2 transform -translate-x-1/2 w-full max-w-[600px] bg-zinc-800 mt-9 rounded-lg shadow-lg max-h-80 overflow-y-auto z-10">
+                {searchResults.results.length > 0 ? (
+                  searchResults.results.map((movie) => (
+                    <Link
+                      key={movie.id}
+                      href={`/client/movie/${movie.id}`}
+                      onClick={handleSelectMovie}
+                      className="block px-4 py-2 text-white hover:bg-zinc-700"
+                    >
+                      {movie.title}
+                    </Link>
+                  ))
+                ) : (
+                  <p className="px-4 py-2 text-white">No results found</p>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Actions */}

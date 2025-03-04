@@ -309,27 +309,26 @@ const LocationDetailPage = () => {
                             const uniqueKey = `${cinema.id}-${showtime.id}`; // ✅ ป้องกัน key ซ้ำ
 
                             return (
-                              <Link key={uniqueKey} href={`/client/showtime/${showtime.id}`}
->
-                              <button
-                                key={uniqueKey}
-                                className={`transition-colors duration-300 rounded-md border transition-all text-lg font-medium
-                                            px-3 py-0.5 text-[11px] 
-                                            sm:px-6 sm:py-2 sm:text-[15px] 
-                                            md:px-8 md:py-2 md:text-[16px] ${
-                                            isPast
-                                              ? "bg-gray-500 text-gray-400 cursor-not-allowed" // ❌ เวลาที่หมดแล้ว
-                                              : isNearest
-                                              ? "bg-gradient-to-r from-amber-500 to-amber-300 text-white" // ✅ ปุ่มที่ใกล้ที่สุด 
-                                              : selectedTime === showtime.time
-                                              ? "border-amber-500 text-amber-500  bg-amber-100" // ✅ ปุ่มที่ถูกเลือก แต่ไม่ใช่ nearest
-                                              : "border-amber-500 text-amber-500  hover:bg-amber-100" // 🟡 ปุ่มปกติที่ hover ได้
-                                }`}
-                                onClick={() => !isPast && setSelectedTime(showtime.time)} 
-                                disabled={isPast}
-                                >
-                                {formattedTime}
-                              </button>
+                              <Link key={uniqueKey} href={`/client/showtime/${showtime.id}`}>
+                                <button
+                                  key={uniqueKey}
+                                  className={`transition-colors duration-300 rounded-md border transition-all text-lg font-medium
+                                              px-3 py-0.5 text-[11px] 
+                                              sm:px-6 sm:py-2 sm:text-[15px] 
+                                              md:px-8 md:py-2 md:text-[16px] ${
+                                              isPast
+                                                ? "bg-gray-500 text-gray-400 cursor-not-allowed" // ❌ เวลาที่หมดแล้ว
+                                                : isNearest
+                                                ? "bg-gradient-to-r from-amber-500 to-amber-300 text-white" // ✅ ปุ่มที่ใกล้ที่สุด 
+                                                : selectedTime === showtime.time
+                                                ? "border-amber-500 text-amber-500  bg-amber-100" // ✅ ปุ่มที่ถูกเลือก แต่ไม่ใช่ nearest
+                                                : "border-amber-500 text-amber-500  hover:bg-amber-100" // 🟡 ปุ่มปกติที่ hover ได้
+                                  }`}
+                                  onClick={() => !isPast && setSelectedTime(showtime.time)} 
+                                  disabled={isPast}
+                                  >
+                                  {formattedTime}
+                                </button>
                               </Link>
                               );
                               });
