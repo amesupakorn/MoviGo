@@ -19,10 +19,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         const fetchUser = async () => {
-            const token = localStorage.getItem("token");
+            const res_token = await api.get("/cookie/token/")
+            const token = res_token.data.token
+            
             if (token) {
                 try {
-                    const response = await api.get(`/profile`)                    
+                    const response = await api.get(`/profile`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
                     setIsLoggedIn(true);
                     setUser({
                         name: response.data.user.name,
@@ -39,8 +43,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         fetchUser();
     }, []);
 
-    const logout = () => {
-        localStorage.removeItem("token");
+    const logout = async () => {
+        await api.post("/auth/logout")
         setIsLoggedIn(false);
         setUser(null);
         window.location.href = "/client/auth/login";
@@ -48,23 +52,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const updateNavName = (name: string) => {
         setUser((prev) =>
-            prev
-                ? {
-                      ...prev,
-                      name,
-                  }
-                : null
+            prev ? { ...prev, name } : null
         );
     };
     
     const updateNavProfileImage = (profileImage: string) => {
         setUser((prev) =>
-            prev
-                ? {
-                      ...prev,
-                      profileImage: `${profileImage}?t=${Date.now()}`, 
-                  }
-                : null
+            prev ? { ...prev, profileImage: `${profileImage}?t=${Date.now()}` } : null
         );
     };
 

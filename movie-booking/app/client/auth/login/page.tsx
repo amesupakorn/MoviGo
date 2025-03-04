@@ -5,6 +5,7 @@ import Link from "next/link";
 import Loading from "@/app/components/ui/loading/loadOne";
 import { useAlert } from "@/app/context/AlertContext";
 import axios from "axios"; // ใช้ axios ปกติ
+import api from "@/lib/axios";
 
 
 export default function LoginPage() {
@@ -41,7 +42,8 @@ export default function LoginPage() {
     try {
         const response = await axios.post("/api/auth/login", form);
 
-        localStorage.setItem("token", response.data.token);
+        await api.get(`/cookie/token/${response.data.token}`)
+        
         setSuccess("Login successful! Redirecting to home...");
 
         setTimeout(() => {

@@ -1,17 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma"; // Prisma client
-import { getUserFromToken, SafeUser } from "@/lib/auth"; // Helper function to get user from token
+import { getUserFromToken } from "@/lib/auth"; // Helper function to get user from token
 import axios from "axios";
+import { cookies } from "next/headers";
 
 export async function POST(req: NextRequest) {
   try {
     const { selectedSeats, showtimeId, status }: { selectedSeats: string[], showtimeId: string, status: string } = await req.json();
     
-    // Get user info from the request header
-    const authHeader = req.headers.get("authorization");
-    const user = await getUserFromToken(authHeader);
-    const token = authHeader!.split(" ")[1];  
-
+    const user = await getUserFromToken();
+    const cookieStore = await cookies(); 
+    const token = cookieStore.get("token")?.value; 
     
     if (!selectedSeats || !showtimeId || !user || !user.id || !status) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -80,6 +79,7 @@ export async function POST(req: NextRequest) {
         selectedSeats,   
         bookedSeats,
         showtimeId,
+        user,
       }, {
         headers: {
           Authorization: `Bearer ${token}`,  
@@ -99,42 +99,48 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    const authHeader = req.headers.get("authorization");
-        const user: SafeUser | null = await getUserFromToken(authHeader);
+    const user = await getUserFromToken();
 
-        if (!user) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-    // ดึงข้อมูลการจองทั้งหมด
-    const bookings = await prisma.booking.findMany({
-      where: {userId : user.id},
+    // ดึงข้อมูลประวัติการจองจากตาราง Order
+    const orders = await prisma.order.findMany({
+      where: { 
+        userId: user.id,
+        status: "complete"
+      },
       include: {
-        showtime: {
+        booking: {
           include: {
-            movie: true,
-            subCinema: {
+            showtime: {
               include: {
-                location: true,
+                movie: true,
+                subCinema: {
+                  include: {
+                    location: true,
+                  },
+                },
               },
             },
+            seat: true,
           },
         },
         user: {
           select: { id: true, name: true, email: true },
         },
-        seat: true,
-        order: true,
       },
     });
 
-    return NextResponse.json({ success: true, booking: bookings });
+    return NextResponse.json({ orders: orders }, { status: 200 }
+    );
   } catch (error) {
-    console.error("Error fetching bookings:", error);
+    console.error("Error fetching orders:", error);
     return NextResponse.json(
-      { success: false, message: "Failed to fetch bookings" },
+      { success: false, message: "Failed to fetch orders" },
       { status: 500 }
     );
   }

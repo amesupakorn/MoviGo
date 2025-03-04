@@ -5,16 +5,14 @@ import { prisma } from "@/lib/prisma";  // Prisma Client
 import { getUserFromToken } from "@/lib/auth"; // Helper function to get user from token
 import { Booking } from "@/lib/types/booking"
 import { console } from "inspector";
+import { User } from "@/lib/types/user";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-02-24.acacia", 
 });
 
 export async function POST(req: NextRequest) {
-  const { selectedSeats, bookedSeats, showtimeId }: { selectedSeats: string[], bookedSeats: Booking[], showtimeId: string } = await req.json();
-
-  const authHeader = req.headers.get("authorization");
-  const user = await getUserFromToken(authHeader);
+  const { selectedSeats, bookedSeats, showtimeId, user }: { selectedSeats: string[], bookedSeats: Booking[], showtimeId: string, user : User } = await req.json();
 
 
   if (!selectedSeats || !user || !bookedSeats) {

@@ -143,7 +143,7 @@ const Homepage = () => {
                                 />
                                 <div className="p-2 flex flex-col justify-end flex-grow">
 
-                                    <h3 className="text-xs md:text-lg font-bold">
+                                    <h3 className="text-xs md:text-base font-bold">
                                         {isSmallScreen && movie?.title?.length > 9
                                             ? `${movie.title.substring(0, 9)}...`
                                             : movie?.title}

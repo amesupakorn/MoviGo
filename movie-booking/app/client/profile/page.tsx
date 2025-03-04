@@ -13,7 +13,6 @@ export default function ProfilePage() {
     const [user, setUser] = useState<User | null>(null);
     const { updateNavName, updateNavProfileImage } = useAuth();
 
-    const [token, setToken] = useState<string | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [, setSelectedFile] = useState<File | null>(null);
     const {setError, setSuccess} = useAlert();
@@ -22,31 +21,21 @@ export default function ProfilePage() {
     });
 
     useEffect(() => {
-        if (typeof window !== "undefined") {
-            const storedToken = localStorage.getItem("token");
-            setToken(storedToken);
-        }
-    }, []);
-
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                if (token) {
+            const fetchUserData = async () => {
+                try {
                     const response = await api.get(`/profile`)
                     if (response.data.user) {
                         setUser(response.data.user);
                         setEditedUser({ name: response.data.user.name });
                     }
                 }
-            } catch (error) {
-                console.error("Failed to fetch user data:", error);
+                catch (error) {
+                    console.error("Failed to fetch user data:", error);
+                }
             }
-        };
-
-        if (token) {
             fetchUserData();
-        }
-    }, [token]);
+    }, []);
+
 
     const handleEdit = () => {
         setIsEditing(true);
@@ -89,14 +78,13 @@ export default function ProfilePage() {
 
     const handleSave = async () => {
         try {
-            if (token) {
                 const response = await api.put(`/profile`, editedUser);
                 updateNavName(response.data.user.name);
 
                 setSuccess("Edit your profile success");
                 setIsEditing(false);
             }
-        } catch (error) {
+         catch (error) {
             setError("Failed to update profile");
             console.error("Failed to update profile:", error);
         }
@@ -104,7 +92,7 @@ export default function ProfilePage() {
 
     return (
         <div className="mt-12 md:mt-32 flex flex-col justify-center items-center">
-            <div className="w-full  md:w-[1000px] md:p-12 p-10  items-center text-white rounded-xs md:rounded-xl bg-gradient-to-r from-amber-600 to-amber-400 ">
+            <div className="w-full  md:w-[850px] md:p-12 p-10  items-center text-white rounded-xs md:rounded-xl bg-gradient-to-r from-amber-600 to-amber-400 ">
                 <div className="flex flex-row">
                     <img
                             src={user?.profileImage}
