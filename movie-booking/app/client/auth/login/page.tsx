@@ -25,18 +25,20 @@ export default function LoginPage() {
     // ตรวจสอบข้อมูลที่กรอก
     if (!form.email || !form.password) {
         setError("Please enter both email and password.");
+        setIsLoading(false);
+
         return;
     }
 
     const emailRegex = /\S+@\S+\.\S+/;
     if (!emailRegex.test(form.email)) {
         setError("Invalid email format.");
+        setIsLoading(false);
+
         return;
     }
 
-
     try {
-      setIsLoading(true);
         const response = await axios.post("/api/auth/login", form);
 
         localStorage.setItem("token", response.data.token);

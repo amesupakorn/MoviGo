@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
 
 
     if (paymentResponse?.data?.url) {
-      return NextResponse.json({ url: paymentResponse.data.url }, { status: 200 });
+      return NextResponse.json({ url: paymentResponse.data.url, session: paymentResponse.data.session }, { status: 200 });
     } else {
       return NextResponse.json({ error: 'Payment session creation failed' }, { status: 500 });
     }

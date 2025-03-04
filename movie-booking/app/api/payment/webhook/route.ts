@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
 
       // Handle successful payment
       try {
-        const order = await prisma.order.update({
+        await prisma.order.update({
           where: {
             session_id: sessionId,
           },
@@ -52,7 +52,6 @@ export async function POST(req: NextRequest) {
               where: {id: bookId},
               data: {
                 status: "paid",
-                orderId: order.id,
               },
           })
         }
@@ -63,58 +62,59 @@ export async function POST(req: NextRequest) {
       break;
 
       case "checkout.session.expired":
-      const canceledData = event.data.object;
-      const canceledSessionId = canceledData.id;
-      const bookIds = canceledData.metadata!.bookId?.split(",") || [];
+        case "payment_intent.payment_failed":    
+        const canceledData = event.data.object;
+        const canceledSessionId = canceledData.id;
+        const bookIds = canceledData.metadata!.bookId?.split(",") || [];
 
-      try {
-        await prisma.order.update({
-          where: { session_id: canceledSessionId, },
-          data: {
-            status: canceledData.status!,  
-          },
-        });
+        try {
+          await prisma.order.updateMany({
+            where: { session_id: canceledSessionId, },
+            data: {
+              status: canceledData.status!,  
+            },
+          });
 
 
-        for (const bookId of bookIds) {
-            const bookings = await prisma.booking.findMany({
-              where: {
-                id: { in: bookIds }, 
-              },
-              select: {
-                id: true,
-                seatId: true,
-              },
-            });
+          for (const bookId of bookIds) {
+              const bookings = await prisma.booking.findMany({
+                where: {
+                  id: { in: bookIds }, 
+                },
+                select: {
+                  id: true,
+                  seatId: true,
+                },
+              });
+            
+              const seatIds = bookings.map(booking => booking.seatId); 
+            
+              await prisma.seat.updateMany({
+                where: {
+                  id: { in: seatIds }, 
+                },
+                data: {
+                  isAvailable: true, 
+                },
+              });
           
-            const seatIds = bookings.map(booking => booking.seatId); 
+              console.log("Seats are now available again.");
           
-            await prisma.seat.updateMany({
-              where: {
-                id: { in: seatIds }, 
-              },
-              data: {
-                isAvailable: true, 
-              },
-            });
-        
-            console.log("Seats are now available again.");
-        
-            await prisma.booking.update({
-              where: {id: bookId},
-              data: {
-                status: "cancels",
-              },
-            })
+              await prisma.booking.update({
+                where: {id: bookId},
+                data: {
+                  status: "cancels",
+                },
+              })
 
-            console.log(`Booking with ID ${bookId} is status cancels`);
-          }
-          
+              console.log(`Booking with ID ${bookId} is status cancels`);
+            }
+            
 
-      } catch (err) {
-        console.error("Error handling cancellation:", err);
-      }
-      break;
+        } catch (err) {
+          console.error("Error handling cancellation:", err);
+        }
+        break;
 
     default:
       console.log(`Unhandled event type ${event.type}`);

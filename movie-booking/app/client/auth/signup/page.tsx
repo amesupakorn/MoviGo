@@ -31,20 +31,28 @@ export default function SignupPage() {
     const emailRegex = /\S+@\S+\.\S+/;
     if (!emailRegex.test(form.email)) {
         setError("Invalid email format.");
+        setIsLoading(false);
+
         return;
     }
     if (form.name.length < 3){
       setError("Username must be at least 3 characters long.");
+      setIsLoading(false);
+
       return;
     }
 
     if (form.password.length < 6) {
       setError("Password must be at least 6 characters long.");
+      setIsLoading(false);
+
       return;
     }
 
     if (form.password !== form.confirmPassword) {
       setError("Passwords do not match");
+      setIsLoading(false);
+
       return;
     }
 
