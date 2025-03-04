@@ -244,21 +244,24 @@ const LocationDetailPage = () => {
                               <p className="md:text-lg text-sm sm:text-xl md:text-2xl lg:text-2xl font-bold text-white mb-1">
                                 {firstShowtime.movie.title}
                               </p>
-                              <div className="flex md:flex-col md:text-base text-xs md:gap-0 gap-2">
-                                  <span className="mt-1 text-amber-500 flex items-center">
-                                  <IoLocationSharp className="mr-1"/>
-                                  {location.name}
-                                </span>
-                  
-                              <span className="mt-1 text-amber-400 flex items-center">
-                                <IoIosTimer className="mr-1" />
-                                {firstShowtime.movie.duration} mins
-                              </span>
-                              </div>
+                                <div className="flex md:flex-col md:text-base text-xs md:gap-0 gap-2">
+                                    <span className="mt-1 text-amber-500 flex items-center">
+                                    <IoLocationSharp className="mr-1"/>
+                                    {location.name}
+                                  </span>
+                      
+                                  <span className="mt-1 text-amber-400 flex items-center">
+                                    <IoIosTimer className="mr-1" />
+                                    {firstShowtime.movie.duration} mins
+                                  </span>
+                                </div>
+                              
                               <Link href={`/client/movie/${firstShowtime.movie.id}`}>
-                              <button className="md:mt-10 mt-5 px-8 py-2 border border-gray-300 md:text-base text-xs text-gray-300 rounded-lg hover:border-gray-400 hover:text-gray-400 transition-colors duration-300 ">Movie Details</button>
+                                <button className="md:mt-10 mt-5 md:px-8 py-2 px-6 border border-gray-300 md:text-base text-xs text-gray-300 rounded-lg hover:border-gray-400 hover:text-gray-400 transition-colors duration-300 ">
+                                  Movie Details
+                                </button>
                               </Link>
-                              </div>
+                            </div>
                           )}
                         </div>
                       
@@ -311,7 +314,7 @@ const LocationDetailPage = () => {
                               <button
                                 key={uniqueKey}
                                 className={`transition-colors duration-300 rounded-md border transition-all text-lg font-medium
-                                            px-3 py-0.5 text-[12px] 
+                                            px-3 py-0.5 text-[11px] 
                                             sm:px-6 sm:py-2 sm:text-[15px] 
                                             md:px-8 md:py-2 md:text-[16px] ${
                                             isPast
