@@ -80,7 +80,7 @@ const LocationPage = () => {
             <Link  key={location.id}  href={`cinemas/${location.id}`}>
                 <div
                   key={location.id}
-                  className="bg-zinc-800 p-6 shadow-md border border-gray-300 rounded-3xl flex justify-between cursor-pointer hover:bg-zinc-500 border border-gray-200 border-[1px]"
+                  className="bg-zinc-800 p-6 shadow-md rounded-3xl flex justify-between cursor-pointer hover:bg-zinc-500 border border-gray-200 border-[1px]"
                 >
                   <h2 className="text-white text-xl sm:text-lg max-sm:text-sm font-bold mb-2">{location.name}</h2>
                   <p className="text-gray-300 text-sm max-sm:text-xs">{location.address}</p>
