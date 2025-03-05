@@ -89,7 +89,7 @@ const BookingHistory = () => {
   }, {} as Record<string, any>);
 
   return (
-    <div className="max-w-4xl mx-auto p-6 mt-10">
+    <div className="max-w-4xl mx-auto p-6 mt-20 max-sm:mt-[40px]">
       <h2 className="text-lg md:text-xl text-white font-bold mb-4">BOOKING HISTORY</h2>
       <div className="space-y-4">
         {Object.values(groupedBookings).map((booking, index) => {
