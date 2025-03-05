@@ -6,16 +6,16 @@ export function middleware(req: NextRequest) {
 
   const protectedRoutes = ["/client/history", "/client/profile"];
 
-  if (pathname.startsWith("/api/")) {
-    const referer = req.headers.get("referer") || "";
-    const userAgent = req.headers.get("user-agent") || "";
+  // if (pathname.startsWith("/api/")) {
+  //   const referer = req.headers.get("referer") || "";
+  //   const userAgent = req.headers.get("user-agent") || "";
 
-    // ✅ อนุญาตให้ API เรียกใช้งานจากโค้ด (เช่น fetch, axios)
-    if (referer.includes("localhost:3000") || userAgent.includes("axios") || userAgent.includes("Postman")) {
-      return NextResponse.next();
-    }
-    return NextResponse.redirect(new URL("/client/home", req.url));
-  }
+  //   // ✅ อนุญาตให้ API เรียกใช้งานจากโค้ด (เช่น fetch, axios)
+  //   if (referer.includes("localhost:3000") || userAgent.includes("axios") || userAgent.includes("Postman")) {
+  //     return NextResponse.next();
+  //   }
+  //   return NextResponse.redirect(new URL("/client/home", req.url));
+  // }
 
   if (protectedRoutes.includes(pathname)) {
     const token = req.cookies.get("token")?.value;

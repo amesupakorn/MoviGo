@@ -18,7 +18,11 @@ import { FaCheck } from "react-icons/fa6";
 import Link from "next/link";
 import { useAuth } from "@/app/context/setLogged"
 
+const socket = new WebSocket("ws://localhost:3001");
+
+
 const CinemaSeatBooking = () => {
+  
   const { id } = useParams();
   const router = useRouter();
 
@@ -63,30 +67,20 @@ const CinemaSeatBooking = () => {
       try {
         const response = await api.get(`/showtime/${id}`);
         setShowtime(response.data);
-
+  
         const cinemaResponse = await api.get(`/cinema/${response.data.subCinemaId}`);
         const movieResponse = await api.get(`/movies/${response.data.movieId}`);
         const seatResponse = await api.get(`/seats/${id}`);
 
-        if(cinemaResponse){
-          setCinema(cinemaResponse.data);
-        }
-        if(movieResponse){
-          setMovie(movieResponse.data);
-        }
-        if(seatResponse.data){
-          setSeat(seatResponse.data);
-        }
+        await api.get("/socket");
 
-        const date = new Date(response.data.date); 
-        const dateStr = date.toLocaleDateString("en-GB", {
-          day: "2-digit",
-          month: "long",
-          year: "numeric",
-        });
-
-        setFormattedDate(dateStr);
-
+  
+        if(cinemaResponse) setCinema(cinemaResponse.data);
+        if(movieResponse) setMovie(movieResponse.data);
+        if(seatResponse.data) setSeat(seatResponse.data);
+  
+        const date = new Date(response.data.date);
+        setFormattedDate(date.toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" }));
       } catch (err) {
         setError("Failed to fetch location details.");
         console.error(err);
@@ -94,10 +88,61 @@ const CinemaSeatBooking = () => {
         setLoading(false);
       }
     };
-
+  
     fetchShowtime();
+  
   }, [id]);
 
+
+  // รับข้อมูลจาก socket
+  useEffect(() => {  
+
+     socket.onmessage = async (event) => {
+    try {
+      let seatData;
+      if (event.data instanceof Blob) {
+        const text = await event.data.text();
+        seatData = JSON.parse(text);
+      } else {
+        seatData = JSON.parse(event.data);
+      }
+
+      setSeat((prevSeats) => {
+        if (!Array.isArray(prevSeats)) {
+          return [];
+        }
+
+        if (seatData.action === "release") {
+          console.log("ddd")
+          return prevSeats.filter(seat => !(seat.row === seatData.row && seat.number === seatData.number));
+        }
+
+        return [
+          ...prevSeats,
+          {
+            id: `temp-${seatData.row}${seatData.number}`,
+            row: seatData.row,
+            number: seatData.number,
+            isAvailable: false,
+            price: seatData.price || 320,
+            showtimeId: id as string,
+          },
+        ];
+      });
+
+    } catch (error) {
+      console.error("❌ Error parsing WebSocket message:", error);
+    }
+  };
+
+  socket.onclose = () => {
+    console.log("❌ WebSocket disconnected!");
+  };
+
+  return () => {
+    socket.close();
+  };
+}, []);
 
 
   const rows = ["L", "K", "J", "H", "G", "F", "E", "D", "C", "B", "A"];
@@ -136,37 +181,55 @@ const CinemaSeatBooking = () => {
 
   const handleSubmitBooking = async () => {
     setIsLoading(true);
-
-    if(!isLoggedIn){
-      router.push("/client/auth/login")
-      setError("Please Login")
+  
+    if (!isLoggedIn) {
+      router.push("/client/auth/login");
+      setError("Please Login");
       setIsLoading(false);
-      return
-
+      return;
     }
-    const showtimeId = id;  
+  
+    const showtimeId = id;
     const status = "reserved";
-
+  
     try {
-        const res_booking = await api.post('/booking', {
-          showtimeId,     
-          selectedSeats,  
-          status,          
-        });
-
-       if(res_booking.data){       
-            await api.get(`/cookie/${res_booking.data.session}`);
-
-            router.push(res_booking.data.url);
-            setIsLoading(false);
-       }
+      const res_booking = await api.post("/booking", {
+        showtimeId,
+        selectedSeats,
+        status,
+      });
   
+      if (res_booking.data) {
+        await api.get(`/cookie/${res_booking.data.session}`);
   
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      setError('Something went wrong. Please try again.');
+
+
+        if (res_booking.data) {
+          await api.get(`/cookie/${res_booking.data.session}`);
+    
+          selectedSeats.forEach((seat) => {
+            const row = seat.charAt(0);
+            const number = parseInt(seat.slice(1), 10);
+            const seatData = JSON.stringify({
+              row,
+              number,
+              price: premiumRows.includes(row) ? 350 : 320,
+            });
+    
+            // Ensure WebSocket connection is open before sending
+            if (socket.readyState === WebSocket.OPEN) {
+              socket.send(seatData);
+            }
+          });
+
+  
+        router.push(res_booking.data.url);
+        setIsLoading(false);
+      }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+    }} catch (error:any) {
+      setError("Something went wrong. Please try again.");
       setIsLoading(false);
-
     }
   };
 
@@ -440,7 +503,7 @@ const CinemaSeatBooking = () => {
                 onClick={handleSubmitBooking} 
                 className={`text-amber-500 w-full rounded-lg transition-colors duration-300  
                 ${selectedSeats.length === 0
-                ?  "text-zinc-200 bg-amber-500 border-2 cursor-not-allowed" 
+                ?  "text-zinc-200 bg-amber-500 py-2 border-2 cursor-not-allowed" 
                 : isLoading
                 ? "bg-white border-white border-2 hover:bg-amber-500 hover:text-white"
                 : "bg-white border-white border-2 py-2 hover:bg-amber-500 hover:text-white"}`}>
