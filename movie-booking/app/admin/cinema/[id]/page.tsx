@@ -118,7 +118,7 @@ const AddCinema = () => {
             key={cinema.id}
             className="bg-white p-6 border border-gray-300 rounded-3xl flex justify-between items-center cursor-pointer hover:bg-gray-100"
           >
-            <Link href={`/admin/addShowtime/${cinema.id}`} className="flex-grow">
+            <Link href={`/admin/showtime/${cinema.id}`} className="flex-grow">
               <h3 className="text-black text-sm font-bold mb-2">{cinema.name}</h3>
               <p className="text-gray-600 text-sm max-sm:text-xs">Type: {cinema.type}</p>
             </Link>

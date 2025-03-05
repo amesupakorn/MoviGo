@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Calendar, PlusCircle, LogOut, XCircle } from "lucide-react";
+import { Calendar, PlusCircle, LogOut } from "lucide-react";
 
 const AdminSidebar = () => {
   const pathname = usePathname();
@@ -37,9 +37,9 @@ const AdminSidebar = () => {
             </Link>
 
             <Link
-              href="/admin/addLocation"
+              href="/admin/location"
               className={`flex items-center px-4 py-2 rounded-lg font-medium ${
-                pathname === "/admin/addLocation"
+                pathname === "/admin/location"
                   ? "bg-amber-100 text-amber-600"
                   : "text-gray-700 hover:bg-amber-50 hover:text-amber-600"
               }`}

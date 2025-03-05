@@ -131,7 +131,7 @@ const AddLocation = () => {
                             key={location.id}
                             className="bg-white p-6 border border-gray-300 rounded-3xl flex justify-between items-center cursor-pointer hover:bg-gray-100"
                         >
-                            <Link href={`/admin/addCinema/${location.id}`} className="flex-grow">
+                            <Link href={`/admin/cinema/${location.id}`} className="flex-grow">
                                 <h2 className="text-black text-sm font-bold mb-2">{location.name}</h2>
                                 <p className="text-gray-600 text-sm max-sm:text-xs">{location.address}</p>
                             </Link>
