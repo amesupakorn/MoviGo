@@ -2,14 +2,17 @@ import { useState, useEffect } from "react";
 import { Dispatch, SetStateAction } from "react";
 import api from "@/lib/axios"; // Ensure correct API import
 import { Movie, MovieResponse, MovieDetail } from "@/lib/types/movie";
+import { Cinema } from "@/lib/types/booking";
+import { useAlert } from "@/app/context/AlertContext";
 
 interface AddShowtimeProps {
   isPopupOpen: boolean;
   setIsPopupOpen: Dispatch<SetStateAction<boolean>>;
-  cinemaId: string; 
+  cinemaId: string | string[] | undefined; 
+  setCinema: Dispatch<SetStateAction<Cinema | null>>; 
 }
 
-const CreateShowtime: React.FC<AddShowtimeProps> = ({ isPopupOpen, setIsPopupOpen }) => {
+const CreateShowtime: React.FC<AddShowtimeProps> = ({ isPopupOpen, setIsPopupOpen, cinemaId,  setCinema }) => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [selectedMovieId, setSelectedMovieId] = useState<string>("");
   const [selectedMovie, setSelectedMovie] = useState<MovieDetail | null>(null);
@@ -17,12 +20,14 @@ const CreateShowtime: React.FC<AddShowtimeProps> = ({ isPopupOpen, setIsPopupOpe
   const [endDate, setEndDate] = useState<string>("");
   const [selectedTimes, setSelectedTimes] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { setError, setSuccess } = useAlert();   
+  
   const showtimeOptions = ["14:00", "17:00", "20:00"];
 
-  // ✅ Get today's date in YYYY-MM-DD format
+  //  Get today's date in YYYY-MM-DD format
   const today = new Date().toISOString().split("T")[0];
 
-  // ✅ Fetch movies when modal opens
+  //  Fetch movies when modal opens
   useEffect(() => {
     if (isPopupOpen) {
       const fetchMovies = async () => {
@@ -42,7 +47,7 @@ const CreateShowtime: React.FC<AddShowtimeProps> = ({ isPopupOpen, setIsPopupOpe
     }
   }, [isPopupOpen]);
 
-  // ✅ Fetch selected movie details
+  //  Fetch selected movie details
   const handleMovieChange = async (movieId: string) => {
     setSelectedMovieId(movieId);
     setSelectedMovie(null);
@@ -61,42 +66,54 @@ const CreateShowtime: React.FC<AddShowtimeProps> = ({ isPopupOpen, setIsPopupOpe
     }
   };
 
-  // ✅ Handle time selection (toggle selection)
+  //  Handle time selection (toggle selection)
   const handleTimeSelection = (time: string) => {
     setSelectedTimes((prev) =>
       prev.includes(time) ? prev.filter((t) => t !== time) : [...prev, time]
     );
   };
 
-  // ✅ Handle form submission & API POST request
+  //  Handle form submission & API POST request
   const handleCreateShowtime = async () => {
     if (!selectedMovieId || !startDate || !endDate || selectedTimes.length === 0) {
-      alert("⚠️ Please select a movie, start date, end date, and at least one time slot!");
+      setError("Please select a movie, start date, end date, and at least one time slot!");
       return;
     }
 
     const showtimeData = {
       movieId: selectedMovieId,
-      subCinemaId: id,
+      subCinemaId: cinemaId,
       startDate,
       endDate,
       times: selectedTimes, // Send array of selected times
     };
 
     try {
-      setIsLoading(true);
-      const response = await api.post("/showtime", showtimeData);
-      console.log("✅ Showtime created successfully:", response.data);
-
-      alert("🎉 Showtime added successfully!");
-      setIsPopupOpen(false);
-    } catch (error) {
-      console.error("❌ Error creating showtime:", error);
-      alert("❌ Failed to create showtime. Please try again.");
+        setIsLoading(true);
+        
+        // ✅ Send Showtime Data to API
+        const response = await api.post("/showtime", showtimeData);
+        
+        if (response.data?.showtimes) {
+            // ✅ Re-fetch the latest showtimes from the API
+            const updatedCinemaResponse = await api.get(`/cinema/${cinemaId}?includeShowtimes=true`);
+            
+            if (updatedCinemaResponse.data) {
+                setCinema(updatedCinemaResponse.data); // ✅ Update state with latest showtimes
+            }
+    
+            setSuccess("Showtime added successfully!");
+            setIsPopupOpen(false); // ✅ Close the popup
+        } else {
+            setError("Failed to create showtime. Please try again.");
+        }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+        setError(err.response?.data?.error || "failed");
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
-  };
+}
 
   return (
     isPopupOpen && (
@@ -104,7 +121,7 @@ const CreateShowtime: React.FC<AddShowtimeProps> = ({ isPopupOpen, setIsPopupOpe
         <div className="bg-white p-6 rounded-lg shadow-lg w-[650px]">
           <h2 className="text-2xl font-bold text-gray-800 text-center mb-5">Add Showtime</h2>
 
-          {/* ✅ Movie Selection */}
+          {/*  Movie Selection */}
           <div className="mb-5">
             <label className="block text-sm font-medium text-gray-700">Select Movie</label>
             <select
@@ -121,7 +138,7 @@ const CreateShowtime: React.FC<AddShowtimeProps> = ({ isPopupOpen, setIsPopupOpe
             </select>
           </div>
 
-          {/* ✅ Show Movie Details */}
+          {/*  Show Movie Details */}
           {selectedMovie && (
             <div className="flex gap-4 bg-gray-100 p-3 rounded-lg mb-5">
               <img
@@ -139,10 +156,10 @@ const CreateShowtime: React.FC<AddShowtimeProps> = ({ isPopupOpen, setIsPopupOpe
             </div>
           )}
 
-          {/* ✅ Date Range Selection */}
+          {/*  Date Range Selection */}
           {selectedMovie && (
             <div>
-              {/* ✅ Start Date */}
+              {/*  Start Date */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Start Date</label>
                 <input
@@ -154,7 +171,7 @@ const CreateShowtime: React.FC<AddShowtimeProps> = ({ isPopupOpen, setIsPopupOpe
                 />
               </div>
 
-              {/* ✅ End Date */}
+              {/*  End Date */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">End Date</label>
                 <input
@@ -167,7 +184,7 @@ const CreateShowtime: React.FC<AddShowtimeProps> = ({ isPopupOpen, setIsPopupOpe
                 />
               </div>
 
-              {/* ✅ Time Selection */}
+              {/*  Time Selection */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Select Showtime</label>
                 <div className="flex gap-2 mt-2">
@@ -189,7 +206,7 @@ const CreateShowtime: React.FC<AddShowtimeProps> = ({ isPopupOpen, setIsPopupOpe
             </div>
           )}
 
-          {/* ✅ Buttons */}
+          {/*  Buttons */}
           <div className="flex justify-end mt-6 space-x-3">
             <button
               onClick={() => setIsPopupOpen(false)}

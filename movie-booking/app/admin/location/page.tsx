@@ -110,17 +110,17 @@ const AddLocation = () => {
     return (
         <div>
             <div className="container mx-auto max-w-5xl p-6">
-                <div className="flex justify-between items-center">
-                    <p className="text-2xl font-bold">Manage Location</p>
-                    <button
+            <div className="flex justify-between items-center pb-4 border-b border-gray-300">
+                <h2 className="text-2xl font-semibold text-gray-800">Manage Locations</h2>
+                <button
                         onClick={() => {
                             setEditingLocation(null);
                             setLocationName("");
                             setLocationAddress("");
                             setIsPopupOpen(true);
                         }}
-                        className="bg-amber-500 text-white px-4 py-2 rounded-lg hover:bg-amber-600 flex items-center gap-2"
-                    >
+                        className="bg-amber-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-amber-600 transition-all flex items-center gap-2"
+                        >
                         <FiPlus /> Add Location
                     </button>
                 </div>
@@ -129,8 +129,8 @@ const AddLocation = () => {
                     {locations.map((location) => (
                         <div
                             key={location.id}
-                            className="bg-white p-6 border border-gray-300 rounded-3xl flex justify-between items-center cursor-pointer hover:bg-gray-100"
-                        >
+                            className="bg-white p-4 border border-gray-300 rounded-3xl flex justify-between items-center shadow-md hover:shadow-lg transition-all"
+                            >
                             <Link href={`/admin/cinema/${location.id}`} className="flex-grow">
                                 <h2 className="text-black text-sm font-bold mb-2">{location.name}</h2>
                                 <p className="text-gray-600 text-sm max-sm:text-xs">{location.address}</p>

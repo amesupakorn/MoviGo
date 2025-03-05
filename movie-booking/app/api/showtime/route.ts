@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma"; // Prisma client for database
 import api from "@/lib/axios"; // Axios for external API calls
+import axios from "axios";
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,7 +12,7 @@ export async function POST(req: NextRequest) {
     }
 
     // ✅ Step 1: Fetch Movie Details
-    const movieResponse = await api.get(`/movies/${movieId}`);
+    const movieResponse = await axios.get(`${process.env.HOST_URL}/api/movies/${movieId}`);
     const movieData = movieResponse.data;
 
     if (!movieData) {
@@ -27,12 +28,12 @@ export async function POST(req: NextRequest) {
 
     if (!existingMovie) {
       try {
-        // ✅ If movie is not in DB, insert it
+        // ✅ Insert movie if it does not exist
         existingMovie = await prisma.movie.create({
           data: {
             id: movieId,
             title: movieData.title,
-            duration: movieData.runtime || 120, // Default duration if not provided
+            duration: movieData.runtime || 120,
             description: movieData.overview || "No description available",
             poster_path: movieData.poster_path || "",
           },
@@ -54,8 +55,7 @@ export async function POST(req: NextRequest) {
     }
 
     // ✅ Step 3: Generate Showtimes from Date Range
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const generatedShowtimes: { movieId: any; subCinemaId: any; date: Date; time: any; }[] = [];
+    const generatedShowtimes: { movieId: string; subCinemaId: string; date: Date; time: string }[] = [];
     const start = new Date(startDate);
     const end = new Date(endDate);
     // eslint-disable-next-line prefer-const
@@ -65,15 +65,14 @@ export async function POST(req: NextRequest) {
       const formattedDate = currentDate.toISOString().split("T")[0]; // Convert to YYYY-MM-DD format
 
       // ✅ Create showtimes for each selected time
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      times.forEach((time: any) => {
+      for (const time of times) {
         generatedShowtimes.push({
           movieId,
           subCinemaId,
           date: new Date(formattedDate),
           time,
         });
-      });
+      }
 
       // ✅ Move to the next day
       currentDate.setDate(currentDate.getDate() + 1);
@@ -81,23 +80,66 @@ export async function POST(req: NextRequest) {
 
     console.log("📅 Generated Showtimes:", generatedShowtimes);
 
-    // ✅ Step 4: Save Showtimes to Database
-    const createdShowtimes = await Promise.all(
-      generatedShowtimes.map(async (showtime) => {
-        return await prisma.showtime.create({
-          data: showtime,
-        });
-      })
-    );
+    // ✅ Step 4: Filter Out Existing Showtimes to Prevent Duplicates
+    const existingShowtimes = await prisma.showtime.findMany({
+      where: {
+        movieId,
+        subCinemaId,
+        date: {
+          gte: start,
+          lte: end,
+        },
+        time: { in: times },
+      },
+    });
 
-    console.log("🎟️ Created Showtimes:", createdShowtimes);
+    const existingShowtimeSet = new Set(existingShowtimes.map(s => `${s.date.toISOString()}-${s.time}`));
+
+    const filteredShowtimes = generatedShowtimes.filter(showtime => {
+      const key = `${showtime.date.toISOString()}-${showtime.time}`;
+      return !existingShowtimeSet.has(key);
+    });
+
+    if (filteredShowtimes.length === 0) {
+      return NextResponse.json({ error: "All selected showtimes already exist." }, { status: 400 });
+    }
+
+    console.log("🎟️ New Showtimes to Insert:", filteredShowtimes);
+
+    // ✅ Step 5: Save Non-Duplicate Showtimes to Database
+    const createdShowtimes = await prisma.showtime.createMany({
+      data: filteredShowtimes,
+      skipDuplicates: true, // ✅ This prevents accidental duplicate insertion
+    });
+
+    console.log("✅ Successfully Created Showtimes:", createdShowtimes);
 
     return NextResponse.json({
       message: "Showtimes created successfully",
       showtimes: createdShowtimes,
+    
     });
   } catch (error) {
     console.error("❌ Unexpected Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
+
+export async function DELETE(req: Request) {
+    try {
+      const { id } = await req.json();
+  
+      if (!id) {
+        return NextResponse.json({ error: "ID is required" }, { status: 400 });
+      }
+  
+      await prisma.showtime.delete({
+        where: { id },
+      });
+  
+      return NextResponse.json({ message: "showtime deleted successfully" }, { status: 200 });
+    } catch (error) {
+      console.error("Failed to delete showtime:", error);
+      return NextResponse.json({ error: "Failed to delete showtime" }, { status: 500 });
+    }
+  }

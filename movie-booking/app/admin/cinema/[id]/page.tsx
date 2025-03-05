@@ -93,10 +93,10 @@ const AddCinema = () => {
 
   return (
     <div className="container mx-auto max-w-5xl p-6">
-      <div className="flex justify-between items-center">
-        <p className="text-2xl font-bold">
-          Manage {location?.name ? location.name : ""}
-        </p>
+        <div className="flex justify-between items-center pb-4 border-b border-gray-300">
+            <h2 className="text-2xl font-semibold text-gray-800">
+                    Manage Location: <span className="text-amber-600">{location?.name ? location.name : ""}</span>
+                </h2>
         
         <button
           onClick={() => {
@@ -116,8 +116,8 @@ const AddCinema = () => {
         {location?.subCinemas.map((cinema) => (
           <div
             key={cinema.id}
-            className="bg-white p-6 border border-gray-300 rounded-3xl flex justify-between items-center cursor-pointer hover:bg-gray-100"
-          >
+            className="bg-white p-4 border border-gray-300 rounded-3xl flex justify-between items-center shadow-md hover:shadow-lg transition-all"
+            >
             <Link href={`/admin/showtime/${cinema.id}`} className="flex-grow">
               <h3 className="text-black text-sm font-bold mb-2">{cinema.name}</h3>
               <p className="text-gray-600 text-sm max-sm:text-xs">Type: {cinema.type}</p>

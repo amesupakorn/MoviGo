@@ -43,6 +43,7 @@ export default function LoginPage() {
         const response = await axios.post("/api/auth/login", form);
 
         await api.get(`/cookie/token/${response.data.token}`)
+        localStorage.setItem("token", response.data.token);
         
         setSuccess("Login successful! Redirecting to home...");
 

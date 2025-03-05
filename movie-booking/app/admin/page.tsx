@@ -35,21 +35,23 @@ export default function Page() {
 
     return (
     <div className="container mx-auto max-w-5xl p-6">
-        <div className="flex flex-col space-y-3">
+        <div className="flex flex-col justify-between items-left pb-4 border-b border-gray-300 mb-4">
 
         <p className="text-2xl font-bold">Location</p>
-          {locations.map((location) => (
-            <Link  key={location.id}  href={`/admin/adminShowtime/${location.id}`}>
-                <div
-                  key={location.id}
-                  className="bg-white p-6 border border-gray-300 border-[1px] rounded-3xl flex justify-between cursor-pointer hover:bg-gray-100"
-                >
-                  <h2 className="text-black text-sm font-bold mb-2">{location.name}</h2>
-                  <p className="text-gray-600 text-sm max-sm:text-xs">{location.address}</p>
-                </div>
-            </Link>
-          ))}
         </div>
-    </div>
+        {locations.map((location) => (
+              <Link  key={location.id}  href={`/admin/adminShowtime/${location.id}`}>
+                  <div
+                    key={location.id}
+                    className="bg-white p-4 border border-gray-300 rounded-3xl flex-col items-center shadow-md hover:shadow-lg transition-all mb-4"
+                    >
+                    <h2 className="text-black text-sm font-bold mb-2">{location.name}</h2>
+                    <p className="text-gray-600 text-sm max-sm:text-xs">{location.address}</p>
+                  </div>
+              </Link>
+            ))}        
+         
+        </div>
+        
     )
 }
