@@ -6,8 +6,8 @@ import path from "path";
 
 export async function POST(req: NextRequest) {
     try {
-        const authHeader = req.headers.get("authorization");
-        const user = await getUserFromToken(authHeader);
+        const user = await getUserFromToken();
+
 
         if (!user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

@@ -46,7 +46,7 @@ export interface Order {
   id: string;
   order_id: string;
   user: User;
-  booking: Booking;
+  booking: Booking[];
   status: string;
   totalAmount: number;
   session_id: string;

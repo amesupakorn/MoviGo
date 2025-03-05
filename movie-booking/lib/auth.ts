@@ -1,6 +1,7 @@
 import jwt, { JwtPayload, TokenExpiredError } from "jsonwebtoken";
-import {prisma} from "./prisma";
+import { prisma } from "./prisma";
 import { User } from "@prisma/client";
+import { cookies } from "next/headers";
 
 export type SafeUser = Omit<User, "password" | "createdAt">;
 
@@ -10,19 +11,18 @@ if (!JWT_SECRET) {
 }
 
 /**
- * ดึงข้อมูล User จาก JWT Token และลบ `password`, `createdAt`
- * @param authHeader - Authorization Header (`Bearer token`)
+ * ดึงข้อมูล User จาก JWT Token ที่อยู่ใน Cookies และลบ `password`, `createdAt`
  * @returns SafeUser | null
  */
-
-export async function getUserFromToken(authHeader: string | null): Promise<SafeUser | null> {
+export async function getUserFromToken(): Promise<SafeUser | null> {
     try {
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            console.error("Unauthorized: Missing token");
+        const cookieStore = await cookies(); 
+        const token = cookieStore.get("token")?.value; 
+        
+        if (!token) {
+            console.error("Unauthorized: Missing token in cookies");
             return null;
         }
-
-        const token = authHeader.split(" ")[1];
 
         let decoded: JwtPayload;
         try {
@@ -35,7 +35,6 @@ export async function getUserFromToken(authHeader: string | null): Promise<SafeU
             console.error("Invalid Token:", error);
             return null;
         }
-
 
         if (!decoded.id) {
             console.error("Invalid token payload");
@@ -59,7 +58,7 @@ export async function getUserFromToken(authHeader: string | null): Promise<SafeU
 
         return user;
     } catch (error) {
-        console.error("Error verifying token:", error);
+        console.error("Error verifying token from cookies:", error);
         return null;
     }
 }

@@ -2,10 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { getUserFromToken, SafeUser } from "@/lib/auth";
 import {prisma} from "@/lib/prisma";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
     try {
-        const authHeader = req.headers.get("authorization");
-        const user: SafeUser | null = await getUserFromToken(authHeader);
+        const user: SafeUser | null = await getUserFromToken();
 
         if (!user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -23,8 +22,7 @@ export async function GET(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
     try {
-        const authHeader = req.headers.get("authorization");
-        const user = await getUserFromToken(authHeader);
+        const user = await getUserFromToken();
 
         if (!user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

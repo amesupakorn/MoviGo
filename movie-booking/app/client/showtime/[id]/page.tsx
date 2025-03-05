@@ -35,7 +35,7 @@ const CinemaSeatBooking = () => {
   const [isSmallScreenOne, setIsSmallScreenOne] = useState(false);
   const [isSmallScreenTwo, setIsSmallScreenTwo] = useState(false);
 
-  const { setError, setSuccess } = useAlert();   
+  const { setError} = useAlert();   
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -165,6 +165,8 @@ const CinemaSeatBooking = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       setError('Something went wrong. Please try again.');
+      setIsLoading(false);
+
     }
   };
 

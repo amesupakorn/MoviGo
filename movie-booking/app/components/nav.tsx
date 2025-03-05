@@ -11,7 +11,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<MovieSearchResponse | null>(null);
-  const [isSearching, setIsSearching] = useState(false);
+  const [, setIsSearching] = useState(false);
 
   const pathname = usePathname();
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
@@ -132,9 +132,9 @@ const Navbar = () => {
           {/* Actions */}
           <div className="hidden md:flex items-center space-x-4">
             <div className="w-[1px] h-6 bg-gray-600"></div>
-
-            <svg className="h-6 w-6 text-white"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />  <line x1="3" y1="6" x2="21" y2="6" />  <path d="M16 10a4 4 0 0 1-8 0" /></svg>
-
+            <Link href='/client/history' >
+              <svg className="h-6 w-6 text-white"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />  <line x1="3" y1="6" x2="21" y2="6" />  <path d="M16 10a4 4 0 0 1-8 0" /></svg>
+            </Link>
             <div className="items-center space-x-4">
               <UserDropdown  />
             </div>
