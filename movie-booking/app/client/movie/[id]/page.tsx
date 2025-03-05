@@ -5,6 +5,8 @@ import { useParams } from "next/navigation";
 import { MovieDetail, MovieVideo, MovieCredit, MovieImage } from "@/lib/types/movie";
 import { IoIosTimer } from "react-icons/io";
 import { format } from "date-fns";
+import { MdDateRange } from "react-icons/md";
+import { TiStarFullOutline } from "react-icons/ti";
 
 export default function MovieDetailPage() {
     const { id } = useParams();
@@ -74,15 +76,21 @@ export default function MovieDetailPage() {
                         {/* Movie Details */}
                         <div className="w-full sm:w-2/3 md:w-2/4 lg:w-1/5 sm:text-left">
                         <h1 className="text-3xl max-sm:text-xl sm:text-2xl text-white font-bold">{movie.title}</h1>
-                            <p className="text-gray-100">
-                                Release: {movie.release_date ? format(new Date(movie.release_date), "dd MMMM yyyy") : "No date available"}
+                            <p className="mt-2 text-gray-100 flex items-center">
+                                <MdDateRange className="mr-1" /> 
+                                {movie.release_date ? format(new Date(movie.release_date), "dd MMMM yyyy") : "No date available"}
                             </p>
-                            <p className="mt-2 text-gray-100">
-                                Genres: {movie.genres.map((genre) => genre.name).join(", ")}
+                            <p className="mt-2 text-gray-100 flex items-center">
+                                Genre : &nbsp;
+                                {movie.genres.map((genre) => genre.name).join(", ")}
                             </p>
-                            <span className="mt-2 text-amber-400 flex items-center">
+                            <span className="mt-2 text-gray-100 flex items-center">
                                 <IoIosTimer className="mr-1" />
                                 {movie.runtime} mins
+                            </span>
+                            <span className="mt-2 text-amber-400 flex items-center">
+                                <TiStarFullOutline className="mr-1" />
+                                {movie.vote_average} 
                             </span>
 
                         </div>

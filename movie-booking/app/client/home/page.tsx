@@ -8,6 +8,9 @@ import Link from "next/link";
 import { IoMdPlayCircle } from "react-icons/io";
 import { format } from "date-fns";
 import LoadTwo from "@/app/components/ui/loading/loadTwo";
+import { IoIosTimer } from "react-icons/io";
+import { BiCategory } from "react-icons/bi";
+import { TiStarFullOutline } from "react-icons/ti";
 
 const Homepage = () => {
     const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
@@ -167,10 +170,20 @@ const Homepage = () => {
                                     </h3>
                                     {moviesDetail[movie.id] ? (
                                         <div>
-                                            <p className="text-gray-300 md:text-base text-xs">Runtime: {moviesDetail[movie.id]?.runtime} mins</p>
-                                                <p className="text-gray-300 md:text-base text-xs w-s[15px]">
-                                                    Genres: {moviesDetail[movie.id]?.genres.map(g => g.name).join("/")}
-                                                </p>
+                                            <p className="text-gray-300 md:text-base text-xs flex items-center">
+                                                <IoIosTimer className="mr-1" /> 
+                                                {moviesDetail[movie.id]?.runtime} mins
+                                            </p>
+                                            <p className="text-gray-300 md:text-base text-xs w-full flex items-center">
+                                                <BiCategory className="mr-2 flex-shrink-0" />
+                                                <span className="whitespace-normal break-words flex-1">
+                                                    {moviesDetail[movie.id]?.genres.map(g => g.name).join("/")}
+                                                </span>
+                                            </p>
+                                            <p className="text-gray-300 md:text-base text-xs flex items-center">
+                                                <TiStarFullOutline className="mr-1"/> 
+                                                {moviesDetail[movie.id]?.vote_average}
+                                            </p>
                                         </div>
                                     ) : (
                                         <p className="text-gray-400">Loading...</p>
