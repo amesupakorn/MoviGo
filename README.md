@@ -66,11 +66,11 @@ pnpm install
   ```bash
   npx prisma init
   ```
-  3.2ตั้งค่าการเชื่อมต่อฐานข้อมูลใน .env
+   - 3.2ตั้งค่าการเชื่อมต่อฐานข้อมูลใน .env
   ```bash
   DATABASE_URL=postgresql://user:password@localhost:5432/movieGo
   ```
-  3.3รัน Prisma Migrate (สร้างตารางฐานข้อมูล)
+   - 3.3รัน Prisma Migrate (สร้างตารางฐานข้อมูล)
   ```bash
   pnpm prisma migrate dev --name update
   pnpm prisma generate
@@ -90,7 +90,7 @@ pnpm run dev
 - Tailwind CSS - ใช้สำหรับ Styling  
 
 **Backend**  
-- Node.js & Express.js - ใช้สร้าง API  
+- Next.js - ใช้สร้าง API  
 - Prisma ORM - จัดการฐานข้อมูล
 - WebSocket (Socket.io) - ใช้สำหรับการแจ้งเตือนแบบเรียลไทม์
 
