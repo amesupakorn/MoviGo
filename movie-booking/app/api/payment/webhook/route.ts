@@ -9,7 +9,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function POST(req: NextRequest) {
-  // Read the raw body and verify the Stripe signature
   const rawBody = await req.arrayBuffer(); 
   const buffer = Buffer.from(rawBody);
 

@@ -11,8 +11,8 @@ export async function PUT(req: NextRequest) {
             return NextResponse.json({ error: "All fields are required" }, { status: 400 });
         }
 
-        const authHeader = req.headers.get("authorization");
-        const userfetch = await getUserFromToken(authHeader);
+        const userfetch = await getUserFromToken();
+        
         const user = await prisma.user.findUnique({
             where: { id: userfetch?.id },
             select: {
