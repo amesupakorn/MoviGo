@@ -54,7 +54,7 @@ MovieGo เป็นเว็บไซต์สำหรับ **ดูข้อ
 
 1.ดาวน์โหลดและเข้าไปในโฟลเดอร์ของโปรเจกต์  
 ```bash
-git clone https://github.com/yourusername/MovieGo.git
+git clone https://github.com/amesupakorn/MovieGo.git
 cd MovieGo
 ```
 2.ติดตั้ง Dependencies
