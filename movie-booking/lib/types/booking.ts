@@ -25,12 +25,14 @@ export interface Showtime {
   seat: Seat[];
 }
 export interface Seat {
+  Booking: any;
   id: string;            
   row: string;           
   number: number;       
   price: number;      
   showtimeId: string;  
   isAvailable: boolean;  
+  booking?: Booking; 
 }
 
 export interface Booking {
