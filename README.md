@@ -92,7 +92,7 @@ pnpm run dev
 **Backend**  
 - Next.js - ใช้สร้าง API  
 - Prisma ORM - จัดการฐานข้อมูล
-- WebSocket (Socket.io) - ใช้สำหรับการแจ้งเตือนแบบเรียลไทม์
+- WebSocket - ใช้สำหรับการแจ้งเตือนแบบเรียลไทม์
 
 **Database**  
 - PostgreSQL - รองรับหลายประเภทของฐานข้อมูล  
