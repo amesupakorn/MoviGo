@@ -25,6 +25,7 @@ export interface Showtime {
   seat: Seat[];
 }
 export interface Seat {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Booking: any;
   id: string;            
   row: string;           
