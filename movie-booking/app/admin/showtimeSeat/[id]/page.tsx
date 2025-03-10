@@ -104,25 +104,11 @@ const CinemaSeatBooking = () => {
   const seatsPerRow = 12;
   const premiumRows = ["A", "B", "C", "D", "E", "F"];
 
-  // Handle seat selection
-  const handleSelectSeat = (row: string, seatIndex: number) => {
-    const seatIdentifier = `${row}${seatIndex + 1}`;
-    if (selectedSeats.includes(seatIdentifier)) {
-      setSelectedSeats(selectedSeats.filter((seat) => seat !== seatIdentifier)); // Deselect seat
-    } else {
-      setSelectedSeats([...selectedSeats, seatIdentifier]); // Select seat
-    }
-  };
-
   const seatPrice = (seat: string) => {
     const row = seat.charAt(0); 
     return premiumRows.includes(row) ? 350 : 320; 
   };
 
-  const totalPrice = selectedSeats.reduce(
-    (total, seat) => total + seatPrice(seat),
-    0
-  );
 
   const isReserved = (row: string, seatIndex: number) => {
     const seatIdentifier = `${row}${seatIndex + 1}`;
@@ -131,42 +117,25 @@ const CinemaSeatBooking = () => {
     }
     return seatReserve.some(seat => `${seat.row}${seat.number}` === seatIdentifier && !seat.isAvailable);
 
+
   };
 
-
-  const handleSubmitBooking = async () => {
-    setIsLoading(true);
-
-    if(!isLoggedIn){
-      router.push("/client/auth/login")
-      setError("Please Login")
-      setIsLoading(false);
-      return
-
-    }
-    const showtimeId = id;  
-    const status = "reserved";
-
-    try {
-        const res_booking = await api.post('/booking', {
-          showtimeId,     
-          selectedSeats,  
-          status,          
-        });
-
-       if(res_booking.data){       
-            await api.get(`/cookie/${res_booking.data.session}`);
-
-            router.push(res_booking.data.url);
-            setIsLoading(false);
-       }
-  
-  
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      setError('Something went wrong. Please try again.');
-    }
+  const getCustomerName = (row: string, seatIndex: number) => {
+    const seatIdentifier = `${row}${seatIndex + 1}`;
+    const seat = seatReserve.find(seat => `${seat.row}${seat.number}` === seatIdentifier);
+    
+    return seat && seat.Booking.length > 0 ? seat.Booking[0].user.name : "Available";
   };
+  
+  const getCustomerDetails = (row: string, seatIndex: number) => {
+    const seatIdentifier = `${row}${seatIndex + 1}`;
+    const reservedSeat = seatReserve.find(seat => `${seat.row}${seat.number}` === seatIdentifier);
+  
+    return reservedSeat && reservedSeat.Booking.length > 0 
+      ? `Booking ID: ${reservedSeat.Booking[0].id}` 
+      : "No details available";
+  };
+  
 
 
 
@@ -233,11 +202,31 @@ const CinemaSeatBooking = () => {
                                   return (
                                     <div
                                       key={seatIndex}
-                                      onClick={() => !reserved && handleSelectSeat(row, seatIndex)}
+                                      onClick={() => !reserved}
                                       className="md:h-12 md:w-12 h-6 w-6 cursor-pointer"
                                     >
                                       {reserved ? (
-                                        <VscAccount className="text-gray-600 md:h-12 md:w-10 h-5 w-5 mx-1" />
+                                        <div className="relative group">
+                                            <VscAccount className="text-gray-600 md:h-12 md:w-10 h-5 w-5 mx-1 cursor-pointer" />
+
+                                          {/* Tooltip Popup */}
+                                          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:flex flex-col items-center bg-black text-white text-xs p-3 rounded-lg shadow-lg w-44 transition-all duration-300 scale-95 group-hover:scale-100 backdrop-blur-sm border border-gray-700">
+                                            
+                                            <div className="absolute w-3 h-3 bg-black rotate-45 -bottom-1 left-1/2 transform -translate-x-1/2 border border-gray-700"></div>
+
+                                            <p className="font-semibold text-sm text-amber-400">{getCustomerName(row, seatIndex)}</p>
+
+                                            <p className="text-gray-300 text-[12px] mt-1">
+                                              Seat: <span className="font-semibold text-white">{row}{seatIndex + 1}</span>
+                                            </p>
+
+                                            <p className="text-gray-300 text-[12px]">
+                                              Price: <span className="font-semibold text-green-400">{seatPrice(`${row}${seatIndex + 1}`)} THB</span>
+                                            </p>
+
+                                            <p className="text-gray-400 text-[10px] mt-1 italic">{getCustomerDetails(row, seatIndex)}</p>
+                                          </div>
+                                        </div>               
                                       ) : premiumRows.includes(row) ? (
                                         <SeatPremium />
                                       ) : (

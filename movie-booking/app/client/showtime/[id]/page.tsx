@@ -199,10 +199,6 @@ const CinemaSeatBooking = () => {
         status,
       });
   
-      if (res_booking.data) {
-        await api.get(`/cookie/${res_booking.data.session}`);
-  
-
 
         if (res_booking.data) {
           await api.get(`/cookie/${res_booking.data.session}`);
@@ -226,8 +222,9 @@ const CinemaSeatBooking = () => {
         router.push(res_booking.data.url);
         setIsLoading(false);
       }
+      
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-    }} catch (error:any) {
+    } catch (error:any) {
       setError("Something went wrong. Please try again.");
       setIsLoading(false);
     }

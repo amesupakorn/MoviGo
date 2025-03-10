@@ -180,7 +180,7 @@ const Homepage = () => {
                                                     {moviesDetail[movie.id]?.genres.map(g => g.name).join("/")}
                                                 </span>
                                             </p>
-                                            <p className="text-gray-300 md:text-base text-xs flex items-center">
+                                            <p className="text-amber-300 md:text-base text-xs flex items-center">
                                                 <TiStarFullOutline className="mr-1"/> 
                                                 {moviesDetail[movie.id]?.vote_average}
                                             </p>

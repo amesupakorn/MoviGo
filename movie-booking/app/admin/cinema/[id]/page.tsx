@@ -6,6 +6,7 @@ import api from "@/lib/axios";
 import { Location, Cinema} from "@/lib/types/booking";
 import Link from "next/link";
 import { FiEdit, FiTrash2, FiPlus } from "react-icons/fi"; 
+import { useAlert } from "@/app/context/AlertContext";
 
 const AddCinema = () => {
   const router = useRouter();
@@ -18,6 +19,8 @@ const AddCinema = () => {
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
   const [editingCinema, setEditingCinema] = useState<Cinema | null>(null);
   const [cinemaToDelete, setCinemaToDelete] = useState<Cinema | null>(null);
+  const { setError, setSuccess } = useAlert();   
+  
 
   // ดึงข้อมูลโรงหนังของ Location ที่เลือก
   useEffect(() => {
@@ -40,12 +43,14 @@ const AddCinema = () => {
     try {
       if (editingCinema) {
         // แก้ไขโรงหนัง
-        const response = await api.put("/api/cinema", {
+        const response = await api.put("/cinema", {
           id: editingCinema.id,
           name: cinemaName,
           type: cinemaType,
           locationId,
         });
+
+        setSuccess("Update Success")
         setLocation((prev) => ({
           ...prev!,
           subCinemas: prev!.subCinemas.map((cinema) =>
@@ -54,11 +59,13 @@ const AddCinema = () => {
         }));
       } else {
         // เพิ่มโรงหนัง
-        const response = await api.post(`/api/cinema`, {
+        const response = await api.post(`/cinema`, {
           name: cinemaName,
           type: cinemaType,
           locationId,
         });
+        setSuccess("Add New Cinema Success")
+
         setLocation((prev) => ({
           ...prev!,
           subCinemas: [...prev!.subCinemas, response.data],

@@ -6,11 +6,12 @@ import api from "@/lib/axios";
 import Link from "next/link";
 import LoadTwo from "@/app/components/ui/loading/loadTwo";
 import { FiEdit, FiPlus, FiTrash2 } from "react-icons/fi"; 
+import { useAlert } from "@/app/context/AlertContext";
 
 const AddLocation = () => {
     const [locations, setLocations] = useState<Location[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const { setError, setSuccess } = useAlert();   
 
     // State สำหรับ Popup Add/Edit
     const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -54,6 +55,8 @@ const AddLocation = () => {
                     address: locationAddress,
                 });
 
+
+                setSuccess("Update Success")
                 setLocations(locations.map(loc => (loc.id === editingLocation.id ? response.data : loc)));
             } else {
                 // **เพิ่ม Location ใหม่**
@@ -61,6 +64,7 @@ const AddLocation = () => {
                     name: locationName,
                     address: locationAddress,
                 });
+                setSuccess("Add New Location Success")
 
                 setLocations([...locations, response.data]);
             }

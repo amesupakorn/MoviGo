@@ -26,7 +26,6 @@ export async function GET() {
 
           if (seatData.action === "release") {
             if (reservedSeats.has(seatIdentifier)) {
-                console.log(`🟢 Seat Released: ${seatIdentifier}`);
                 reservedSeats.delete(seatIdentifier);
         
                 const releaseMessage = JSON.stringify({ 
@@ -46,7 +45,6 @@ export async function GET() {
             // Handle new seat reservations
             if (!reservedSeats.has(seatIdentifier)) {
               reservedSeats.add(seatIdentifier);
-              console.log(`✅ Seat Reserved: ${seatIdentifier}`);
 
               // Broadcast updated reservations
               global.wss?.clients.forEach((client) => {

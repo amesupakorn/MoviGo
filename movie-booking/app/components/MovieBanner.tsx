@@ -20,7 +20,7 @@ const MovieBanner: React.FC<MovieBannerProps> = ({ movies }) => {
                         return { id: movie.id, data: res.data };
                     })
                 );
-                // ✅ เก็บข้อมูล movieDetail
+                // เก็บข้อมูล movieDetail
                 setMoviesDetail(
                     details.reduce((acc, detail) => {
                         acc[detail.id] = detail.data;
@@ -55,7 +55,7 @@ const MovieBanner: React.FC<MovieBannerProps> = ({ movies }) => {
                         style={{ backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})` }}
                     >
 
-                        {/* ✅ Overlay Content */}
+                        {/*  Overlay Content */}
                         <div className="absolute bottom-4 left-4 p-4 rounded-lg text-white text-left mb-5">
                             <h1 className="text-xl sm:text-xl md:text-3xl lg:text-3xl font-bold max-w-2xl">{movie.title}</h1>
                             <div className="flex items-center space-x-4 text-sm text-gray-200">
