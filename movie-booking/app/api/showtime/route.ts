@@ -1,6 +1,6 @@
+/* eslint-disable prefer-const */
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma"; // Prisma client for database
-import api from "@/lib/axios"; // Axios for external API calls
 import axios from "axios";
 
 export async function POST(req: NextRequest) {
@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    // ✅ Step 1: Fetch Movie Details
+    // ✅ Fetch Movie Details
     const movieResponse = await axios.get(`${process.env.HOST_URL}/api/movies/${movieId}`);
     const movieData = movieResponse.data;
 
@@ -28,7 +28,6 @@ export async function POST(req: NextRequest) {
 
     if (!existingMovie) {
       try {
-        // ✅ Insert movie if it does not exist
         existingMovie = await prisma.movie.create({
           data: {
             id: movieId,
@@ -45,7 +44,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // ✅ Step 2: Ensure Cinema Exists
+    // ✅ Ensure Cinema Exists
     const existingCinema = await prisma.cinema.findUnique({
       where: { id: subCinemaId },
     });
@@ -54,17 +53,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "SubCinema not found" }, { status: 404 });
     }
 
-    // ✅ Step 3: Generate Showtimes from Date Range
+    // ✅ Generate Showtimes from Date Range
     const generatedShowtimes: { movieId: string; subCinemaId: string; date: Date; time: string }[] = [];
     const start = new Date(startDate);
     const end = new Date(endDate);
-    // eslint-disable-next-line prefer-const
     let currentDate = new Date(start);
 
     while (currentDate <= end) {
       const formattedDate = currentDate.toISOString().split("T")[0]; // Convert to YYYY-MM-DD format
 
-      // ✅ Create showtimes for each selected time
       for (const time of times) {
         generatedShowtimes.push({
           movieId,
@@ -74,16 +71,14 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      // ✅ Move to the next day
       currentDate.setDate(currentDate.getDate() + 1);
     }
 
     console.log("📅 Generated Showtimes:", generatedShowtimes);
 
-    // ✅ Step 4: Filter Out Existing Showtimes to Prevent Duplicates
+    // ✅ Fetch Existing Showtimes for Same Cinema
     const existingShowtimes = await prisma.showtime.findMany({
       where: {
-        movieId,
         subCinemaId,
         date: {
           gte: start,
@@ -91,33 +86,46 @@ export async function POST(req: NextRequest) {
         },
         time: { in: times },
       },
+      select: {
+        date: true,
+        time: true,
+        movieId: true,
+      },
     });
 
     const existingShowtimeSet = new Set(existingShowtimes.map(s => `${s.date.toISOString()}-${s.time}`));
+    const differentMovieSet = new Set(existingShowtimes.filter(s => s.movieId !== movieId).map(s => s.time));
 
+    // ✅ Filter Out Duplicate and Conflicting Showtimes
     const filteredShowtimes = generatedShowtimes.filter(showtime => {
       const key = `${showtime.date.toISOString()}-${showtime.time}`;
+
+      // ❌ Prevent same time being used by a different movie
+      if (differentMovieSet.has(showtime.time)) {
+        console.warn(`⛔ Conflict: ${showtime.time} is already used by another movie in this cinema.`);
+        return false;
+      }
+
       return !existingShowtimeSet.has(key);
     });
 
     if (filteredShowtimes.length === 0) {
-      return NextResponse.json({ error: "All selected showtimes already exist." }, { status: 400 });
+      return NextResponse.json({ error: "All selected showtimes already exist or conflict with other movies." }, { status: 400 });
     }
 
     console.log("🎟️ New Showtimes to Insert:", filteredShowtimes);
 
-    // ✅ Step 5: Save Non-Duplicate Showtimes to Database
+    // ✅ Save Showtimes to Database
     const createdShowtimes = await prisma.showtime.createMany({
       data: filteredShowtimes,
-      skipDuplicates: true, // ✅ This prevents accidental duplicate insertion
+      skipDuplicates: true,
     });
 
     console.log("✅ Successfully Created Showtimes:", createdShowtimes);
 
     return NextResponse.json({
       message: "Showtimes created successfully",
-      showtimes: createdShowtimes,
-    
+      createdCount: createdShowtimes.count,
     });
   } catch (error) {
     console.error("❌ Unexpected Error:", error);

@@ -81,8 +81,9 @@ const Navbar = () => {
           <div className="text-2xl font-bold text-white">MovieGo</div>
 
           <Link href='/client/history' >
-              <svg className="h-6 w-6 text-white"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />  <line x1="3" y1="6" x2="21" y2="6" />  <path d="M16 10a4 4 0 0 1-8 0" /></svg>
+              <svg className="md:hidden md:flex h-6 w-6 text-white"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round">  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />  <line x1="3" y1="6" x2="21" y2="6" />  <path d="M16 10a4 4 0 0 1-8 0" /></svg>
             </Link>
+            
           {/* Search Bar */}
           <div className="hidden md:flex flex-grow mx-8 relative">
             <div className="w-full max-w-[600px] mx-auto flex bg-zinc-700 rounded-lg overflow-hidden relative">
