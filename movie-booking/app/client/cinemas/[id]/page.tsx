@@ -206,7 +206,7 @@ const LocationDetailPage = () => {
         return (
           <div key={cinema.id} className="bg-zinc-800 p-6 shadow-md border border-gray-300 rounded-3xl mb-6">
 
-            {/* ✅ แยกตามหนังที่ฉายในโรงนี้ */}
+            {/* แยกตามหนังที่ฉายในโรงนี้ */}
             {Object.entries(
               showtimesForDate.reduce((acc: { [key: string]: any[] }, showtime) => {
                 if (!acc[showtime.movie.id]) acc[showtime.movie.id] = [];
@@ -258,7 +258,7 @@ const LocationDetailPage = () => {
                   </div>
 
                   <div className="mt-6 max-sm:mt-4 mb-4">
-                  {/* ✅ ปุ่มเลือกรอบที่ถูกต้อง */}
+                  {/* ปุ่มเลือกรอบที่ถูกต้อง */}
                   <div className="border-t border-gray-200 pt-4 flex items-center gap-4">
                     {/*ชื่อโรงภาพยนตร์ */}
                     <p className="text-sm sm:text-sm md:text-lg lg:text-lg font-bold text-gray-100">
