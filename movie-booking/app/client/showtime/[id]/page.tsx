@@ -245,9 +245,9 @@ const CinemaSeatBooking = () => {
             {/* Step 1 */}
             <div className="flex flex-col items-center justify-center space-y-4">
               <Link href={`/client/cinemas/`}>
-              <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center ">
-              <FaCheck />
-              </div>
+                <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center ">
+                <FaCheck />
+                </div>
               </Link>
 
               <h3 className="text-amber-600 md:text-base text-xs">Select Location</h3>
