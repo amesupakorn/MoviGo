@@ -55,7 +55,7 @@ MovieGo เป็นเว็บไซต์สำหรับ **ดูข้อ
 ---
 
 ## 📌 **Use Case Diagram**  
-![Use Case Diagram](./public/images/use_case_diagram.png)
+![Use Case Diagram](image/usecase.svg)
 
 ---
 
