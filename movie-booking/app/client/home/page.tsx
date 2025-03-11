@@ -130,7 +130,7 @@ const Homepage = () => {
                 </div>
 
                 {/* Movies Grid */}
-                <div data-aos="fade-up"  data-aos-delay="30" data-aos-duration="500"   className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 md:gap-6 gap-4 py-6 px-2">
+                <div   className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 md:gap-6 gap-4 py-6 px-2">
                     {moviesToShow.length > 0 ? (
                         moviesToShow.map((movie) => (
                             
