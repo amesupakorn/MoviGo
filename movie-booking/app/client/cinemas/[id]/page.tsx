@@ -196,157 +196,137 @@ const LocationDetailPage = () => {
 
         {/* ส่วนเลือกรอบหนัง */}
         <div className="grid grid-cols-1 gap-6">
-        {location?.subCinemas
-          .filter(cinema => 
-            cinema.showtimes.some(showtime => 
-              dayjs(showtime.date).isSame(selectedDate, "day")
-            ))
-          .map((cinema) => {
-            //กรองเฉพาะ `showtimes` ของวันที่เลือก
-            const filteredShowtimes = cinema.showtimes.filter(showtime =>
-              dayjs(showtime.date).tz(userTimezone).format("YYYY-MM-DD") === selectedDate.tz(userTimezone).format("YYYY-MM-DD")
-            );
+        {location?.subCinemas.map((cinema) => {
+        const showtimesForDate = cinema.showtimes.filter(showtime =>
+          dayjs(showtime.date).isSame(selectedDate, "day")
+        );
 
-            //ดึงรายการ `movieId` ที่ไม่ซ้ำกัน
-            const movieIds = [...new Set(filteredShowtimes.map(showtime => showtime.movie.id))];
-            
-            return (
-              <div key={cinema.id} className="bg-zinc-800 p-6 shadow-md border border-gray-300 rounded-3xl">
+        if (showtimesForDate.length === 0) return null;
 
-                {/*แสดงแยกเป็นแต่ละหนัง */}
-                {movieIds.map(movieId => {
-                  const movieShowtimes = filteredShowtimes.filter(s => s.movie.id === movieId);
-                  const firstShowtime = movieShowtimes.length > 0 ? movieShowtimes[0] : null;
-                  const posterPath = firstShowtime ? moviePosters[movieId] : null;
+        return (
+          <div key={cinema.id} className="bg-zinc-800 p-6 shadow-md border border-gray-300 rounded-3xl mb-6">
 
-                  return (
-                    <div key={movieId} className="max-w-5xl w-full">
+            {/* ✅ แยกตามหนังที่ฉายในโรงนี้ */}
+            {Object.entries(
+              showtimesForDate.reduce((acc: { [key: string]: any[] }, showtime) => {
+                if (!acc[showtime.movie.id]) acc[showtime.movie.id] = [];
+                acc[showtime.movie.id].push(showtime);
+                return acc;
+              }, {})
+            ).map(([movieId, movieShowtimes]) => {
+              const firstShowtime = movieShowtimes[0];
+              const posterPath = moviePosters[movieId];
 
-                      {/*โปสเตอร์หนัง&รายละเอียดหนัง */}
-                      <div className="grid grid-cols-1 grid-cols-[auto_1fr] gap-4 md:gap-6 items-start">
-                        
-                        {/*โปสเตอร์หนัง */}
-                        {posterPath && (
-                          <div className="w-full max-w-[80px] sm:max-w-[100px] md:max-w-[120px]">
-                            <img
-                              src={`https://image.tmdb.org/t/p/w500${posterPath}`}
-                              alt={firstShowtime?.movie.title || "Movie Poster"}
-                              className="w-full h-auto object-cover rounded-lg"
-                            />
-                          </div>
-                        )}
-
-                      
-                        {/*รายละเอียดหนังและรอบฉาย */}
-                        <div className="flex flex-col justify-start md:justify-between">
-                          {firstShowtime && (
-                            <div className="mb-2 md:mb-4">
-                              <p className="md:text-lg text-sm sm:text-xl md:text-2xl lg:text-2xl font-bold text-white mb-1">
-                                {firstShowtime.movie.title}
-                              </p>
-                                <div className="flex md:flex-col md:text-base text-xs md:gap-0 gap-2">
-                                    <span className="mt-1 text-amber-500 flex items-center">
-                                    <IoLocationSharp className="mr-1"/>
-                                    {location.name}
-                                  </span>
-                      
-                                  <span className="mt-1 text-amber-400 flex items-center">
-                                    <IoIosTimer className="mr-1" />
-                                    {firstShowtime.movie.duration} mins
-                                  </span>
-                                </div>
-                              
-                              <Link href={`/client/movie/${firstShowtime.movie.id}`}>
-                                <button className="md:mt-10 mt-5 md:px-8 py-2 px-6 border border-gray-300 md:text-base text-xs text-gray-300 rounded-lg hover:border-gray-400 hover:text-gray-400 transition-colors duration-300 ">
-                                  Movie Details
-                                </button>
-                              </Link>
-                            </div>
-                          )}
-                        </div>
-                      
+              return (
+                <div key={movieId} className="max-w-5xl w-full">
+                  <div className="grid grid-cols-1 grid-cols-[auto_1fr] gap-4 md:gap-6 items-start">
+                    {posterPath && (
+                      <div className="w-full max-w-[80px] sm:max-w-[100px] md:max-w-[120px]">
+                        <img
+                          src={`https://image.tmdb.org/t/p/w500${posterPath}`}
+                          alt={firstShowtime.movie.title}
+                          className="w-full h-auto object-cover rounded-lg"
+                        />
                       </div>
+                    )}
 
-                      <div className="mt-6">
-                        <div className="border-t border-gray-200 pt-4 flex items-center gap-4">
-                          {/*ชื่อโรงภาพยนตร์ */}
-                          <p className="text-sm sm:text-sm md:text-lg lg:text-lg font-bold text-gray-100">
-                            <strong>{cinema.name}</strong>
-                          </p>
-
-                          <div className="h-5 w-px bg-gray-300"></div>
-
-                          {/*ประเภทโรง */}
-                          <p className="text-sm sm:text-sm md:text-lg lg:text-lg text-gray-100 font-bold">{cinema.type}</p>
-
-                          <div className="h-5 w-px bg-gray-300"></div>
-
-                          {/*ภาษา */}
-                          <div className="flex items-center gap-2">
-                            <FaVolumeUp className="text-gray-100" />
-                            <span className="text-sm text-gray-100">ENG</span>
-                            <span className="border px-1 text-xs text-gray-100">SUB</span>
-                          </div>
+                    <div className="flex flex-col justify-start md:justify-between">
+                      <div className="mb-2 md:mb-4">
+                        <p className="md:text-lg text-sm sm:text-xl md:text-2xl lg:text-2xl font-bold text-white mb-1">
+                          {firstShowtime.movie.title}
+                        </p>
+                        <div className="flex md:flex-col md:text-base text-xs md:gap-0 gap-2">
+                          <span className="mt-1 text-amber-500 flex items-center">
+                            <IoLocationSharp className="mr-1"/>
+                            {location.name}
+                          </span>
+                      
+                          <span className="mt-1 text-amber-400 flex items-center">
+                            <IoIosTimer className="mr-1" />
+                            {firstShowtime.movie.duration} mins
+                          </span>
                         </div>
 
-                          {/*ปุ่มเลือกรอบ */}
-                        <div className="mt-4 flex gap-2">
-                                
-                          {(() => {
-                                  //ค้นหา showtime ที่ใกล้ที่สุด (>= เวลาปัจจุบัน)
-                            const upcomingShowtimes = filteredShowtimes.filter(showtime =>
-                            dayjs(`${selectedDate.format("YYYY-MM-DD")} ${showtime.time.split(":").slice(0, 2).join(":")}`, "YYYY-MM-DD HH:mm")
-                            .isAfter(dayjs())
-                            );
-                            const nearestShowtime = upcomingShowtimes.length > 0 ? upcomingShowtimes[0].time : null;
+                        <Link href={`/client/movie/${firstShowtime.movie.id}`}>
+                          <button className="md:mt-10 mt-5 md:px-8 py-2 px-6 border border-gray-300 md:text-base text-xs text-gray-300 rounded-lg hover:border-gray-400 hover:text-gray-400 transition-colors duration-300 ">
+                            Movie Details
+                          </button>
+                        </Link>
+                        
+                      </div>
+                    </div>
+                  </div>
 
-                            return filteredShowtimes.map((showtime) => {
-                            //แปลงเวลา showtime.time และตรวจสอบกับเวลาปัจจุบัน
-                            const formattedTime = showtime.time.split(":").slice(0, 2).join(":");
-                            const showtimeMoment = dayjs(`${selectedDate.format("YYYY-MM-DD")} ${formattedTime}`, "YYYY-MM-DD HH:mm");
-                            const isPast = showtimeMoment.isBefore(dayjs()); //เช็คว่าเวลาหมดหรือยัง
-                            const isNearest = showtime.time === nearestShowtime; //เช็คว่าเป็นเวลาล่าสุดที่กำลังจะถึงไหม
-                            const uniqueKey = `${cinema.id}-${showtime.id}`; //ป้องกัน key ซ้ำ
+                  <div className="mt-6 max-sm:mt-4 mb-4">
+                  {/* ✅ ปุ่มเลือกรอบที่ถูกต้อง */}
+                  <div className="border-t border-gray-200 pt-4 flex items-center gap-4">
+                    {/*ชื่อโรงภาพยนตร์ */}
+                    <p className="text-sm sm:text-sm md:text-lg lg:text-lg font-bold text-gray-100">
+                      <strong>{cinema.name}</strong>
+                    </p>
 
-                            return (
-                              <Link key={uniqueKey} href={`/client/showtime/${showtime.id}`}>
-                                <button
-                                  key={uniqueKey}
-                                  className={`transition-colors duration-300 rounded-md border transition-all text-lg font-medium
+                    <div className="h-5 w-px bg-gray-300"></div>
+
+                    {/*ประเภทโรง */}
+                    <p className="text-sm sm:text-sm md:text-lg lg:text-lg text-gray-100 font-bold">{cinema.type}</p>
+
+                    <div className="h-5 w-px bg-gray-300"></div>
+
+                    {/*ภาษา */}
+                    <div className="flex items-center gap-2">
+                      <FaVolumeUp className="text-gray-100" />
+                      <span className="text-sm text-gray-100">ENG</span>
+                      <span className="border px-1 text-xs text-gray-100">SUB</span>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex gap-2">
+                    {(() => {
+                      const upcomingShowtimes = movieShowtimes.filter(showtime =>
+                        dayjs(`${selectedDate.format("YYYY-MM-DD")} ${showtime.time}`, "YYYY-MM-DD HH:mm").isAfter(dayjs())
+                      );
+                      const nearestShowtime = upcomingShowtimes.length > 0 ? upcomingShowtimes[0].time : null;
+
+                      return movieShowtimes.map((showtime) => {
+                        const isNearest = showtime.time === nearestShowtime;
+                        const isPast = dayjs(`${selectedDate.format("YYYY-MM-DD")} ${showtime.time}`, "YYYY-MM-DD HH:mm").isBefore(dayjs());
+                        return (
+                          <Link key={showtime.id} href={`/client/showtime/${showtime.id}`}>
+                            <button
+                              className={`transition-colors duration-300 rounded-md border transition-all text-lg font-medium
                                               px-3 py-0.5 text-[14px] 
                                               sm:px-6 sm:py-2 sm:text-[15px] 
                                               md:px-8 md:py-2 md:text-[16px] ${
-                                              isPast
-                                                ? "bg-gray-500 text-gray-400 cursor-not-allowed" // ❌ เวลาที่หมดแล้ว
-                                                : isNearest
-                                                ? "bg-gradient-to-r from-amber-500 to-amber-300 text-white" //ปุ่มที่ใกล้ที่สุด 
-                                                : selectedTime === showtime.time
-                                                ? "border-amber-500 text-amber-500  bg-amber-100" //ปุ่มที่ถูกเลือก แต่ไม่ใช่ nearest
-                                                : "border-amber-500 text-amber-500  hover:bg-amber-100" // 🟡 ปุ่มปกติที่ hover ได้
-                                  }`}
-                                  onClick={() => !isPast && setSelectedTime(showtime.time)} 
-                                  disabled={isPast}
-                                  >
-                                  {formattedTime}
-                                </button>
-                              </Link>
-                              );
-                              });
-                            })()}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })}
-        </div>
+                                isPast
+                                  ? "bg-gray-500 text-gray-400 cursor-not-allowed"
+                                  : isNearest
+                                  ? "bg-gradient-to-r from-amber-500 to-amber-300 text-white"
+                                  : selectedTime === showtime.time
+                                  ? "border-amber-500 text-amber-500 bg-amber-100"
+                                  : "border-amber-500 text-amber-500 hover:bg-amber-100"
+                              }`}
+                              onClick={() => !isPast && setSelectedTime(showtime.time)}
+                              disabled={isPast}
+                            >
+                              {showtime.time}
+                            </button>
+                          </Link>
+                        );
+                      });
+                    })()}
+                  </div>
+                </div>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
+      </div>
+    
+        
       </div>
   </div>
   )}
-
-
-
-
+  
 export default LocationDetailPage;
