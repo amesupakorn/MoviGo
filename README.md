@@ -90,7 +90,9 @@ pnpm install
 ```bash
 pnpm run dev
 ```
-📌 เปิดเบราว์เซอร์และเข้าไปที่ http://localhost:3000
+📌 เปิดเบราว์เซอร์และเข้าไปที่ 
+สำหรับหน้า CLient | http://localhost:3000/client/home 
+สำหรับหน้า Admin  | http://localhost:3000/admin
 
 ---
 
