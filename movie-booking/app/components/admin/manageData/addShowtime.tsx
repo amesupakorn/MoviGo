@@ -85,25 +85,25 @@ const CreateShowtime: React.FC<AddShowtimeProps> = ({ isPopupOpen, setIsPopupOpe
       subCinemaId: cinemaId,
       startDate,
       endDate,
-      times: selectedTimes, // Send array of selected times
+      times: selectedTimes, 
     };
 
     try {
         setIsLoading(true);
         
-        // ✅ Send Showtime Data to API
+        //  Send Showtime Data to API
         const response = await api.post("/showtime", showtimeData);
         
         if (response.data?.showtimes) {
-            // ✅ Re-fetch the latest showtimes from the API
+            //  Re-fetch the latest showtimes from the API
             const updatedCinemaResponse = await api.get(`/cinema/${cinemaId}?includeShowtimes=true`);
             
             if (updatedCinemaResponse.data) {
-                setCinema(updatedCinemaResponse.data); // ✅ Update state with latest showtimes
+                setCinema(updatedCinemaResponse.data); 
             }
     
             setSuccess("Showtime added successfully!");
-            setIsPopupOpen(false); // ✅ Close the popup
+            setIsPopupOpen(false); 
         } else {
             setError("Failed to create showtime. Please try again.");
         }

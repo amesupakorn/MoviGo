@@ -113,7 +113,6 @@ const CinemaSeatBooking = () => {
         }
 
         if (seatData.action === "release") {
-          console.log("ddd")
           return prevSeats.filter(seat => !(seat.row === seatData.row && seat.number === seatData.number));
         }
 

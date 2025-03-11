@@ -22,7 +22,7 @@ export async function GET() {
   }
 }
 
-// ✅ POST - สร้าง Cinema ใหม่
+//  POST - สร้าง Cinema ใหม่
 export async function POST(req: Request) {
   try {
     const { name, type, locationId } = await req.json();
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
   }
 }
 
-// ✅ PUT - แก้ไข Cinema ตาม ID
+//  PUT - แก้ไข Cinema ตาม ID
 export async function PUT(req: Request) {
   try {
     const { id, name, type, locationId } = await req.json();
@@ -63,7 +63,7 @@ export async function PUT(req: Request) {
   }
 }
 
-// ✅ DELETE - ลบ Cinema ตาม ID
+//  DELETE - ลบ Cinema ตาม ID
 export async function DELETE(req: Request) {
   try {
     const { id } = await req.json(); // รับ ID จาก body

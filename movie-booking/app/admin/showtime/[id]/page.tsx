@@ -18,20 +18,20 @@ const ShowTimeView = () => {
     const [showtimeToDelete, setShowtimeToDelete] = useState<Showtime | null>(null);
     const [searchTerm, setSearchTerm] = useState(""); // 🔎 Search term state
 
-    // ✅ Confirm Delete Showtime
+    //  Confirm Delete Showtime
     const confirmDeleteShowtime = (showtime: Showtime) => {
         setShowtimeToDelete(showtime);
         setIsDeletePopupOpen(true);
     };
 
-    // ✅ Handle Showtime Deletion
+    //  Handle Showtime Deletion
     const handleDeleteShowtime = async () => {
         if (!showtimeToDelete) return;
     
         try {
             await api.delete(`/showtime`, { data: { id: showtimeToDelete.id } });
 
-            // ✅ Remove from state instantly
+            //  Remove from state instantly
             setCinema((prevCinema) => {
                 if (!prevCinema) return prevCinema;
                 return {
@@ -49,7 +49,7 @@ const ShowTimeView = () => {
         }
     };
 
-    // ✅ Fetch Cinema Data
+    //  Fetch Cinema Data
     useEffect(() => {
         const fetchCinemaData = async () => {
             try {
@@ -62,7 +62,7 @@ const ShowTimeView = () => {
         if (cinemaId) fetchCinemaData();
     }, [cinemaId]);
 
-    // ✅ Filter Showtimes Based on Search Term
+    //  Filter Showtimes Based on Search Term
     const filteredShowtimes = cinema?.showtimes.filter((showtime) =>
         showtime.movie.title.toLowerCase().includes(searchTerm.toLowerCase())
     );

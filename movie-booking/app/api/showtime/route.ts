@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
         });
         console.log("🎬 Movie added to database:", existingMovie);
       } catch (error) {
-        console.error("❌ Error inserting movie:", error);
+        console.error(" Error inserting movie:", error);
         return NextResponse.json({ error: "Failed to insert movie" }, { status: 500 });
       }
     }
@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
 
       //  Prevent same time being used by a different movie
       if (differentMovieSet.has(showtime.time)) {
-        console.warn(`⛔ Conflict: ${showtime.time} is already used by another movie in this cinema.`);
+        console.warn(` Conflict: ${showtime.time} is already used by another movie in this cinema.`);
         return false;
       }
 
