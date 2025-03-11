@@ -350,3 +350,191 @@ const LocationDetailPage = () => {
 
 
 export default LocationDetailPage;
+
+
+// import React, { useEffect, useState } from "react";
+// import api from "@/lib/axios";
+// import { Location } from "@/lib/types/booking";
+// import { useParams } from "next/navigation";
+// import LoadTwo from "@/app/components/ui/loading/loadTwo";
+// import { FaCaretRight, FaCaretLeft, FaVolumeUp } from "react-icons/fa";
+// import dayjs from "dayjs";
+// import utc from "dayjs/plugin/utc";
+// import timezone from "dayjs/plugin/timezone";
+// import { IoIosTimer } from "react-icons/io";
+// import { FaCheck } from "react-icons/fa6";
+// import Link from "next/link";
+// import { IoLocationSharp } from "react-icons/io5";
+
+// const LocationDetailPage = () => {
+//   dayjs.extend(utc);
+//   dayjs.extend(timezone);
+//   const { id } = useParams();
+//   const [location, setLocation] = useState<Location | null>(null);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+
+//   const today = dayjs();
+//   const [selectedDate, setSelectedDate] = useState(today.clone());
+//   const [selectedTime, setSelectedTime] = useState("");
+//   const [moviePosters, setMoviePosters] = useState<{ [key: string]: string }>({});
+
+//   const userTimezone = dayjs.tz.guess();
+
+//   useEffect(() => {
+//     const fetchLocation = async () => {
+//       if (!id) return;
+//       try {
+//         const response = await api.get(`/location/${id}`);
+//         setLocation(response.data);
+//       } catch (err) {
+//         setError("Failed to fetch location details.");
+//         console.error(err);
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     };
+
+//     fetchLocation();
+//   }, [id]);
+
+//   useEffect(() => {
+//     const fetchPosters = async () => {
+//       if (!location) return;
+
+//       const posters: { [key: string]: string } = {};
+
+//       await Promise.all(
+//         location.subCinemas.flatMap((cinema) =>
+//           cinema.showtimes.map(async (showtime) => {
+//             if (showtime.movie.id && !posters[showtime.movie.id]) {
+//               try {
+//                 const movieResponse = await api.get(`/movies/${showtime.movie.id}`);
+//                 posters[showtime.movie.id] = movieResponse.data.poster_path;
+//               } catch (error) {
+//                 console.error("Error fetching movie poster:", error);
+//               }
+//             }
+//           })
+//         )
+//       );
+
+//       setMoviePosters(posters);
+//     };
+
+//     fetchPosters();
+//   }, [location]);
+
+//   if (isLoading) return <LoadTwo />;
+//   if (error) return <div className="text-red-500">{error}</div>;
+
+//   return (
+//     <div className="container mx-auto max-w-5xl p-6">
+//       <h2 className="text-2xl font-bold text-center text-white mb-6">Select Showtime</h2>
+
+//       {/* ✅ ปุ่มเลือกวัน */}
+//       <div className="flex justify-center space-x-5 overflow-x-auto mb-6 w-full">
+//         {Array.from({ length: 7 }, (_, index) => today.add(index, "day")).map((date, index) => {
+//           const isSelected = selectedDate.isSame(date, "day");
+//           return (
+//             <button
+//               key={index}
+//               className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all duration-100 ${
+//                 isSelected
+//                   ? "border-amber-500 text-amber-500"
+//                   : "border-gray-300 text-gray-200 bg-transparent hover:border-amber-500 hover:text-amber-500"
+//               }`}
+//               onClick={() => setSelectedDate(dayjs(date))}
+//             >
+//               {index === 0 ? "Today" : date.format("D MMM YYYY")}
+//             </button>
+//           );
+//         })}
+//       </div>
+
+//       {/* ✅ แสดงผลโรงภาพยนตร์และรอบฉายแต่ละเรื่องแยกกัน */}
+//       {location?.subCinemas.map((cinema) => {
+//         const showtimesForDate = cinema.showtimes.filter(showtime =>
+//           dayjs(showtime.date).isSame(selectedDate, "day")
+//         );
+
+//         if (showtimesForDate.length === 0) return null;
+
+//         return (
+//           <div key={cinema.id} className="bg-zinc-800 p-6 shadow-md border border-gray-300 rounded-3xl mb-6">
+//             <h3 className="text-lg text-white font-bold">{cinema.name} - {cinema.type}</h3>
+
+//             {/* ✅ แยกตามหนังที่ฉายในโรงนี้ */}
+//             {Object.entries(
+//               showtimesForDate.reduce((acc: { [key: string]: any[] }, showtime) => {
+//                 if (!acc[showtime.movie.id]) acc[showtime.movie.id] = [];
+//                 acc[showtime.movie.id].push(showtime);
+//                 return acc;
+//               }, {})
+//             ).map(([movieId, movieShowtimes]) => {
+//               const firstShowtime = movieShowtimes[0];
+//               const posterPath = moviePosters[movieId];
+
+//               return (
+//                 <div key={movieId} className="mt-6">
+//                   <div className="flex gap-4 items-center">
+//                     {posterPath && (
+//                       <img
+//                         src={`https://image.tmdb.org/t/p/w500${posterPath}`}
+//                         alt={firstShowtime.movie.title}
+//                         className="w-[80px] h-auto object-cover rounded-lg"
+//                       />
+//                     )}
+//                     <div>
+//                       <p className="text-lg font-bold text-white">{firstShowtime.movie.title}</p>
+//                       <p className="text-amber-400 text-sm flex items-center">
+//                         <IoIosTimer className="mr-1" />
+//                         {firstShowtime.movie.duration} mins
+//                       </p>
+//                     </div>
+//                   </div>
+
+//                   {/* ✅ ปุ่มเลือกรอบที่ถูกต้อง */}
+//                   <div className="mt-4 flex flex-wrap gap-2">
+//                     {(() => {
+//                       const upcomingShowtimes = movieShowtimes.filter(showtime =>
+//                         dayjs(`${selectedDate.format("YYYY-MM-DD")} ${showtime.time}`, "YYYY-MM-DD HH:mm").isAfter(dayjs())
+//                       );
+//                       const nearestShowtime = upcomingShowtimes.length > 0 ? upcomingShowtimes[0].time : null;
+
+//                       return movieShowtimes.map((showtime) => {
+//                         const isNearest = showtime.time === nearestShowtime;
+//                         const isPast = dayjs(`${selectedDate.format("YYYY-MM-DD")} ${showtime.time}`, "YYYY-MM-DD HH:mm").isBefore(dayjs());
+//                         return (
+//                           <Link key={showtime.id} href={`/client/showtime/${showtime.id}`}>
+//                             <button
+//                               className={`border px-4 py-2 rounded-md text-sm transition-all ${
+//                                 isPast
+//                                   ? "bg-gray-500 text-gray-400 cursor-not-allowed"
+//                                   : isNearest
+//                                   ? "bg-gradient-to-r from-amber-500 to-amber-300 text-white"
+//                                   : selectedTime === showtime.time
+//                                   ? "border-amber-500 text-amber-500 bg-amber-100"
+//                                   : "border-amber-500 text-amber-500 hover:bg-amber-100"
+//                               }`}
+//                               onClick={() => !isPast && setSelectedTime(showtime.time)}
+//                               disabled={isPast}
+//                             >
+//                               {showtime.time}
+//                             </button>
+//                           </Link>
+//                         );
+//                       });
+//                     })()}
+//                   </div>
+//                 </div>
+//               );
+//             })}
+//           </div>
+//         );
+//       })}
+//     </div>
+//   );
+// };
+
+// export default LocationDetailPage;

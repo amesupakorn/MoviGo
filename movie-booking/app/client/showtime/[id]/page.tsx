@@ -201,7 +201,7 @@ const CinemaSeatBooking = () => {
   
 
         if (res_booking.data) {
-          await api.get(`/cookie/${res_booking.data.session}`);
+          await api.get(`/cookie/session/${res_booking.data.session}`);
     
           selectedSeats.forEach((seat) => {
             const row = seat.charAt(0);

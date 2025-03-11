@@ -37,7 +37,7 @@ export const PaymentProvider = ({ children }: { children: ReactNode }) => {
   const checkPaymentStatus = async () => {
     try {
 
-        const res_cookie = await api.get(`/cookie/`)
+        const res_cookie = await api.get(`/cookie/session`)
         const cookie = res_cookie.data.session
 
         if (!cookie) return;

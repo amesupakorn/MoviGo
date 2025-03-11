@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    // ✅ Fetch Movie Details
+    //  Fetch Movie Details
     const movieResponse = await axios.get(`${process.env.HOST_URL}/api/movies/${movieId}`);
     const movieData = movieResponse.data;
 
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
 
     console.log("🎬 Movie Details:", movieData);
 
-    // ✅ Ensure Movie Exists in Database
+    //  Ensure Movie Exists in Database
     let existingMovie = await prisma.movie.findUnique({
       where: { id: movieId },
     });
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // ✅ Ensure Cinema Exists
+    //  Ensure Cinema Exists
     const existingCinema = await prisma.cinema.findUnique({
       where: { id: subCinemaId },
     });
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "SubCinema not found" }, { status: 404 });
     }
 
-    // ✅ Generate Showtimes from Date Range
+    //  Generate Showtimes from Date Range
     const generatedShowtimes: { movieId: string; subCinemaId: string; date: Date; time: string }[] = [];
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
 
     console.log("📅 Generated Showtimes:", generatedShowtimes);
 
-    // ✅ Fetch Existing Showtimes for Same Cinema
+    //  Fetch Existing Showtimes for Same Cinema
     const existingShowtimes = await prisma.showtime.findMany({
       where: {
         subCinemaId,
@@ -96,11 +96,11 @@ export async function POST(req: NextRequest) {
     const existingShowtimeSet = new Set(existingShowtimes.map(s => `${s.date.toISOString()}-${s.time}`));
     const differentMovieSet = new Set(existingShowtimes.filter(s => s.movieId !== movieId).map(s => s.time));
 
-    // ✅ Filter Out Duplicate and Conflicting Showtimes
+    //  Filter Out Duplicate and Conflicting Showtimes
     const filteredShowtimes = generatedShowtimes.filter(showtime => {
       const key = `${showtime.date.toISOString()}-${showtime.time}`;
 
-      // ❌ Prevent same time being used by a different movie
+      //  Prevent same time being used by a different movie
       if (differentMovieSet.has(showtime.time)) {
         console.warn(`⛔ Conflict: ${showtime.time} is already used by another movie in this cinema.`);
         return false;
@@ -115,13 +115,13 @@ export async function POST(req: NextRequest) {
 
     console.log("🎟️ New Showtimes to Insert:", filteredShowtimes);
 
-    // ✅ Save Showtimes to Database
+    //  Save Showtimes to Database
     const createdShowtimes = await prisma.showtime.createMany({
       data: filteredShowtimes,
       skipDuplicates: true,
     });
 
-    console.log("✅ Successfully Created Showtimes:", createdShowtimes);
+    console.log(" Successfully Created Showtimes:", createdShowtimes);
 
     return NextResponse.json({
       message: "Showtimes created successfully",
