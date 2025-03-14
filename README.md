@@ -73,7 +73,7 @@ cd MovieGo
 pnpm install
 ```
 3.ติดตั้งและตั้งค่า Prisma
-  3.1ติดตั้ง Prisma
+   - 3.1ติดตั้ง Prisma
   ```bash
   npx prisma init
   ```
