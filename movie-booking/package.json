@@ -10,7 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@prisma/client": "^6.3.1",
+    "@prisma/client": "^6.4.1",
     "@stripe/react-stripe-js": "^3.1.1",
     "@stripe/stripe-js": "^5.7.0",
     "aos": "^2.3.4",
@@ -51,7 +51,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.1.6",
     "postcss": "^8.5.1",
-    "prisma": "^6.4.1",
+    "prisma": "6.4.1",
     "tailwindcss": "^3.4.17",
     "ts-node": "^10.9.2",
     "typescript": "^5"
