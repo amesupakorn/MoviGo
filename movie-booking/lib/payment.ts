@@ -9,7 +9,12 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-02-24.acacia",
 });
 
-export async function createPaymentSession(selectedSeats: string[], bookedSeats: Booking[], showtimeId: string, user: User) {
+export async function createPaymentSession(
+  selectedSeats: string[], 
+  bookedSeats: Booking[], 
+  showtimeId: string, 
+  user: { id: string; name: string; email: string }
+) {
   const userId = user.id;
   const premiumRows = ["A", "B", "C", "D", "E", "F"];
   

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getUserFromToken } from "@/lib/auth";
+import { Booking } from "@/lib/types/booking";
 import { createPaymentSession } from "@/lib/payment";
 
 export async function POST(req: NextRequest) {
@@ -9,12 +10,12 @@ export async function POST(req: NextRequest) {
     
     const user = await getUserFromToken();
     
-    if (!selectedSeats || !showtimeId || !user || !user.id || !status) {
+    if (!selectedSeats || !showtimeId || !user || !user.id || !user.name || !user.email || !status) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     const userId = user.id; // User ID from the token
-    const bookedSeats = [];
+    const bookedSeats: Booking[] = [];
     const premiumRows = ["A", "B", "C", "D", "E", "F"];
 
 
@@ -76,7 +77,7 @@ export async function POST(req: NextRequest) {
       selectedSeats,
       bookedSeats,
       showtimeId,
-      user as any // Type cast if necessary
+      { id: user.id, name: user.name, email: user.email }
     );
 
 
