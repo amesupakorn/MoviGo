@@ -6,6 +6,8 @@ import { Booking } from "@/lib/types/booking"
 import { console } from "inspector";
 import { User } from "@/lib/types/user";
 
+import { getBaseUrl } from "@/lib/api-url";
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-02-24.acacia", 
 });
@@ -51,8 +53,8 @@ export async function POST(req: NextRequest) {
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      success_url: `${process.env.HOST_URL}/payment/success/${orderId}`,
-      cancel_url: `${process.env.HOST_URL}/client/showtime/${showtimeId}`,
+      success_url: `${getBaseUrl()}/payment/success/${orderId}`,
+      cancel_url: `${getBaseUrl()}/client/showtime/${showtimeId}`,
       metadata: {
         bookId: bookedSeats.map((booking) => booking.id).join(","),
       },

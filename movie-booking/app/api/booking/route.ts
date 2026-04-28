@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma"; // Prisma client
 import { getUserFromToken } from "@/lib/auth"; // Helper function to get user from token
 import axios from "axios";
 import { cookies } from "next/headers";
+import { getBaseUrl } from "@/lib/api-url";
 
 export async function POST(req: NextRequest) {
   try {
@@ -75,7 +76,7 @@ export async function POST(req: NextRequest) {
     }
 
 
-      const paymentResponse = await axios.post(`${process.env.HOST_URL}/api/payment`, {
+      const paymentResponse = await axios.post(`${getBaseUrl()}/api/payment`, {
         selectedSeats,   
         bookedSeats,
         showtimeId,

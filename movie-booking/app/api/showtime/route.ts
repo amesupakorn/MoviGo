@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma"; // Prisma client for database
-import axios from "axios";
+import { fetchMovieDetail } from "@/lib/movies/detail";
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,9 +11,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    //  Fetch Movie Details
-    const movieResponse = await axios.get(`${process.env.HOST_URL}/api/movies/${movieId}`);
-    const movieData = movieResponse.data;
+    //  Fetch Movie Details directly from the service instead of making an internal HTTP request
+    const movieData = await fetchMovieDetail(Number(movieId));
 
     if (!movieData) {
       return NextResponse.json({ error: "Movie not found" }, { status: 404 });
