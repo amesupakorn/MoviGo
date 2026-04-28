@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import SeatStandard from "@/app/components/ui/seat/standard";
 import SeatPremium from "@/app/components/ui/seat/premium";
 import { useParams } from "next/navigation";
@@ -17,8 +17,6 @@ import { useRouter } from "next/navigation";
 import { FaCheck } from "react-icons/fa6";
 import Link from "next/link";
 import { useAuth } from "@/app/context/setLogged"
-
-const socket = new WebSocket("ws://localhost:3001");
 
 
 const CinemaSeatBooking = () => {
@@ -72,8 +70,6 @@ const CinemaSeatBooking = () => {
         const movieResponse = await api.get(`/movies/${response.data.movieId}`);
         const seatResponse = await api.get(`/seats/${id}`);
 
-        await api.get("/socket");
-
   
         if(cinemaResponse) setCinema(cinemaResponse.data);
         if(movieResponse) setMovie(movieResponse.data);
@@ -94,55 +90,32 @@ const CinemaSeatBooking = () => {
   }, [id]);
 
 
-  // รับข้อมูลจาก socket
-  useEffect(() => {  
+  // Poll seat status from database every 3 seconds (replaces WebSocket for Vercel compatibility)
+  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-     socket.onmessage = async (event) => {
+  const fetchSeatUpdates = useCallback(async () => {
+    if (!id) return;
     try {
-      let seatData;
-      if (event.data instanceof Blob) {
-        const text = await event.data.text();
-        seatData = JSON.parse(text);
-      } else {
-        seatData = JSON.parse(event.data);
+      const seatResponse = await api.get(`/seats/${id}`);
+      if (seatResponse.data) {
+        setSeat(seatResponse.data);
       }
-
-      setSeat((prevSeats) => {
-        if (!Array.isArray(prevSeats)) {
-          return [];
-        }
-
-        if (seatData.action === "release") {
-          return prevSeats.filter(seat => !(seat.row === seatData.row && seat.number === seatData.number));
-        }
-
-        return [
-          ...prevSeats,
-          {
-            id: `temp-${seatData.row}${seatData.number}`,
-            row: seatData.row,
-            number: seatData.number,
-            isAvailable: false,
-            price: seatData.price || 320,
-            showtimeId: id as string,
-            Booking: null,
-          },
-        ];
-      });
-
-    } catch (error) {
-      console.error("❌ Error parsing WebSocket message:", error);
+    } catch {
+      // Silently handle polling errors
     }
-  };
+  }, [id]);
 
-  socket.onclose = () => {
-    console.log("❌ WebSocket disconnected!");
-  };
+  useEffect(() => {
+    if (!id || loading) return;
 
-  return () => {
-    socket.close();
-  };
-}, []);
+    pollingRef.current = setInterval(fetchSeatUpdates, 3000);
+
+    return () => {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+      }
+    };
+  }, [id, loading, fetchSeatUpdates]);
 
 
   const rows = ["L", "K", "J", "H", "G", "F", "E", "D", "C", "B", "A"];
@@ -212,10 +185,8 @@ const CinemaSeatBooking = () => {
               price: premiumRows.includes(row) ? 350 : 320,
             });
     
-            // Ensure WebSocket connection is open before sending
-            if (socket.readyState === WebSocket.OPEN) {
-              socket.send(seatData);
-            }
+            // Seat data is already persisted to DB by the booking API.
+            // Polling will pick up updates for all connected clients.
           });
 
   

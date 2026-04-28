@@ -8,8 +8,6 @@ interface PaymentContextProps {
   cancelBooking: () => void;
 }
 
-const socket = new WebSocket("ws://localhost:3001");
-
 const PaymentContext = createContext<PaymentContextProps | undefined>(undefined);
 
 export const usePaymentContext = () => {
@@ -55,29 +53,15 @@ export const PaymentProvider = ({ children }: { children: ReactNode }) => {
   const cancelBooking = async () => {
     try {
       if (paymentStatus !== "complete" && sessionId) {
-        const response = await api.post("/booking/cancel", {
+        await api.post("/booking/cancel", {
           sessionId,
         });
 
-        if (response.data.canceledSeats) {
-
-           response.data.canceledSeats.forEach((seat: { row: string; number: number }) => {
-            const seatData = JSON.stringify({
-              row: seat.row,
-              number: seat.number,
-              action: "release",
-            });
-
-            // Ensure WebSocket is open before sending
-            if (socket.readyState === WebSocket.OPEN) {
-              socket.send(seatData);
-            }
-            console.log("Booking canceled successfully.");
-
-        });
-
+        // Seat release is now handled by the booking/cancel API endpoint.
+        // Other clients will see the updated seat status via database polling.
+        console.log("Booking canceled successfully.");
       }
-    }} catch (error) {
+    } catch (error) {
       console.error("Error canceling booking:", error);
     }
   };
