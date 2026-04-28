@@ -9,22 +9,15 @@ import LoadTwo from "@/app/components/ui/loading/loadTwo";
 import { Movie } from "@/lib/types/movie";
 import { LuAudioLines } from "react-icons/lu";
 import { PiSubtitles } from "react-icons/pi";
-import { FaCircleCheck } from "react-icons/fa6";
 import { useAlert } from "@/app/context/AlertContext";
 import { VscAccount } from "react-icons/vsc";
-import Loading from "@/app/components/ui/loading/loadOne";
-import { useRouter } from "next/navigation";
-import { FaCheck } from "react-icons/fa6";
-import Link from "next/link";
 import { useAuth } from "@/app/context/setLogged"
 
 const CinemaSeatBooking = () => {
   const { id } = useParams();
-  const router = useRouter();
+  const { } = useAuth();
 
-  const {isLoggedIn} = useAuth();
 
-  const [selectedSeats, setSelectedSeats] = useState<string[]>([]); 
   const [formattedDate, setFormattedDate] = useState<string | null>(null);
 
   const [show, setShowtime] = useState<Showtime | null>(null);
@@ -35,8 +28,7 @@ const CinemaSeatBooking = () => {
   const [isSmallScreenOne, setIsSmallScreenOne] = useState(false);
   const [isSmallScreenTwo, setIsSmallScreenTwo] = useState(false);
 
-  const { setError, setSuccess } = useAlert();   
-  const [isLoading, setIsLoading] = useState(false);
+  const { setError } = useAlert();   
   const [loading, setLoading] = useState(true);
 
   
@@ -195,8 +187,7 @@ const CinemaSeatBooking = () => {
                               {Array(seatsPerRow)
                                 .fill(null)
                                 .map((_, seatIndex) => {
-                                  const seatIdentifier = `${row}${seatIndex + 1}`;
-                                  const isSelected = selectedSeats.includes(seatIdentifier);
+
                                   const reserved = isReserved(row, seatIndex);
 
                                   return (

@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import AdminSidebar from "../components/AdminNavbar";
+import AdminTopbar from "../components/AdminTopbar";
 import { useAlert } from "@/app/context/AlertContext";
 import LoadTwo from "@/app/components/ui/loading/loadTwo";
-import Footer from "../components/Footer";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
@@ -25,26 +25,45 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   useEffect(() => {
     const loadingTimer = setTimeout(() => {
       setLoading(false);
-    }, 2000);
+    }, 1500); // Reduced loading time slightly for better UX
     return () => clearTimeout(loadingTimer);
   }, []);
 
   return (
-    <div className="bg-white flex min-h-screen md:flex-row">
-    {loading && <LoadTwo />}
+    <div className="bg-slate-50 flex min-h-screen">
+      {loading && <LoadTwo />}
 
-        {/* Sidebar: คงที่ที่ขนาด 250px */}
-        <div className="w-72 bg-gray-100 border-r">
-            <AdminSidebar />
+      {/* Sidebar - Fixed width */}
+      <div className="w-72 flex-shrink-0">
+        <AdminSidebar />
+      </div>
+
+      {/* Main Content Area */}
+      <div className="flex flex-col flex-grow min-w-0">
+        {/* Topbar */}
+        <AdminTopbar />
+
+        {/* Dynamic Content */}
+        <main className="flex-grow p-8 lg:p-10">
+          <div className="max-w-[1600px] mx-auto">
+            {children}
+          </div>
+        </main>
+
+        {/* Footer could go here if needed, but modern dashboards often omit it or keep it simple */}
+      </div>
+
+      {/* Global Alerts Portal (Toast-style) */}
+      {(success || error) && (
+        <div className="fixed bottom-8 right-8 z-50 animate-in slide-in-from-right-10 duration-300">
+          <div className={`px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 border ${
+            success ? "bg-emerald-500 text-white border-emerald-400" : "bg-red-500 text-white border-red-400"
+          }`}>
+            <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+            <span className="font-bold text-sm tracking-wide capitalize">{success || error}</span>
+          </div>
         </div>
-
-        {/* Main Content: ขยายเต็มพื้นที่ */}
-        <div className="flex flex-col flex-grow">
-            <main className="flex-grow p-6 md:p-8 overflow-y-auto">{children}</main>
-
-            {/* Footer */}
-            <Footer />
-        </div>
+      )}
     </div>
   );
 }

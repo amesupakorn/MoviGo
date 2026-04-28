@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET(req: NextRequest, { params }: { params: { showtimeId: string } }) {
-  const { showtimeId } = params;
+export async function GET(req: NextRequest, { params }: { params: Promise<{ showtimeId: string }> }) {
+  const { showtimeId } = await params;
 
   if (!showtimeId) {
     return NextResponse.json({ error: "showtimeId is required" }, { status: 400 });

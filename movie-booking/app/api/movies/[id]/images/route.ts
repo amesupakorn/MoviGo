@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { fetchMovieImages } from "@/lib/movies/detail";
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const movieId = Number(params.id);
+        const movieId = Number((await params).id);
         if (!movieId) return NextResponse.json({ error: "Invalid movie ID" }, { status: 400 });
 
         const data = await fetchMovieImages(movieId);

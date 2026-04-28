@@ -125,6 +125,7 @@ const CinemaSeatBooking = () => {
             isAvailable: false,
             price: seatData.price || 320,
             showtimeId: id as string,
+            Booking: null,
           },
         ];
       });

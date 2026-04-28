@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider = "postgresql" // หรือเปลี่ยนเป็น MySQL, SQLite
   url      = env("DATABASE_URL") // URL ของฐานข้อมูล
+
 }
 
 model Movie {

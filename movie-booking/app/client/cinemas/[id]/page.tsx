@@ -30,7 +30,7 @@ const LocationDetailPage = () => {
   const [selectedTime, setSelectedTime] = useState("15:00");
   const [moviePosters, setMoviePosters] = useState<{ [key: string]: string }>({});
 
-  const userTimezone = dayjs.tz.guess();
+
 
   //ปรับจำนวนปุ่มวันที่ตามขนาดหน้าจอ
   const getVisibleDaysCount = () => {
@@ -208,7 +208,7 @@ const LocationDetailPage = () => {
 
             {/* แยกตามหนังที่ฉายในโรงนี้ */}
             {Object.entries(
-              showtimesForDate.reduce((acc: { [key: string]: any[] }, showtime) => {
+              showtimesForDate.reduce((acc: { [key: string]: (typeof showtime)[] }, showtime) => {
                 if (!acc[showtime.movie.id]) acc[showtime.movie.id] = [];
                 acc[showtime.movie.id].push(showtime);
                 return acc;

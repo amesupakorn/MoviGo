@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-export async function GET(req: NextRequest, { params }: { params: { token: string } } 
+export async function GET(req: NextRequest, { params }: { params: Promise<{ token: string }> } 
 )
 {
   try {
-    const { token } = params;
+    const { token } = await params;
     const cookieStore = await cookies();
 
     cookieStore.set('token', token, {

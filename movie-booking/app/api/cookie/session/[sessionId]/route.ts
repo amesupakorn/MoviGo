@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-export async function GET(req: NextRequest, { params }: { params: { sessionId: string } } 
+export async function GET(req: NextRequest, { params }: { params: Promise<{ sessionId: string }> } 
 )
 {
   try {
-    const { sessionId } = params;
+    const { sessionId } = await params;
     const cookieStore = await cookies();
 
     cookieStore.set('paymentSession', sessionId, {
