@@ -2,7 +2,6 @@ import Stripe from "stripe";
 import { v4 as uuidv4 } from "uuid";
 import { prisma } from "@/lib/prisma";
 import { Booking } from "@/lib/types/booking";
-import { User } from "@/lib/types/user";
 import { getBaseUrl } from "@/lib/api-url";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -10,14 +9,14 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 export async function createPaymentSession(
-  selectedSeats: string[], 
-  bookedSeats: Booking[], 
-  showtimeId: string, 
+  selectedSeats: string[],
+  bookedSeats: Booking[],
+  showtimeId: string,
   user: { id: string; name: string; email: string }
 ) {
   const userId = user.id;
   const premiumRows = ["A", "B", "C", "D", "E", "F"];
-  
+
   const getSeatPrice = (seat: string) => {
     const row = seat[0];
     return premiumRows.includes(row) ? 350 : 320;
