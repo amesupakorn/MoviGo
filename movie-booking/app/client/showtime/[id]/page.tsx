@@ -20,13 +20,13 @@ import { useAuth } from "@/app/context/setLogged"
 
 
 const CinemaSeatBooking = () => {
-  
+
   const { id } = useParams();
   const router = useRouter();
 
-  const {isLoggedIn} = useAuth();
+  const { isLoggedIn } = useAuth();
 
-  const [selectedSeats, setSelectedSeats] = useState<string[]>([]); 
+  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [formattedDate, setFormattedDate] = useState<string | null>(null);
 
   const [show, setShowtime] = useState<Showtime | null>(null);
@@ -37,24 +37,24 @@ const CinemaSeatBooking = () => {
   const [isSmallScreenOne, setIsSmallScreenOne] = useState(false);
   const [isSmallScreenTwo, setIsSmallScreenTwo] = useState(false);
 
-  const { setError} = useAlert();   
+  const { setError } = useAlert();
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  
+
   useEffect(() => {
     const handleResize = () => {
-        const width = window.innerWidth;
+      const width = window.innerWidth;
 
-        setIsSmallScreenOne(width < 1200);
+      setIsSmallScreenOne(width < 1200);
 
-        setIsSmallScreenTwo(width >= 1200 && width < 1200);
+      setIsSmallScreenTwo(width >= 1200 && width < 1200);
     };
     handleResize();
     window.addEventListener("resize", handleResize);
 
     return () => {
-        window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -65,16 +65,16 @@ const CinemaSeatBooking = () => {
       try {
         const response = await api.get(`/showtime/${id}`);
         setShowtime(response.data);
-  
+
         const cinemaResponse = await api.get(`/cinema/${response.data.subCinemaId}`);
         const movieResponse = await api.get(`/movies/${response.data.movieId}`);
         const seatResponse = await api.get(`/seats/${id}`);
 
-  
-        if(cinemaResponse) setCinema(cinemaResponse.data);
-        if(movieResponse) setMovie(movieResponse.data);
-        if(seatResponse.data) setSeat(seatResponse.data);
-  
+
+        if (cinemaResponse) setCinema(cinemaResponse.data);
+        if (movieResponse) setMovie(movieResponse.data);
+        if (seatResponse.data) setSeat(seatResponse.data);
+
         const date = new Date(response.data.date);
         setFormattedDate(date.toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" }));
       } catch (err) {
@@ -84,9 +84,9 @@ const CinemaSeatBooking = () => {
         setLoading(false);
       }
     };
-  
+
     fetchShowtime();
-  
+
   }, [id]);
 
 
@@ -133,8 +133,8 @@ const CinemaSeatBooking = () => {
   };
 
   const seatPrice = (seat: string) => {
-    const row = seat.charAt(0); 
-    return premiumRows.includes(row) ? 350 : 320; 
+    const row = seat.charAt(0);
+    return premiumRows.includes(row) ? 350 : 320;
   };
 
   const totalPrice = selectedSeats.reduce(
@@ -145,7 +145,7 @@ const CinemaSeatBooking = () => {
   const isReserved = (row: string, seatIndex: number) => {
     const seatIdentifier = `${row}${seatIndex + 1}`;
     if (!Array.isArray(seatReserve)) {
-      return false; 
+      return false;
     }
     return seatReserve.some(seat => `${seat.row}${seat.number}` === seatIdentifier && !seat.isAvailable);
 
@@ -154,48 +154,35 @@ const CinemaSeatBooking = () => {
 
   const handleSubmitBooking = async () => {
     setIsLoading(true);
-  
+
     if (!isLoggedIn) {
       router.push("/client/auth/login");
       setError("Please Login");
       setIsLoading(false);
       return;
     }
-  
+
     const showtimeId = id;
     const status = "reserved";
-  
+
     try {
       const res_booking = await api.post("/booking", {
         showtimeId,
         selectedSeats,
         status,
       });
-  
 
-        if (res_booking.data) {
-          await api.get(`/cookie/session/${res_booking.data.session}`);
-    
-          selectedSeats.forEach((seat) => {
-            const row = seat.charAt(0);
-            const number = parseInt(seat.slice(1), 10);
-            const seatData = JSON.stringify({
-              row,
-              number,
-              price: premiumRows.includes(row) ? 350 : 320,
-            });
-    
-            // Seat data is already persisted to DB by the booking API.
-            // Polling will pick up updates for all connected clients.
-          });
 
-  
+      if (res_booking.data) {
+        await api.get(`/cookie/session/${res_booking.data.session}`);
+
+
         router.push(res_booking.data.url);
         setIsLoading(false);
       }
-      
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-    } catch (error:any) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+    } catch (error: any) {
       setError("Something went wrong. Please try again.");
       setIsLoading(false);
     }
@@ -212,92 +199,92 @@ const CinemaSeatBooking = () => {
       style={{ backgroundImage: `url("/uploads/cinema1.jpg")` }}
 
     ></div>
-    <div className="container mx-auto max-w-5xl p-6 mt-4 bg-zinc-900">
-      <div className="flex items-center ">
-            {/* Step 1 */}
-            <div className="flex flex-col items-center justify-center space-y-4">
-              <Link href={`/client/cinemas/`}>
-                <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center ">
+      <div className="container mx-auto max-w-5xl p-6 mt-4 bg-zinc-900">
+        <div className="flex items-center ">
+          {/* Step 1 */}
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <Link href={`/client/cinemas/`}>
+              <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center ">
                 <FaCheck />
-                </div>
-              </Link>
-
-              <h3 className="text-amber-600 md:text-base text-xs">Select Location</h3>
-            </div>
-    
-            {/* Line between steps */}
-            <div className="flex-1 h-1 transform -translate-y-4  bg-amber-500 "></div>
-    
-            {/* Step 2 */}
-            <div className="flex flex-col items-center justify-center space-y-4">
-              <Link href={`/client/cinemas/${cinema?.location.id}`}>
-                <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center ">
-                <FaCheck />
-                </div>
-              </Link>
-             
-              <h3 className="text-amber-600 md:text-base text-xs">Select Showtime</h3>
-            </div>
-    
-            {/* Line between steps */}
-            <div className="flex-1 h-1 transform -translate-y-4 bg-gradient-to-r from-amber-500 to-amber-200 "></div>
-    
-            {/* Step 3 */}
-            <div className="flex flex-col items-center justify-center space-y-4">
-            <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center shadow-md shadow-amber-200">
-            3
               </div>
-              <h3 className="text-amber-600 md:text-base text-xs">Select Seat</h3>
-            </div>
+            </Link>
+
+            <h3 className="text-amber-600 md:text-base text-xs">Select Location</h3>
           </div>
-    </div>
 
-    <div className="min-h-screen bg-zinc-900 justify-center items-center">
-        {/* showtime detail */}
-       
-        {isSmallScreenOne && (
-        <div className="w-full flex justify-center items-center mb-3">
-          <div className="w-[1000px] p-2 bg-zinc-900 rounded-lg">
-            <div className="flex flex-col md:flex-row items-center gap-6 shadow-md p-4">
-              <div className="w-48 h-auto">
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${movie?.poster_path}`}
-                  alt="Movie Poster"
-                  className="w-full h-full object-cover rounded-lg " />
+          {/* Line between steps */}
+          <div className="flex-1 h-1 transform -translate-y-4  bg-amber-500 "></div>
+
+          {/* Step 2 */}
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <Link href={`/client/cinemas/${cinema?.location.id}`}>
+              <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center ">
+                <FaCheck />
               </div>
+            </Link>
 
-              <div className="flex-1">
-                <h2 className="text-xl font-semibold text-white">
-                  {movie?.title}
-                </h2>
-                <p className="text-base text-amber-600 mt-2">
-                  {formattedDate} | {show?.time}
-                </p>
+            <h3 className="text-amber-600 md:text-base text-xs">Select Showtime</h3>
+          </div>
 
-                <div className="flex items-center gap-2 mt-4 text-sm md:text-base">
-                  <div className="text-lg text-gray-200">{cinema?.name}</div>
-                  <div className="border-l border-gray-400 h-6 mx-2 "></div>
+          {/* Line between steps */}
+          <div className="flex-1 h-1 transform -translate-y-4 bg-gradient-to-r from-amber-500 to-amber-200 "></div>
 
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-gray-200">
-                      <LuAudioLines />
-                    </span>
-                    <span className="text-gray-200">ENG</span>
-                  </div>
-
-                  <div className="border-l border-gray-400 h-6 mx-2"></div>
-
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-gray-200">
-                      <PiSubtitles />
-                    </span>
-                    <span className="text-gray-200">TH</span>
-                  </div>
-                </div>
-              </div>
+          {/* Step 3 */}
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 text-white flex items-center justify-center shadow-md shadow-amber-200">
+              3
             </div>
+            <h3 className="text-amber-600 md:text-base text-xs">Select Seat</h3>
           </div>
         </div>
+      </div>
+
+      <div className="min-h-screen bg-zinc-900 justify-center items-center">
+        {/* showtime detail */}
+
+        {isSmallScreenOne && (
+          <div className="w-full flex justify-center items-center mb-3">
+            <div className="w-[1000px] p-2 bg-zinc-900 rounded-lg">
+              <div className="flex flex-col md:flex-row items-center gap-6 shadow-md p-4">
+                <div className="w-48 h-auto">
+                  <img
+                    src={`https://image.tmdb.org/t/p/w500${movie?.poster_path}`}
+                    alt="Movie Poster"
+                    className="w-full h-full object-cover rounded-lg " />
+                </div>
+
+                <div className="flex-1">
+                  <h2 className="text-xl font-semibold text-white">
+                    {movie?.title}
+                  </h2>
+                  <p className="text-base text-amber-600 mt-2">
+                    {formattedDate} | {show?.time}
+                  </p>
+
+                  <div className="flex items-center gap-2 mt-4 text-sm md:text-base">
+                    <div className="text-lg text-gray-200">{cinema?.name}</div>
+                    <div className="border-l border-gray-400 h-6 mx-2 "></div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-gray-200">
+                        <LuAudioLines />
+                      </span>
+                      <span className="text-gray-200">ENG</span>
+                    </div>
+
+                    <div className="border-l border-gray-400 h-6 mx-2"></div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-gray-200">
+                        <PiSubtitles />
+                      </span>
+                      <span className="text-gray-200">TH</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         )};
 
         <div className="bg-zinc-900 max-w-full  p-2 md:p-1 ">
@@ -385,33 +372,33 @@ const CinemaSeatBooking = () => {
               {/* Right Panel for Desktop */}
               {!isSmallScreenOne && (
                 <div className={`w-1/4 bg-zinc-700 p-2 rounded-lg shadow-md h-[720px] ${isSmallScreenTwo ? '' : ''}`}>
-                   <img
-                      src={`https://image.tmdb.org/t/p/w500${movie?.poster_path}`}
-                      alt="Movie Poster"
-                      className=" object-cover rounded-lg" />
+                  <img
+                    src={`https://image.tmdb.org/t/p/w500${movie?.poster_path}`}
+                    alt="Movie Poster"
+                    className=" object-cover rounded-lg" />
 
                   <div className="p-2 ">
                     <h3 className="text-xl font-bold text-white">{movie?.title}</h3>
                     <p className="text-sm text-amber-500 mt-2">{formattedDate} {show?.time}</p>
-                  <div className="text-md mt-2 text-white">{cinema?.name}</div>
-                  <div className="flex">
+                    <div className="text-md mt-2 text-white">{cinema?.name}</div>
+                    <div className="flex">
 
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-gray-300">
-                        <LuAudioLines />
-                      </span>
-                      <span className="text-sm text-gray-300">ENG</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-gray-300">
+                          <LuAudioLines />
+                        </span>
+                        <span className="text-sm text-gray-300">ENG</span>
+                      </div>
+
+                      <div className="border-l border-gray-400 h-6 mx-2"></div>
+
+                      <div className="flex items-center gap-2 ">
+                        <span className="font-semibold text-gray-300">
+                          <PiSubtitles />
+                        </span>
+                        <span className="text-sm text-gray-300">TH</span>
+                      </div>
                     </div>
-
-                    <div className="border-l border-gray-400 h-6 mx-2"></div>
-
-                    <div className="flex items-center gap-2 ">
-                      <span className="font-semibold text-gray-300">
-                        <PiSubtitles />
-                      </span>
-                      <span className="text-sm text-gray-300">TH</span>
-                    </div>
-                  </div>
                   </div>
 
                   <div className="bg-zinc-800 rounded-xl p-4 w-full items-center text-center justify-cente mt-4">
@@ -426,18 +413,17 @@ const CinemaSeatBooking = () => {
                     </div>
 
                     <button
-                        disabled={selectedSeats.length === 0 || isLoading}
-                        onClick={handleSubmitBooking}
-                        className={`w-full rounded rounded-3xl flex justify-center items-center font-medium transition-colors duration-300 ${
-                          selectedSeats.length === 0
-                            ? "bg-gradient-to-r from-amber-600 to-amber-400 py-2 text-white opacity-80 cursor-not-allowed"
-                            : isLoading
+                      disabled={selectedSeats.length === 0 || isLoading}
+                      onClick={handleSubmitBooking}
+                      className={`w-full rounded rounded-3xl flex justify-center items-center font-medium transition-colors duration-300 ${selectedSeats.length === 0
+                          ? "bg-gradient-to-r from-amber-600 to-amber-400 py-2 text-white opacity-80 cursor-not-allowed"
+                          : isLoading
                             ? "bg-gradient-to-r from-amber-600 to-amber-400 text-white cursor-not-allowed"
                             : "bg-gradient-to-r from-amber-600 to-amber-400 py-2 text-white hover:shadow-md hover:shadow-amber-400"
                         }`}
-                      >
-                        {isLoading ? <Loading /> : "Continue"}
-                      </button>
+                    >
+                      {isLoading ? <Loading /> : "Continue"}
+                    </button>
                   </div>
                 </div>
               )}
@@ -466,15 +452,15 @@ const CinemaSeatBooking = () => {
             </div>
 
             <div className="flex justify-between mt-2">
-              <button  
+              <button
                 disabled={selectedSeats.length === 0 || isLoading}
-                onClick={handleSubmitBooking} 
+                onClick={handleSubmitBooking}
                 className={`text-amber-500 w-full rounded-lg transition-colors duration-300  
                 ${selectedSeats.length === 0
-                ?  "text-zinc-200 bg-amber-500 py-2 border-2 cursor-not-allowed" 
-                : isLoading
-                ? "bg-white border-white border-2 hover:bg-amber-500 hover:text-white"
-                : "bg-white border-white border-2 py-2 hover:bg-amber-500 hover:text-white"}`}>
+                    ? "text-zinc-200 bg-amber-500 py-2 border-2 cursor-not-allowed"
+                    : isLoading
+                      ? "bg-white border-white border-2 hover:bg-amber-500 hover:text-white"
+                      : "bg-white border-white border-2 py-2 hover:bg-amber-500 hover:text-white"}`}>
 
                 {isLoading ? <Loading /> : "Continue"}
               </button>
