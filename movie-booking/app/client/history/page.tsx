@@ -69,6 +69,7 @@ const BookingHistory = () => {
   // 🟢 จัดกลุ่ม bookings ตาม (movieId, subCinemaId, date, time)
   const groupedBookings = currentBookings.reduce((acc, order) => {
     order.booking.forEach((booking) => {
+      if (!booking.showtime || !booking.seat) return;
       const key = `${booking.showtime.movie.id}-${booking.showtime.subCinema.id}-${booking.showtime.date}-${booking.showtime.time}`;
       
       if (!acc[key]) {

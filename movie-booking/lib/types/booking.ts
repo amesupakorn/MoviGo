@@ -38,9 +38,9 @@ export interface Seat {
 
 export interface Booking {
   id: string;
-  showtime: Showtime; 
-  user: User;         
-  seat: Seat;        
+  showtime?: Showtime; 
+  user?: User;         
+  seat?: Seat;        
   status: string;     
   createdAt: Date;    
 }
