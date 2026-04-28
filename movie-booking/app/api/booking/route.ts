@@ -1,17 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma"; // Prisma client
-import { getUserFromToken } from "@/lib/auth"; // Helper function to get user from token
-import axios from "axios";
-import { cookies } from "next/headers";
-import { getBaseUrl } from "@/lib/api-url";
+import { prisma } from "@/lib/prisma";
+import { getUserFromToken } from "@/lib/auth";
+import { createPaymentSession } from "@/lib/payment";
 
 export async function POST(req: NextRequest) {
   try {
     const { selectedSeats, showtimeId, status }: { selectedSeats: string[], showtimeId: string, status: string } = await req.json();
     
     const user = await getUserFromToken();
-    const cookieStore = await cookies(); 
-    const token = cookieStore.get("token")?.value; 
     
     if (!selectedSeats || !showtimeId || !user || !user.id || !status) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -76,20 +72,16 @@ export async function POST(req: NextRequest) {
     }
 
 
-      const paymentResponse = await axios.post(`${getBaseUrl()}/api/payment`, {
-        selectedSeats,   
-        bookedSeats,
-        showtimeId,
-        user,
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,  
-        },
-      });
+    const paymentResult = await createPaymentSession(
+      selectedSeats,
+      bookedSeats,
+      showtimeId,
+      user as any // Type cast if necessary
+    );
 
 
-    if (paymentResponse?.data?.url) {
-      return NextResponse.json({ url: paymentResponse.data.url, session: paymentResponse.data.session }, { status: 200 });
+    if (paymentResult?.url) {
+      return NextResponse.json({ url: paymentResult.url, session: paymentResult.session }, { status: 200 });
     } else {
       return NextResponse.json({ error: 'Payment session creation failed' }, { status: 500 });
     }
