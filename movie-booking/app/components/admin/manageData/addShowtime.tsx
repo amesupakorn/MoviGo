@@ -94,9 +94,9 @@ const CreateShowtime: React.FC<AddShowtimeProps> = ({ isPopupOpen, setIsPopupOpe
         //  Send Showtime Data to API
         const response = await api.post("/showtime", showtimeData);
         
-        if (response.data?.showtimes) {
+        if (response.data?.createdCount !== undefined) {
             //  Re-fetch the latest showtimes from the API
-            const updatedCinemaResponse = await api.get(`/cinema/${cinemaId}?includeShowtimes=true`);
+            const updatedCinemaResponse = await api.get(`/cinema/${cinemaId}`);
             
             if (updatedCinemaResponse.data) {
                 setCinema(updatedCinemaResponse.data); 
