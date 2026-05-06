@@ -12,23 +12,43 @@ const PaymentPageSuccess = () => {
   const [, setOrder] =  useState<Order | null>(null);
   const { id } = useParams();
 
-  useEffect(() => {  
-          const fetchData = async () => {
-              try {
-                const response = await api.get(`/booking/${id}`);
-                setOrder(response.data)
+  useEffect(() => {
+    let retryCount = 0;
+    const maxRetries = 5;
 
-                if(response.data.status != 'complete'){
-                  window.location.href = `/payment/cancel/${id}`;
-                }
-  
-              } catch (err) {
-                  console.error("Error fetching movie details:", err);
-              }
-          };
-  
-          fetchData();
-      }, [id]);
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/booking/${id}`);
+        const orderData = response.data;
+        setOrder(orderData);
+
+        if (orderData.status === "complete") {
+          setIsLoading(false);
+          return;
+        }
+
+        // If not complete, retry after a short delay
+        if (retryCount < maxRetries) {
+          retryCount++;
+          setTimeout(fetchData, 2000); // Wait 2 seconds before retry
+        } else {
+          // If still not complete after retries, redirect to cancel
+          window.location.href = `/payment/cancel/${id}`;
+        }
+      } catch (err) {
+        console.error("Error fetching order status:", err);
+        // On error, maybe it's just a network issue, could retry too
+        if (retryCount < maxRetries) {
+          retryCount++;
+          setTimeout(fetchData, 2000);
+        }
+      }
+    };
+
+    setIsLoading(true);
+    fetchData();
+  }, [id]);
+
   const handleChangePage = () =>{
     setIsLoading(true);
 
@@ -49,20 +69,32 @@ const PaymentPageSuccess = () => {
           <img src="/image/success.png" className="w-[200px]" alt="success" />
         </div>
 
-        <h2 className="text-3xl font-semibold text-gray-800 mb-4">Thank You!</h2>
-        <p className="text-gray-600 mb-6">Payment done Successfully</p>
-        <p className="text-sm text-gray-500 mb-8">
-          You will be redirected to the home page shortly or click here to
-          return to home page.
-        </p>
-        <button
-                    disabled={isLoading}
-                    onClick={handleChangePage}
-                    className={`w-full mb-2 rounded rounded-3xl flex justify-center items-center font-medium transition ${
-                    isLoading ? "bg-gray-400 py-1 cursor-not-allowed" : "bg-gray-900 py-3 text-white hover:bg-gray-700"
-                    }`}>
-                    {isLoading ? <Loading /> : "Home"}
-                  </button>
+        {isLoading ? (
+          <>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Verifying Payment...</h2>
+            <p className="text-gray-600 mb-6">Please wait while we confirm your transaction.</p>
+            <div className="flex justify-center mb-8">
+               <Loading />
+            </div>
+          </>
+        ) : (
+          <>
+            <h2 className="text-3xl font-semibold text-gray-800 mb-4">Thank You!</h2>
+            <p className="text-gray-600 mb-6">Payment done Successfully</p>
+            <p className="text-sm text-gray-500 mb-8">
+              You will be redirected to the home page shortly or click here to
+              return to home page.
+            </p>
+            <button
+              disabled={isLoading}
+              onClick={handleChangePage}
+              className={`w-full mb-2 rounded rounded-3xl flex justify-center items-center font-medium transition bg-gray-900 py-3 text-white hover:bg-gray-700`}
+            >
+              Home
+            </button>
+          </>
+        )}
+
       </div>
     </div>
   );

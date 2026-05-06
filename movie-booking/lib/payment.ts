@@ -1,12 +1,9 @@
-import Stripe from "stripe";
 import { v4 as uuidv4 } from "uuid";
 import { prisma } from "@/lib/prisma";
 import { Booking } from "@/lib/types/booking";
 import { getBaseUrl } from "@/lib/api-url";
+import { stripe } from "@/lib/stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-02-24.acacia",
-});
 
 export async function createPaymentSession(
   selectedSeats: string[],

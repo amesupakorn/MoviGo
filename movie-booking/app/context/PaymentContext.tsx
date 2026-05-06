@@ -27,10 +27,13 @@ export const PaymentProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    if (paymentStatus && paymentStatus !== "complete" && sessionId) {
+    // Only cancel if the payment status is explicitly failed or expired
+    const failureStatuses = ["expired", "canceled"];
+    if (paymentStatus && failureStatuses.includes(paymentStatus) && sessionId) {
       cancelBooking();
     }
   }, [paymentStatus, sessionId]); 
+
 
   const checkPaymentStatus = async () => {
     try {
