@@ -5,10 +5,13 @@ import { MapPin } from "lucide-react";
 import { Order } from "@/lib/types/booking";
 import api from "@/lib/axios";
 
+import Loading from "@/app/components/ui/loading/loadOne";
+
 const BookingHistory = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [moviePosters, setMoviePosters] = useState<{ [key: string]: string }>({});
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
   const itemsPerPage = 3;
 
   // 🟢 ดึงข้อมูลการจองจาก Backend
@@ -24,6 +27,8 @@ const BookingHistory = () => {
       } catch (error) {
         console.error("Error fetching bookings:", error);
         setOrders([]);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchBookings();
@@ -93,73 +98,83 @@ const BookingHistory = () => {
     <div className="max-w-4xl mx-auto p-6 mt-20 max-sm:mt-[40px]">
       <h2 className="text-lg md:text-xl text-white font-bold mb-4">BOOKING HISTORY</h2>
       <div className="space-y-4">
-        {Object.values(groupedBookings).map((booking, index) => {
-          const movieId = booking.showtime?.movie?.id;
-          const posterPath = movieId
-            ? `https://image.tmdb.org/t/p/w500${moviePosters[movieId] || booking.showtime.movie.poster_path}`
-            : "/default-poster.jpg";
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <Loading />
+          </div>
+        ) : Object.values(groupedBookings).length > 0 ? (
+          Object.values(groupedBookings).map((booking, index) => {
+            const movieId = booking.showtime?.movie?.id;
+            const posterPath = movieId
+              ? `https://image.tmdb.org/t/p/w500${moviePosters[movieId] || booking.showtime.movie.poster_path}`
+              : "/default-poster.jpg";
 
-          const formattedTime = booking.showtime?.time
-            ? booking.showtime.time.split(":").slice(0, 2).join(":")
-            : "N/A";
+            const formattedTime = booking.showtime?.time
+              ? booking.showtime.time.split(":").slice(0, 2).join(":")
+              : "N/A";
 
-          const formattedDate = booking.showtime?.date
-            ? new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(booking.showtime.date))
-            : "N/A";
+            const formattedDate = booking.showtime?.date
+              ? new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(booking.showtime.date))
+              : "N/A";
 
-          return (
-            <div key={index} className="flex bg-zinc-800 p-6 shadow-md border border-gray-400 space-x-4 rounded-lg">
-              {/* รูปโปสเตอร์ของหนัง */}
-              <img
-                src={posterPath}
-                alt={booking.showtime?.movie?.title || "Unknown Movie"}
-                className="w-auto h-32 md:h-36 object-cover rounded-lg"
-              />
-              <div className="flex flex-col justify-between w-full">
-                <div>
-                  <h3 className="text-sm md:text-lg text-white font-semibold">
-                    {booking.showtime?.movie?.title || "Unknown Movie"}
-                  </h3>
+            return (
+              <div key={index} className="flex bg-zinc-800 p-6 shadow-md border border-gray-400 space-x-4 rounded-lg">
+                {/* รูปโปสเตอร์ของหนัง */}
+                <img
+                  src={posterPath}
+                  alt={booking.showtime?.movie?.title || "Unknown Movie"}
+                  className="w-auto h-32 md:h-36 object-cover rounded-lg"
+                />
+                <div className="flex flex-col justify-between w-full">
+                  <div>
+                    <h3 className="text-sm md:text-lg text-white font-semibold">
+                      {booking.showtime?.movie?.title || "Unknown Movie"}
+                    </h3>
 
-                  {/* สถานที่ฉายหนัง */}
-                  <div className="flex items-center text-xs md:text-sm text-gray-600 mt-2">
-                    <MapPin className="w-4 h-4 mr-1 text-gray-100" />
-                    <span className="text-gray-200 font-medium">
-                       {booking.showtime?.subCinema?.location?.name || "Unknown Location"}
-                    </span>
+                    {/* สถานที่ฉายหนัง */}
+                    <div className="flex items-center text-xs md:text-sm text-gray-600 mt-2">
+                      <MapPin className="w-4 h-4 mr-1 text-gray-100" />
+                      <span className="text-gray-200 font-medium">
+                         {booking.showtime?.subCinema?.location?.name || "Unknown Location"}
+                      </span>
+                    </div>
+
+                    {/* ข้อมูลที่นั่ง & โรงภาพยนตร์ */}
+                    <div className="md:flex-row  flex-col flex mt-2 md:space-x-5 mb-1 md:space-y-0 space-y-1">
+                      <p className="text-xs sm:text-sm text-amber-400">
+                        <span className="font-medium text-gray-100">Cinema :</span> {booking.showtime?.subCinema?.name || "N/A"}
+                      </p>
+                      <p className="text-xs sm:text-sm text-amber-400">
+                        <span className="font-medium text-gray-100">Seat no :</span> {booking.seats.join(", ")}
+                      </p>
+                    </div>
+                    
+                    <div className="md:w-[250px] w-full h-[1px] bg-amber-400 "></div>
+
+                    <div className="md:flex-row  flex-col flex mt-2 md:space-x-5 mb-1 md:space-y-0 space-y-1">
+                      {/* วันที่และเวลา */}
+                      <p className="text-xs sm:text-sm text-amber-400">
+                        <span className="font-medium text-gray-100">Date :</span> {formattedDate}
+                      </p>
+                      <p className="text-xs sm:text-sm text-amber-400">
+                        <span className="font-medium text-gray-100">Time :</span> {formattedTime}
+                      </p>
+                    </div>
+
+                    {/* ราคา */}
+                    <p className="text-xs sm:text-sm text-amber-400 mt-1 sm:mt-2">
+                      <span className="font-medium text-gray-100">Total Price :</span> {`${booking.totalPrice} THB`}
+                    </p>
                   </div>
-
-                  {/* ข้อมูลที่นั่ง & โรงภาพยนตร์ */}
-                  <div className="md:flex-row  flex-col flex mt-2 md:space-x-5 mb-1 md:space-y-0 space-y-1">
-                    <p className="text-xs sm:text-sm text-amber-400">
-                      <span className="font-medium text-gray-100">Cinema :</span> {booking.showtime?.subCinema?.name || "N/A"}
-                    </p>
-                    <p className="text-xs sm:text-sm text-amber-400">
-                      <span className="font-medium text-gray-100">Seat no :</span> {booking.seats.join(", ")}
-                    </p>
-                  </div>
-                  
-                  <div className="md:w-[250px] w-full h-[1px] bg-amber-400 "></div>
-
-                  <div className="md:flex-row  flex-col flex mt-2 md:space-x-5 mb-1 md:space-y-0 space-y-1">
-                    {/* วันที่และเวลา */}
-                    <p className="text-xs sm:text-sm text-amber-400">
-                      <span className="font-medium text-gray-100">Date :</span> {formattedDate}
-                    </p>
-                    <p className="text-xs sm:text-sm text-amber-400">
-                      <span className="font-medium text-gray-100">Time :</span> {formattedTime}
-                    </p>
-                  </div>
-
-                  {/* ราคา */}
-                  <p className="text-xs sm:text-sm text-amber-400 mt-1 sm:mt-2">
-                    <span className="font-medium text-gray-100">Total Price :</span> {`${booking.totalPrice} THB`}
-                  </p>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        ) : (
+          <div className="text-center py-20 text-gray-400">
+            No booking history found.
+          </div>
+        )}
       </div>
 
       {/* Pagination Controls */}
