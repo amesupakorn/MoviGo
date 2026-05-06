@@ -5,6 +5,7 @@ import api from "@/lib/axios";
 interface AuthContextType {
     isLoggedIn: boolean;
     user: { name: string; profileImage: string | null } | null;
+    loading: boolean;
     logout: () => void;
     setUser: React.Dispatch<React.SetStateAction<{ name: string; profileImage: string | null } | null>>;
     updateNavName: (info: string) => void; 
@@ -16,14 +17,15 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState<{ name: string; profileImage: string | null } | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchUser = async () => {
-            const res_token = await api.get("/cookie/token/")
-            const token = res_token.data.token
-            
-            if (token) {
-                try {
+            try {
+                const res_token = await api.get("/cookie/token/")
+                const token = res_token.data.token
+                
+                if (token) {
                     const response = await api.get(`/profile`, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
@@ -32,11 +34,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                         name: response.data.user.name,
                         profileImage: response.data.user.profileImage || "/default-avatar.png",
                     });
-                } catch (error) {
-                    console.error("Failed to fetch user data:", error);
-                    setIsLoggedIn(false);
-                    setUser(null);
                 }
+            } catch (error) {
+                console.error("Failed to fetch user data:", error);
+                setIsLoggedIn(false);
+                setUser(null);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -67,6 +71,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             value={{
                 isLoggedIn,
                 user,
+                loading,
                 logout,
                 setUser,
                 updateNavName,
